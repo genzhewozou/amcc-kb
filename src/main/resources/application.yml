@@ -1,5 +1,7 @@
 server:
     port: 8084
+    max-http-header-size: 50000
+
 
 logging:
     file: logs/amcc-kb.log
@@ -25,4 +27,3 @@ spring:
             max-idle: 2
             min-idle: 1
             initial-size: 2
-
