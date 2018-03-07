@@ -1,6 +1,8 @@
 package com.nroad.amcc.api;
 
+import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.kb.KnowledgeBase;
+import com.nroad.amcc.kb.KnowledgeBaseException;
 import com.nroad.amcc.utils.TreeUtils;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/knowledge")
+@CrossOrigin
 public class KnowledgeController {
     private final Logger logger = LoggerFactory.getLogger(KnowledgeController.class);
 
@@ -21,20 +24,24 @@ public class KnowledgeController {
     @ResponseBody
     @GetMapping(value = "/findColumns")
     public KnowledgeBase findAllColumn( @RequestParam("organizationId")String organizationId){
-        logger.info("Create KnowledgeBase Request : {}");
+        logger.info("Find KnowledgeBaseColumn Request : {}",organizationId);
+        if (organizationId == null || organizationId.equals("")){
+            throw new KnowledgeBaseException(PlatformError.ORGANIZATIONID_CAN_NOT_BE_NULL);
+        }
         List<KnowledgeBase> knowledgeBases= knowledgeService.findByOrganizationId(organizationId);
         KnowledgeBase kb = new KnowledgeBase();
         for (KnowledgeBase k:knowledgeBases){
             k.setKnowledegLevel(null);
             k.setKnowledegContent(null);
             if("0".equals(k.getParentId())){
-               kb=k;//kb为顶层id
+               kb=k;
             }
         }
-        TreeUtils.createTree(knowledgeBases, kb, "id", "parentId", "children");
         if (kb.getId()==null||kb.getId().equals("")){
-            return null;
+            throw new KnowledgeBaseException(PlatformError.KNOWLEDGEBASE_IS_NULL);
         }
+        TreeUtils.createTree(knowledgeBases, kb, "id", "parentId", "children");
+        logger.info("Find KnowledgeBaseColumn Success, Response : {}", kb);
         return kb;
     }
 
@@ -55,9 +62,9 @@ public class KnowledgeController {
     @PostMapping("/updateColumns")
     public KnowledgeBase updateKBColumn(@RequestParam("id")String id,
                                         @RequestParam("knowledegName")String kName) {
-        logger.info("Create KnowledgeBaseColumn Request : {}",id,kName);
+        logger.info("Update KnowledgeBaseColumn Request : {}",id,kName);
         KnowledgeBase kb = knowledgeService.updateKnowledgeBaseColumn(id,kName);
-        logger.info("Create KnowledgeBaseColumn Success, Response : {}", kb);
+        logger.info("Update KnowledgeBaseColumn Success, Response : {}", kb);
         return kb;
     }
 
@@ -96,9 +103,9 @@ public class KnowledgeController {
     @ResponseBody
     @PostMapping("/findArticleById")
     public KnowledgeBase findKB(@RequestParam("id")String id) {
-        logger.info("Find KnowledgeBase Request : {}",id);
+        logger.info("Find KnowledgeBase Request By Id : {}",id);
         KnowledgeBase kb = knowledgeService.findKnowledgeBase(id);
-        logger.info("Find KnowledgeBase Success, Response : {}", kb);
+        logger.info("Find KnowledgeBase Success, Response By Id: {}", kb);
         return kb;
     }
 
@@ -116,8 +123,9 @@ public class KnowledgeController {
     @ResponseBody
     @PostMapping("/findByContent")
     public List<KnowledgeBase> findByContent(@RequestParam("organizationId") String organizationId,@RequestParam("knowledegContent") String content){
-        logger.info("Search KnowledgeBase Request : {}",organizationId,content);
-        System.out.println("-----------------------------------"+content);
-        return knowledgeService.findByKnowledegcontentLike(organizationId,content);
+        logger.info("Find KnowledgeBase Request By Words: {}",organizationId,content);
+        List<KnowledgeBase> knowledgeBases = knowledgeService.findByKnowledegcontentLike(organizationId,content);
+        logger.info("Delete KnowledgeBase Success, Response : {}",knowledgeBases);
+        return knowledgeBases;
     }
 }
