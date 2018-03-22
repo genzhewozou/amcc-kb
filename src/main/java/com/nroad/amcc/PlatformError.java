@@ -15,11 +15,17 @@ public enum PlatformError {
     BAD_REQUEST(400, "Bad request"),
     FORBIDDEN(403, "Forbidden"),
     SERVER_INTERNAL_ERROR(500, "Server internal error!"),
-    KNOWLEDGEBASE_IS_NULL(4001,"KnowledgeBase Is Null!"),
-    ORGANIZATIONID_CAN_NOT_BE_NULL(4002,"OrganizationId Can Not Be Null!"),
-    KNOWLEDGEBASEID_CAN_NOT_BE_NULL(4003,"KnowledgeBaseId Can Not Be Null!"),
-    FIND_WORDS_CAN_NOT_BE_NULL(4004,"Find Words Can Not Be Null!"),
-    PARENTID_IS_EXIST(4005,"Parentid Is Exist!");
+    
+    /**
+     * kb error
+     * code [4001~4999]
+     */
+    KNOWLEDGEBASE_IS_NULL(4001,"KnowledgeBase is null"),
+    ORGANIZATIONID_CAN_NOT_BE_NULL(4002,"OrganizationId can not be null"),
+    KNOWLEDGEBASEID_CAN_NOT_BE_NULL(4003,"KnowledgeBaseId can not be null"),
+    FIND_WORDS_CAN_NOT_BE_NULL(4004,"Find words can not be null"),
+    PARENTID_IS_EXIST(4005,"Parentid is exist");
+	
     private final int code;
 
     private final String description;

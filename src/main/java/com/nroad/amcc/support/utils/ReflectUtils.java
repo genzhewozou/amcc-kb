@@ -1,4 +1,4 @@
-package com.nroad.amcc.utils;
+package com.nroad.amcc.support.utils;
 
 import org.apache.commons.lang3.*;
 
@@ -24,7 +24,7 @@ public class ReflectUtils {
             }
         }
         if (field == null) {
-            throw new NullPointerException(old + "没有" + fieldName + "属�??");
+            throw new NullPointerException(old + "没有" + fieldName + "属�??");
         }
         return field;
     }
@@ -231,7 +231,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获取属�?�上的注�?
+     * 获取属�?�上的注�?
      */
     public static Annotation getFieldAnnotation(Field field, Class targetAnnotationClass) {
         Annotation methodAnnotation = field.getAnnotation(targetAnnotationClass);
@@ -239,10 +239,10 @@ public class ReflectUtils {
     }
 
     /**
-     * 获取类上的注�?
+     * 获取类上的注�?
      *
      * @param targetAnnotationClass 目标注解
-     * @param targetObjcetClass     目标�?
+     * @param targetObjcetClass     目标�?
      * @return 目标注解实例
      */
     public static Annotation getClassAnnotation(Class targetAnnotationClass, Class<?> targetObjcetClass) {
@@ -251,7 +251,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获取类上的注�?
+     * 获取类上的注�?
      *
      * @return 目标注解实例
      */
@@ -260,7 +260,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 获取类上的注�?
+     * 获取类上的注�?
      *
      * @return 目标注解实例
      */
@@ -274,9 +274,9 @@ public class ReflectUtils {
     }
 
     /**
-     * 获取注解某个属�?�的�?
+     * 获取注解某个属�?�的�?
      *
-     * @param methodName 属�?�名
+     * @param methodName 属�?�名
      * @param annotation 目标注解
      * @param <T>        返回类型
      * @throws Exception
@@ -293,13 +293,13 @@ public class ReflectUtils {
     }
 
     /**
-     * 获取某个类的某个方法上的某个注解的属�?
+     * 获取某个类的某个方法上的某个注解的属�?
      *
-     * @param methodName            注解属�?�的名字
+     * @param methodName            注解属�?�的名字
      * @param targetAnnotationClass 目标注解
      * @param targetObjecMethodName 目标类的方法
-     * @param targetObjectClass     目标�?
-     * @param <T>                   返回值类�?
+     * @param targetObjectClass     目标�?
+     * @param <T>                   返回值类�?
      */
     public static <T> T getMethodAnnotationValue(String methodName, Class targetAnnotationClass, String targetObjecMethodName, Class targetObjectClass) {
         Method method = getMethod(targetObjecMethodName, targetObjectClass);
@@ -308,11 +308,11 @@ public class ReflectUtils {
     }
 
     /**
-     * @param methodName            注解属�?�名
+     * @param methodName            注解属�?�名
      * @param targetAnnotationClass 目标注解
-     * @param targetObjecFieldName  目标属�?�名�?
-     * @param targetObjectClass     目标�?
-     * @param <T>                   返回值类�?
+     * @param targetObjecFieldName  目标属�?�名�?
+     * @param targetObjectClass     目标�?
+     * @param <T>                   返回值类�?
      */
     public static <T> T getFieldAnnotationValue(String methodName, Class targetAnnotationClass, String targetObjecFieldName, Class targetObjectClass) {
         Field field = getField(targetObjecFieldName, targetObjectClass);
@@ -321,7 +321,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 判断 clazz是否是target的子类型或�?�相�?
+     * 判断 clazz是否是target的子类型或�?�相�?
      */
     public static boolean isSubClassOrEquesClass(Class<?> clazz, Class<?> target) {
         if (clazz == target) {

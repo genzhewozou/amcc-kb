@@ -3,7 +3,8 @@ package com.nroad.amcc.api;
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.kb.KnowledgeBase;
 import com.nroad.amcc.kb.KnowledgeBaseException;
-import com.nroad.amcc.utils.TreeUtils;
+import com.nroad.amcc.support.utils.TreeUtils;
+
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

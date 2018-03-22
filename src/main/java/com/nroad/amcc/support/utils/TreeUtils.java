@@ -1,4 +1,4 @@
-package com.nroad.amcc.utils;
+package com.nroad.amcc.support.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
