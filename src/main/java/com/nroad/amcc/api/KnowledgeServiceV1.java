@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class KnowledgeService {
+public class KnowledgeServiceV1 {
 
     @Autowired
     private KnowledgeJpaRepository knowledgeJpaRepository;

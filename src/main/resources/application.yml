@@ -1,7 +1,6 @@
 server:
-    port: 8084
+    port: 8006
     max-http-header-size: 50000
-
 
 logging:
     file: logs/amcc-kb.log

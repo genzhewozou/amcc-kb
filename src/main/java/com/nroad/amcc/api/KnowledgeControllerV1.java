@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/knowledge")
+@RequestMapping("/v1/kb")
 @CrossOrigin
-public class KnowledgeController {
-    private final Logger logger = LoggerFactory.getLogger(KnowledgeController.class);
+public class KnowledgeControllerV1 {
+    private final Logger logger = LoggerFactory.getLogger(KnowledgeControllerV1.class);
 
     @Autowired
-    private KnowledgeService knowledgeService;
+    private KnowledgeServiceV1 knowledgeService;
 
     @ApiOperation("查询知识库目录")
     @ResponseBody
