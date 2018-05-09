@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/kb")
+@RequestMapping("/api/v1")
 @CrossOrigin
 public class KnowledgeControllerV1 {
     private final Logger logger = LoggerFactory.getLogger(KnowledgeControllerV1.class);
