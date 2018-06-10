@@ -1,15 +1,15 @@
 package com.nroad.amcc.api;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.kb.KnowledgeBase;
 import com.nroad.amcc.kb.KnowledgeBaseException;
 import com.nroad.amcc.support.jpa.KnowledgeJpaRepository;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class KnowledgeServiceV1 {
@@ -94,6 +94,21 @@ public class KnowledgeServiceV1 {
         knowledgeBase.setKnowledegContent(content);
         return knowledgeJpaRepository.saveAndFlush(knowledgeBase);
     }
+    
+    public KnowledgeBase creatKnowledge(String pId, String organizationId, String kName, String kBContent){
+        
+        if(!knowledgeJpaRepository.exists(pId)) {
+        	 throw new KnowledgeBaseException(PlatformError.KNOWLEDGEBASE_IS_NULL);
+        }
+        KnowledgeBase instance=new KnowledgeBase();
+        instance.setKnowledegContent(kBContent);
+        instance.setKnowledegName(kName);
+        instance.setOrganizationId(organizationId);
+        instance.setParentId(pId);
+        
+        return knowledgeJpaRepository.saveAndFlush(instance);
+        
+    }
 
     public KnowledgeBase updateKnowledgeBase(String id,String kBContent) {
         if (StringUtils.isEmpty(id)){
@@ -117,4 +132,8 @@ public class KnowledgeServiceV1 {
     public List<KnowledgeBase>  findByOrganizationId(String organizationId){
         return knowledgeJpaRepository.findByOrganizationId(organizationId);
     }
+
+	public List<KnowledgeBase> queryArticles(String pid) {
+		return knowledgeJpaRepository.findAllByparentId(pid);
+	}
 }
