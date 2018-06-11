@@ -1,10 +1,10 @@
 package com.nroad.amcc.api;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nroad.amcc.kb.Databank;
+import com.nroad.amcc.kb.HeatSpeechReport;
 import com.nroad.amcc.support.jpa.DatabankJpaRepository;
+import com.nroad.amcc.support.jpa.HeatSpeechReportJpaRepository;
+import com.nroad.amcc.support.utils.DateUtil;
 import com.nroad.amcc.support.utils.TreeUtils;
 
 import io.swagger.annotations.ApiOperation;
@@ -25,24 +28,43 @@ public class DatabankController {
 
 	@Autowired
 	private DatabankJpaRepository databankJpaRepository;
+	
+	@Autowired
+	private HeatSpeechReportJpaRepository heatSpeechReportJpaRepository;
 
+	
 	@GetMapping(value = "/query")
 	@ApiOperation(value = "查询资料信息", notes = "根据orgId、word")
 	public Object findAllColumn(@RequestParam("orgId") String orgId, @RequestParam("word") String word) {
+		Date dtime=DateUtil.getResetTime(new Date(), 0, 0, 0);
+		List<HeatSpeechReport> reportList=heatSpeechReportJpaRepository.findAllByHotWordAndDtime(word, dtime, orgId);
+		HeatSpeechReport instance=null;
+		if(reportList.size()==0) {
+			instance=new HeatSpeechReport();
+			instance.setDtime(dtime);
+			instance.setHotWord(word);
+			instance.setOrgId(orgId);
+			instance.setQueryCount(1);
+		}else {
+			instance=reportList.get(0);
+			instance.setQueryCount(instance.getQueryCount()+1);
+		}
+		heatSpeechReportJpaRepository.save(instance);
 		return databankJpaRepository.findAllByOrgIdAndContent(orgId, word);
 	}
 
 	@GetMapping(value = "/findAll")
 	@ApiOperation(value = "获取资料库列表", notes = "根据orgId")
-	@PreAuthorize("hasRole('TENANT_ADMIN')")
+	// @PreAuthorize("hasRole('TENANT_ADMIN')")
 	public Object findAllColumn(@RequestParam("orgId") String orgId) {
 		List<Databank> rootList = databankJpaRepository.findAllByOrgIdAndPid(orgId, "0");
-		if (rootList.size() == 0)
-			return rootList;
-		Databank root = rootList.get(0);
-		List<Databank> databankList = databankJpaRepository.findAllByOrgId(orgId);
-		TreeUtils.createTree(databankList, root, "id", "pid", "children");
-		return root;
+		if (rootList.size() != 0) {
+			List<Databank> databankList = databankJpaRepository.findAllByOrgId(orgId);
+			for(Databank root:rootList) {
+				TreeUtils.createTree(databankList, root, "id", "pid", "children");
+			}
+		}
+		return rootList;
 	}
 
 	@GetMapping("/{id:.+}")
@@ -53,7 +75,7 @@ public class DatabankController {
 
 	@PostMapping("/")
 	@ApiOperation(value = "创建资料信息", notes = "")
-	@PreAuthorize("hasRole('TENANT_ADMIN')")
+	// @PreAuthorize("hasRole('TENANT_ADMIN')")
 	public Databank create(@RequestParam(value = "orgId", required = true) String orgId,
 			@RequestParam(value = "pid", defaultValue = "0") String pid,
 			@RequestParam(value = "name", required = true) String name,
@@ -75,7 +97,7 @@ public class DatabankController {
 
 	@PostMapping("/{id:.+}")
 	@ApiOperation(value = "更新资料信息", notes = "")
-	@PreAuthorize("hasRole('TENANT_ADMIN')")
+	// @PreAuthorize("hasRole('TENANT_ADMIN')")
 	public Databank update(@PathVariable("id") String id, @RequestParam(value = "name", required = true) String name,
 			@RequestParam(value = "content", required = false) String content) {
 		Databank instance = databankJpaRepository.findOne(id);
@@ -90,7 +112,7 @@ public class DatabankController {
 
 	@DeleteMapping("/{id:.+}")
 	@ApiOperation(value = "删除资料信息", notes = "根据ID")
-	@PreAuthorize("hasRole('TENANT_ADMIN')")
+	// @PreAuthorize("hasRole('TENANT_ADMIN')")
 	public void delete(@PathVariable("id") String id) {
 		Databank root = databankJpaRepository.getOne(id);
 		List<Databank> databankList = databankJpaRepository.findAllByOrgId(root.getOrgId());

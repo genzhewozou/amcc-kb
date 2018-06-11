@@ -1,39 +1,58 @@
 package com.nroad.amcc.api;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nroad.amcc.support.jpa.HeatSpeechReportJpaRepository;
+import com.nroad.amcc.support.utils.DateUtil;
+
 @RestController
 @RequestMapping("/api/v1/dataAnalyzing")
 public class DataAnalyzingController {
 
+	@Autowired
+	private HeatSpeechReportJpaRepository heatSpeechReportJpaRepository;
+	
 	/**
 	 * 热频词分析
 	 * @return
 	 */
 	@GetMapping("/queryHotWord")
-	@PreAuthorize("hasRole('TENANT_ADMIN')")
-	public Object hotWord(@RequestParam("stime") long stime,@RequestParam("etime") long etime) {
-		
+	// @PreAuthorize("hasRole('TENANT_ADMIN')")
+	public Object hotWord(@RequestParam("stime") long stime,@RequestParam("etime") long etime,@RequestParam("orgId") String orgId) {
+		Date sDate=DateUtil.getResetTime(new Date(stime), 0, 0, 0);;
+		Date eDate=DateUtil.getResetTime(new Date(etime), 23, 59, 59);
 		List<HotWord> results=new ArrayList<>();
-		Random ran=new Random();  
-		for(int i=1;i<=100;i++) {
-			HotWord e=new HotWord();
-			e.setId(""+i);
-			e.setWord("word"+i);
-			e.setSearchCount(ran.nextInt(1000));
-			results.add(e);
+		List<Object> objList=heatSpeechReportJpaRepository.findHotWords(orgId,sDate,eDate);
+		int index=1;
+		for(Object result:objList) {
+			HotWord e=toHotWord(result);
+			if(e!=null) {
+				e.setId(""+index++);
+				results.add(e);
+			}
 		}
 		return results;
-		
 	}
+	
+	private HotWord toHotWord(Object result) {
+		if(result!=null && result instanceof Object[]) {
+			HotWord e=new HotWord();
+			
+			Object[] row = (Object[]) result;
+			e.setWord(""+row[0]);
+			e.setSearchCount(Integer.parseInt(""+row[1]));
+			return e;
+		}
+		return null;
+	  }
 	
 	class HotWord{
 		String id;
