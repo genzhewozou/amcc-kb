@@ -1,8 +1,11 @@
 package com.nroad.amcc.api;
 
 import com.nroad.amcc.PlatformError;
+import com.nroad.amcc.kb.HeatSpeechReport;
 import com.nroad.amcc.kb.KnowledgeBase;
 import com.nroad.amcc.kb.KnowledgeBaseException;
+import com.nroad.amcc.support.jpa.HeatSpeechReportJpaRepository;
+import com.nroad.amcc.support.utils.DateUtil;
 import com.nroad.amcc.support.utils.TreeUtils;
 
 import io.swagger.annotations.ApiOperation;
@@ -10,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -20,6 +25,9 @@ public class KnowledgeControllerV1 {
 
 	@Autowired
 	private KnowledgeServiceV1 knowledgeService;
+	
+	@Autowired
+	private HeatSpeechReportJpaRepository heatSpeechReportJpaRepository;
 
 	@ApiOperation("知识库查询目录")
 	@ResponseBody
@@ -139,6 +147,23 @@ public class KnowledgeControllerV1 {
 	public List<KnowledgeBase> findByContent(@RequestParam("organizationId") String organizationId,
 			@RequestParam("knowledegContent") String content) {
 		logger.info("Find KnowledgeBase Request By Words: {}", organizationId, content);
+		
+		Date dtime=DateUtil.getResetTime(new Date(), 0, 0, 0);
+		List<HeatSpeechReport> reportList=heatSpeechReportJpaRepository.findAllByHotWordAndDtime(content, dtime, organizationId);
+		HeatSpeechReport instance=null;
+		if(reportList.size()==0) {
+			instance=new HeatSpeechReport();
+			instance.setDtime(dtime);
+			instance.setHotWord(content);
+			instance.setOrgId(organizationId);
+			instance.setQueryCount(1);
+		}else {
+			instance=reportList.get(0);
+			instance.setQueryCount(instance.getQueryCount()+1);
+		}
+		heatSpeechReportJpaRepository.save(instance);
+		
+		
 		List<KnowledgeBase> knowledgeBases = knowledgeService.findByKnowledegcontentLike(organizationId, content);
 		logger.info("Delete KnowledgeBase Success, Response : {}", knowledgeBases);
 		return knowledgeBases;

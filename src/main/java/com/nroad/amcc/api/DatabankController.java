@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nroad.amcc.kb.Databank;
 import com.nroad.amcc.kb.HeatSpeechReport;
+import com.nroad.amcc.kb.KnowledgeBase;
 import com.nroad.amcc.support.jpa.DatabankJpaRepository;
 import com.nroad.amcc.support.jpa.HeatSpeechReportJpaRepository;
 import com.nroad.amcc.support.utils.DateUtil;
@@ -26,28 +29,29 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/api/v1/databank")
 public class DatabankController {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private DatabankJpaRepository databankJpaRepository;
-	
+
 	@Autowired
 	private HeatSpeechReportJpaRepository heatSpeechReportJpaRepository;
 
-	
 	@GetMapping(value = "/query")
 	@ApiOperation(value = "查询资料信息", notes = "根据orgId、word")
 	public Object findAllColumn(@RequestParam("orgId") String orgId, @RequestParam("word") String word) {
-		Date dtime=DateUtil.getResetTime(new Date(), 0, 0, 0);
-		List<HeatSpeechReport> reportList=heatSpeechReportJpaRepository.findAllByHotWordAndDtime(word, dtime, orgId);
-		HeatSpeechReport instance=null;
-		if(reportList.size()==0) {
-			instance=new HeatSpeechReport();
+		Date dtime = DateUtil.getResetTime(new Date(), 0, 0, 0);
+		List<HeatSpeechReport> reportList = heatSpeechReportJpaRepository.findAllByHotWordAndDtime(word, dtime, orgId);
+		HeatSpeechReport instance = null;
+		if (reportList.size() == 0) {
+			instance = new HeatSpeechReport();
 			instance.setDtime(dtime);
 			instance.setHotWord(word);
 			instance.setOrgId(orgId);
 			instance.setQueryCount(1);
-		}else {
-			instance=reportList.get(0);
-			instance.setQueryCount(instance.getQueryCount()+1);
+		} else {
+			instance = reportList.get(0);
+			instance.setQueryCount(instance.getQueryCount() + 1);
 		}
 		heatSpeechReportJpaRepository.save(instance);
 		return databankJpaRepository.findAllByOrgIdAndContent(orgId, word);
@@ -60,17 +64,29 @@ public class DatabankController {
 		List<Databank> rootList = databankJpaRepository.findAllByOrgIdAndPid(orgId, "0");
 		if (rootList.size() != 0) {
 			List<Databank> databankList = databankJpaRepository.findAllByOrgId(orgId);
-			for(Databank root:rootList) {
+			for (Databank it : databankList) {
+				if(StringUtils.isNotEmpty(it.getContent())) {
+					it.setContent("yes");
+				}
+			}
+			for (Databank root : rootList) {
 				TreeUtils.createTree(databankList, root, "id", "pid", "children");
 			}
 		}
 		return rootList;
 	}
 
+	@GetMapping(value = "/findAllChildren")
+	@ApiOperation(value = "获取当前资料下一级列表", notes = "根据id、orgId")
+	// @PreAuthorize("hasRole('TENANT_ADMIN')")
+	public Object findAllChildren(@RequestParam("id") String id, @RequestParam("orgId") String orgId) {
+		return databankJpaRepository.findAllByOrgIdAndPid(orgId, id);
+	}
+
 	@GetMapping("/{id:.+}")
 	@ApiOperation(value = "获取资料信息", notes = "根据ID")
 	public Object get(@PathVariable("id") String id) {
-		return databankJpaRepository.getOne(id);
+		return databankJpaRepository.findOne(id);
 	}
 
 	@PostMapping("/")
@@ -114,13 +130,19 @@ public class DatabankController {
 	@ApiOperation(value = "删除资料信息", notes = "根据ID")
 	// @PreAuthorize("hasRole('TENANT_ADMIN')")
 	public void delete(@PathVariable("id") String id) {
-		Databank root = databankJpaRepository.getOne(id);
-		List<Databank> databankList = databankJpaRepository.findAllByOrgId(root.getOrgId());
-		TreeUtils.createTree(databankList, root, "id", "pid", "children");
-		for (Databank it : root.getChildren()) {
-			databankJpaRepository.delete(it);
-		}
+		logger.info("删除资料信息。id={}", id);
+		List<Databank> databankList = databankJpaRepository.findAll();
+		deleteChildren(id, databankList);
 		databankJpaRepository.delete(id);
+	}
+
+	public void deleteChildren(String id, List<Databank> databankList) {
+		for (Databank it : databankList) {
+			if (id.equals(it.getPid())) {
+				deleteChildren(it.getId(), databankList);
+				databankJpaRepository.delete(it.getId());
+			}
+		}
 	}
 
 }
