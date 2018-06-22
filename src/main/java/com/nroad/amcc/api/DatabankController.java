@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nroad.amcc.kb.Databank;
 import com.nroad.amcc.kb.HeatSpeechReport;
-import com.nroad.amcc.kb.KnowledgeBase;
 import com.nroad.amcc.support.jpa.DatabankJpaRepository;
 import com.nroad.amcc.support.jpa.HeatSpeechReportJpaRepository;
 import com.nroad.amcc.support.utils.DateUtil;
@@ -59,7 +59,7 @@ public class DatabankController {
 
 	@GetMapping(value = "/findAll")
 	@ApiOperation(value = "获取资料库列表", notes = "根据orgId")
-	// @PreAuthorize("hasRole('TENANT_ADMIN')")
+	@PreAuthorize("hasRole('TENANT_ADMIN')")
 	public Object findAllColumn(@RequestParam("orgId") String orgId) {
 		List<Databank> rootList = databankJpaRepository.findAllByOrgIdAndPid(orgId, "0");
 		if (rootList.size() != 0) {
@@ -78,7 +78,7 @@ public class DatabankController {
 
 	@GetMapping(value = "/findAllChildren")
 	@ApiOperation(value = "获取当前资料下一级列表", notes = "根据id、orgId")
-	// @PreAuthorize("hasRole('TENANT_ADMIN')")
+	@PreAuthorize("hasRole('TENANT_ADMIN')")
 	public Object findAllChildren(@RequestParam("id") String id, @RequestParam("orgId") String orgId) {
 		return databankJpaRepository.findAllByOrgIdAndPid(orgId, id);
 	}
@@ -91,7 +91,7 @@ public class DatabankController {
 
 	@PostMapping("/")
 	@ApiOperation(value = "创建资料信息", notes = "")
-	// @PreAuthorize("hasRole('TENANT_ADMIN')")
+	@PreAuthorize("hasRole('TENANT_ADMIN')")
 	public Databank create(@RequestParam(value = "orgId", required = true) String orgId,
 			@RequestParam(value = "pid", defaultValue = "0") String pid,
 			@RequestParam(value = "name", required = true) String name,
@@ -113,7 +113,7 @@ public class DatabankController {
 
 	@PostMapping("/{id:.+}")
 	@ApiOperation(value = "更新资料信息", notes = "")
-	// @PreAuthorize("hasRole('TENANT_ADMIN')")
+	@PreAuthorize("hasRole('TENANT_ADMIN')")
 	public Databank update(@PathVariable("id") String id, @RequestParam(value = "name", required = true) String name,
 			@RequestParam(value = "content", required = false) String content) {
 		Databank instance = databankJpaRepository.findOne(id);
@@ -128,7 +128,7 @@ public class DatabankController {
 
 	@DeleteMapping("/{id:.+}")
 	@ApiOperation(value = "删除资料信息", notes = "根据ID")
-	// @PreAuthorize("hasRole('TENANT_ADMIN')")
+	@PreAuthorize("hasRole('TENANT_ADMIN')")
 	public void delete(@PathVariable("id") String id) {
 		logger.info("删除资料信息。id={}", id);
 		List<Databank> databankList = databankJpaRepository.findAll();
@@ -136,7 +136,7 @@ public class DatabankController {
 		databankJpaRepository.delete(id);
 	}
 
-	public void deleteChildren(String id, List<Databank> databankList) {
+	private void deleteChildren(String id, List<Databank> databankList) {
 		for (Databank it : databankList) {
 			if (id.equals(it.getPid())) {
 				deleteChildren(it.getId(), databankList);
