@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -23,12 +22,6 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
-
-	public static final String[] PUBLIC_RESOURCES = { 
-			"/swagger-ui.html", 
-			"/swagger-resources/**" ,
-			"/public"
-	};
 
 	@Value("${public.resources:/resource/**}")
 	private String publicResources;
@@ -45,7 +38,6 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			// .antMatchers(PUBLIC_RESOURCES).permitAll()
 			.antMatchers(publicResources.split(",")).permitAll()
 			.and()
 			.authorizeRequests().anyRequest().authenticated()
@@ -91,10 +83,16 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	 */
 	@Bean
 	public ResourceServerTokenServices defaultTokenServices() {
-		final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-		defaultTokenServices.setTokenEnhancer(accessTokenConverter());
-		defaultTokenServices.setTokenStore(tokenStore());
-		return defaultTokenServices;
+//		final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+//		defaultTokenServices.setTokenEnhancer(accessTokenConverter());
+//		defaultTokenServices.setTokenStore(tokenStore());
+//		return defaultTokenServices;
+		
+		final CustomResourceTokenServices customResourceTokenServices=new CustomResourceTokenServices();
+		customResourceTokenServices.setTokenStore(tokenStore());
+		return customResourceTokenServices;
 	}
 	// ===================================================以上代码与认证服务器一致=========================================
+	
+	
 }
