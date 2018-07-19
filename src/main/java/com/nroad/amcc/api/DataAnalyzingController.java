@@ -26,7 +26,10 @@ public class DataAnalyzingController {
 	 */
 	@GetMapping("/queryHotWord")
 	// @PreAuthorize("hasRole('TENANT_ADMIN')")
-	public Object hotWord(@RequestParam("stime") long stime,@RequestParam("etime") long etime,@RequestParam("orgId") String orgId) {
+	public Object hotWord(@RequestParam(value="stime",required=false) long stime,@RequestParam(value="etime",required=false) long etime,@RequestParam("orgId") String orgId) {
+		stime=stime==0L?0L:stime;
+		etime=etime==0L?System.currentTimeMillis():stime;
+		
 		Date sDate=DateUtil.getResetTime(new Date(stime), 0, 0, 0);;
 		Date eDate=DateUtil.getResetTime(new Date(etime), 23, 59, 59);
 		List<HotWord> results=new ArrayList<>();
