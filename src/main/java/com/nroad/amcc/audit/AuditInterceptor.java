@@ -25,7 +25,7 @@ public class AuditInterceptor implements HandlerInterceptor {
 	@Autowired
 	private KbService kafkaService;
 
-	@Value("${service.source:crm}")
+	@Value("${service.source:kb}")
 	private String serviceSource;
 
 	@Override
