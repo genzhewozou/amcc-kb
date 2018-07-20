@@ -1,31 +1,25 @@
-package com.nroad.amcc.support.rest;
-
-import java.nio.file.AccessDeniedException;
+package com.nroad.amcc;
 
 import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.nroad.amcc.PlatformError;
-
 /**
  * REST API exception advisor.
  */
-@ControllerAdvice(basePackages = "com.nroad.amcc")
+@ControllerAdvice
 public class RestExceptionAdvisor extends ResponseEntityExceptionHandler {
-
-    /**
-     * Logger.
-     */
+    /** Logger. */
     private final Logger logger = LoggerFactory.getLogger(RestExceptionAdvisor.class);
-
+    
     /**
      * Handle runtime exception.
      *
@@ -36,8 +30,22 @@ public class RestExceptionAdvisor extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = {RuntimeException.class})
     public RestError handleRuntimeException(RuntimeException e) {
-        logger.error("Server internal error:{}", e.getMessage());
-        return RestError.internalError(e.getMessage());
+        logger.error("Server internal error:{}", e.getMessage(), e);
+        return RestError.of(SystemError.SERVER_INTERNAL_ERROR);
+    }
+
+    /**
+     * Handle system exception.
+     *
+     * @param e exception thrown.
+     * @return REST error.
+     */
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    @ExceptionHandler(value = {SystemException.class})
+    public RestError handleSystemException(SystemException e) {
+        logger.error("Server internal error:{}", e.getMessage(), e);
+        return RestError.of(e.getError());
     }
 
     /**
@@ -46,12 +54,12 @@ public class RestExceptionAdvisor extends ResponseEntityExceptionHandler {
      * @param e exception thrown.
      * @return REST error.
      */
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     @ExceptionHandler(value = {IllegalArgumentException.class})
     public RestError handleIllegalArgumentException(IllegalArgumentException e) {
-        logger.info("Platform error, {}", e.getMessage());
-        return RestError.of(PlatformError.BAD_REQUEST);
+        logger.error("Platform error, {}", e.getMessage(), e);
+        return RestError.of(SystemError.SERVER_INTERNAL_ERROR);
     }
 
     /**
@@ -64,7 +72,7 @@ public class RestExceptionAdvisor extends ResponseEntityExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public RestError handleConstraintViolationException(ConstraintViolationException e) {
-        logger.info("Platform error, {}", e.getMessage());
+        logger.info("User error, {}", e.getMessage(), e);
         return RestError.of(PlatformError.BAD_REQUEST);
     }
 
@@ -77,8 +85,23 @@ public class RestExceptionAdvisor extends ResponseEntityExceptionHandler {
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     @ResponseBody
     @ExceptionHandler(value = {AccessDeniedException.class})
-    public RestError handleRuntimeException(AccessDeniedException e) {
-        logger.error("No access rights", e.getMessage());
-        return RestError.of(PlatformError.FORBIDDEN);
+    public RestError handleAccessDeniedException(AccessDeniedException e) {
+        logger.info("Access denied", e.getMessage());
+        return RestError.of(PlatformError.OPERATION_ACCESS_DENIED);
     }
+
+    /**
+     * Handle no access rights.
+     *
+     * @param e exception thrown.
+     * @return REST error.
+     */
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    @ExceptionHandler(value = {PlatformException.class})
+    public RestError handlePlatformException(PlatformException e) {
+        logger.info("User error: {}", e.getMessage());
+        return RestError.of(e.getError());
+    }
+    
 }

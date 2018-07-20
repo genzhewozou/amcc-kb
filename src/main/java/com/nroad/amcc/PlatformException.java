@@ -1,9 +1,9 @@
 package com.nroad.amcc;
 
 /**
- * Abstract platform exception.
- * @author zhoupeng
+ * Platform exception.
  */
+@SuppressWarnings("serial")
 public abstract class PlatformException extends RuntimeException {
     /** Platform error. */
     private final PlatformError error;
@@ -31,5 +31,9 @@ public abstract class PlatformException extends RuntimeException {
 
     public static PlatformException of(PlatformError error, String message) {
         return new PlatformException(error, message) {};
+    }
+
+    public static PlatformException of(PlatformError error, Throwable cause) {
+        return new PlatformException(error, error.getDescription(), cause) {};
     }
 }
