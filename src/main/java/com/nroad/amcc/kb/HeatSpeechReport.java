@@ -14,7 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Entity
-@Table(name = "`heat_speech_report`")
+@Table(name = "`kb_heat_speech_report`")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EntityListeners(AuditingEntityListener.class)
 public class HeatSpeechReport {

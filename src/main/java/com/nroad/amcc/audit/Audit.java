@@ -40,6 +40,12 @@ public class Audit {
 	
 	@Column
 	private String serviceSource;
+	
+	@Column
+	private String username;
+	
+	@Column
+	private String tenantId;
 
 	public String getId() {
 		return id;
@@ -97,6 +103,20 @@ public class Audit {
 		this.serviceSource = serviceSource;
 	}
 	
-	
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
 
 }

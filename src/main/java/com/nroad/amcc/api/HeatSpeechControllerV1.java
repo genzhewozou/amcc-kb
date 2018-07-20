@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nroad.amcc.kb.HeatSpeech;
+import com.nroad.amcc.support.configuration.AuthenticationUtil;
 
 
 @RestController
@@ -41,7 +42,7 @@ public class HeatSpeechControllerV1 {
 
         logger.info("Create heat speech request, HeatSpeech name : {}", name);
 
-        HeatSpeech heatSpeech = heatSpeechService.createHeatSpeech(new HeatSpeech(name));
+        HeatSpeech heatSpeech = heatSpeechService.createHeatSpeech(new HeatSpeech(name,AuthenticationUtil.getTenantId()));
 
         logger.info("Create heat speech response, HeatSpeech info : {}", heatSpeech.toString());
 

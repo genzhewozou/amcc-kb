@@ -3,7 +3,7 @@ package com.nroad.amcc.audit;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nroad.event.ApplicationEvent;
 
-class AuditEvent implements ApplicationEvent{
+public class AuditEvent implements ApplicationEvent{
 
 	public static final String EVENT_NAME = "audit.created";
 	
@@ -21,7 +21,11 @@ class AuditEvent implements ApplicationEvent{
 	private Long createdDate;
 	@JsonProperty
 	private String serviceSource;
-
+	@JsonProperty
+	private String username;
+	@JsonProperty
+	private String tenantId;
+	
 	@Override
 	public String getEventName() {
 		// TODO Auto-generated method stub
@@ -89,5 +93,22 @@ class AuditEvent implements ApplicationEvent{
 	public void setServiceSource(String serviceSource) {
 		this.serviceSource = serviceSource;
 	}
+	
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+	
 
 }
