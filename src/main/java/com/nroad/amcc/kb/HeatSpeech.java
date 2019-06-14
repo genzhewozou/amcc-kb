@@ -32,17 +32,17 @@ public class HeatSpeech {
     
     @Column
     @JsonProperty
-    private String orgId;
+    private String tenantId;
 
     public HeatSpeech() {
 
     }
 
-    public HeatSpeech(String name,String orgId) {
+    public HeatSpeech(String name,String tenantId) {
         this.name = name;
         this.createdAt = OffsetDateTime.now();
         this.id = UUID.randomUUID().toString();
-        this.orgId=orgId;
+        this.tenantId=tenantId;
     }
 
     public String getId() {

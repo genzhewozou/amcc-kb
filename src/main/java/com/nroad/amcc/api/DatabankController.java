@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nroad.amcc.kb.Databank;
 import com.nroad.amcc.kb.HeatSpeechReport;
+import com.nroad.amcc.support.configuration.AuthenticationUtil;
 import com.nroad.amcc.support.jpa.DatabankJpaRepository;
 import com.nroad.amcc.support.jpa.HeatSpeechReportJpaRepository;
 import com.nroad.amcc.support.utils.DateUtil;
@@ -39,33 +40,36 @@ public class DatabankController {
 
 	@GetMapping(value = "/query")
 	@ApiOperation(value = "查询资料信息", notes = "根据orgId、word")
-	public Object findAllColumn(@RequestParam("orgId") String orgId, @RequestParam("word") String word) {
+	public Object findAllColumn(@RequestParam("word") String word) {
+		String tenantId = AuthenticationUtil.getTenantId();
 		Date dtime = DateUtil.getResetTime(new Date(), 0, 0, 0);
-		List<HeatSpeechReport> reportList = heatSpeechReportJpaRepository.findAllByHotWordAndDtime(word, dtime, orgId);
+		List<HeatSpeechReport> reportList = heatSpeechReportJpaRepository.findAllByHotWordAndDtime(word, dtime,
+				tenantId);
 		HeatSpeechReport instance = null;
 		if (reportList.size() == 0) {
 			instance = new HeatSpeechReport();
 			instance.setDtime(dtime);
 			instance.setHotWord(word);
-			instance.setOrgId(orgId);
+			instance.setTenantId(tenantId);
 			instance.setQueryCount(1);
 		} else {
 			instance = reportList.get(0);
 			instance.setQueryCount(instance.getQueryCount() + 1);
 		}
 		heatSpeechReportJpaRepository.save(instance);
-		return databankJpaRepository.findAllByOrgIdAndContent(orgId, word);
+		return databankJpaRepository.findAllByTenantIdAndContent(tenantId, word);
 	}
 
 	@GetMapping(value = "/findAll")
 	@ApiOperation(value = "获取资料库列表", notes = "根据orgId")
 	@PreAuthorize("hasRole('TENANT_ADMIN')")
-	public Object findAllColumn(@RequestParam("orgId") String orgId) {
-		List<Databank> rootList = databankJpaRepository.findAllByOrgIdAndPid(orgId, "0");
+	public Object findAllColumn() {
+		String tenantId = AuthenticationUtil.getTenantId();
+		List<Databank> rootList = databankJpaRepository.findAllByTenantIdAndPid(tenantId, "0");
 		if (rootList.size() != 0) {
-			List<Databank> databankList = databankJpaRepository.findAllByOrgId(orgId);
+			List<Databank> databankList = databankJpaRepository.findAllByTenantId(tenantId);
 			for (Databank it : databankList) {
-				if(StringUtils.isNotEmpty(it.getContent())) {
+				if (StringUtils.isNotEmpty(it.getContent())) {
 					it.setContent("yes");
 				}
 			}
@@ -79,8 +83,8 @@ public class DatabankController {
 	@GetMapping(value = "/findAllChildren")
 	@ApiOperation(value = "获取当前资料下一级列表", notes = "根据id、orgId")
 	@PreAuthorize("hasRole('TENANT_ADMIN')")
-	public Object findAllChildren(@RequestParam("id") String id, @RequestParam("orgId") String orgId) {
-		return databankJpaRepository.findAllByOrgIdAndPid(orgId, id);
+	public Object findAllChildren(@RequestParam("id") String id) {
+		return databankJpaRepository.findAllByTenantIdAndPid(AuthenticationUtil.getTenantId(), id);
 	}
 
 	@GetMapping("/{id:.+}")
@@ -92,12 +96,11 @@ public class DatabankController {
 	@PostMapping("/")
 	@ApiOperation(value = "创建资料信息", notes = "")
 	@PreAuthorize("hasRole('TENANT_ADMIN')")
-	public Databank create(@RequestParam(value = "orgId", required = true) String orgId,
-			@RequestParam(value = "pid", defaultValue = "0") String pid,
+	public Databank create(@RequestParam(value = "pid", defaultValue = "0") String pid,
 			@RequestParam(value = "name", required = true) String name,
 			@RequestParam(value = "content", required = false) String content) {
 		Databank instance = new Databank();
-		instance.setOrgId(orgId);
+		instance.setTenantId(AuthenticationUtil.getTenantId());
 		instance.setPid(pid);
 		instance.setName(name);
 		if (StringUtils.isNotEmpty(content)) {

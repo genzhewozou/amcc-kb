@@ -30,7 +30,7 @@ public class HeatSpeechReport {
 	
 	private int queryCount;
 	
-	private String orgId;
+	private String tenantId;
 
 	public String getId() {
 		return id;
@@ -64,13 +64,12 @@ public class HeatSpeechReport {
 		this.queryCount = queryCount;
 	}
 
-	public String getOrgId() {
-		return orgId;
+	public String getTenantId() {
+		return tenantId;
 	}
 
-	public void setOrgId(String orgId) {
-		this.orgId = orgId;
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
 	}
 
-	
 }
