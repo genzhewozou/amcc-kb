@@ -91,6 +91,8 @@ public enum PlatformError {
     KNOWLEDGEBASEID_CAN_NOT_BE_NULL(4003,"KnowledgeBaseId can not be null"),
     FIND_WORDS_CAN_NOT_BE_NULL(4004,"Find words can not be null"),
     PARENTID_IS_EXIST(4005,"Parentid is exist"),
+    KB_UPLOAD_FILE_NOT_BLANK(4006,"Kb upload file not blank"),
+    KB_UNKNOW_ERROR(4007,"Tenant org dept not exist"),
 	
     /**
      * sms error
