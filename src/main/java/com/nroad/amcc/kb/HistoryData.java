@@ -17,7 +17,7 @@ public class HistoryData {
     public String area;
 
     @Column
-    public String classCategory;
+    public String classCategory;  //科类
 
     @Column
     public String prTitle;
@@ -34,14 +34,14 @@ public class HistoryData {
     @Column
     public String minScoreBefore3;
 
-    @Column
-    public String forecastScore;
+//    @Column
+//    public String forecastScore;
 
     @Column
     public String admissionBatch;  //录取批次
 
     @Column
-    public String planNumber;
+    public String planNumber;  //计划人数
 
     @Column
     public String tenantId;
@@ -110,13 +110,13 @@ public class HistoryData {
         this.minScoreBefore3 = minScoreBefore3;
     }
 
-    public String getForecastScore() {
-        return forecastScore;
-    }
-
-    public void setForecastScore(String forecastScore) {
-        this.forecastScore = forecastScore;
-    }
+//    public String getForecastScore() {
+//        return forecastScore;
+//    }
+//
+//    public void setForecastScore(String forecastScore) {
+//        this.forecastScore = forecastScore;
+//    }
 
     public String getAdmissionBatch() {
         return admissionBatch;

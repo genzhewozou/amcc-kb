@@ -42,16 +42,16 @@ public class ProfessionDataControllerV1 {
         professionDataServiceV1.uploadHistoryData(file);
     }
 
-    @PostMapping("/upload/professionDetails")
-    @ApiOperation(value = "上传专业详情", notes = "")
-    @PreAuthorize("hasRole('TENANT_ADMIN')")
-    public void uploadProfessionData(@RequestParam("file") MultipartFile file) {
-        String filename = file.getOriginalFilename();
-        if (file.isEmpty() || StringUtils.isEmpty(filename) || !filename.endsWith(".xlsx")) {
-            throw PlatformException.of(PlatformError.KB_UPLOAD_FILE_NOT_BLANK);
-        }
-        professionDataServiceV1.uploadProfessionData(file);
-    }
+//    @PostMapping("/upload/professionDetails")
+//    @ApiOperation(value = "上传专业详情", notes = "")
+//    @PreAuthorize("hasRole('TENANT_ADMIN')")
+//    public void uploadProfessionData(@RequestParam("file") MultipartFile file) {
+//        String filename = file.getOriginalFilename();
+//        if (file.isEmpty() || StringUtils.isEmpty(filename) || !filename.endsWith(".xlsx")) {
+//            throw PlatformException.of(PlatformError.KB_UPLOAD_FILE_NOT_BLANK);
+//        }
+//        professionDataServiceV1.uploadProfessionData(file);
+//    }
 
     @GetMapping(value = "/queryProfession")
     @ApiOperation(value = "查询专业列表", notes = "根据area、classCategory、prTitle、prCode")
@@ -86,5 +86,4 @@ public class ProfessionDataControllerV1 {
     public ViewProfessionDetails getProfessionDetails(@RequestParam("prCode") String prCode) {
         return professionDataServiceV1.findProfessionDetails(prCode);
     }
-
 }

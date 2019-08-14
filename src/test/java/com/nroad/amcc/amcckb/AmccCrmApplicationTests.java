@@ -1,6 +1,6 @@
 package com.nroad.amcc.amcckb;
 
-import com.nroad.amcc.kb.HistoryData;
+import com.nroad.amcc.kb.*;
 import com.nroad.amcc.support.jpa.HistoryDataJpaRepository;
 import com.nroad.amcc.support.utils.ExcelUtil;
 import org.junit.Test;
@@ -12,15 +12,28 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.test.context.junit4.SpringRunner;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ReadExcelTest {
+public class AmccCrmApplicationTests {
+
+    @Test
+    public void contextLoads() {
+    }
 
     @Autowired
     HistoryDataJpaRepository historyDataJpaRepository;
+
+    @Autowired
+    ProfessionDetailsRepository professionDetailsRepository;
+
+    @Autowired
+    ContractedAreaRepository contractedAreaRepository;
 
 //    @Test
 //    public void ReadExcelAndSave(MultipartFile file) throws IOException {
@@ -60,5 +73,25 @@ public class ReadExcelTest {
 //        }
 //    }
 
+    @Test
+    public void save_profession_details() {
+        ProfessionDetails professionDetails = new ProfessionDetails();
 
+        professionDetails.setId(UUID.randomUUID().toString());
+        professionDetails.setProfessionCourses("a");
+        professionDetailsRepository.save(professionDetails);
+    }
+
+    @Test
+    public void save_contracted_area() {
+        ProfessionDetails professionDetails = professionDetailsRepository.findOne("297eb1fd6c8a72a7016c8a72c7e20000");
+        for (int i = 0; i < 3; i++) {
+            ContractedArea contractedArea = new ContractedArea();
+            contractedArea.setId(UUID.randomUUID().toString());
+            contractedArea.setName("" + i);
+            contractedArea.setProportion("82.99" + i);
+            contractedArea.setProfessionDetails(professionDetails);
+            contractedAreaRepository.save(contractedArea);
+        }
+    }
 }

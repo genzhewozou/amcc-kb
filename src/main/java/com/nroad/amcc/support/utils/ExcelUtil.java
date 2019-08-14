@@ -50,7 +50,7 @@ public class ExcelUtil {
 
         for (int i = 1; i < totalRows; i++) {
             Row row = sheet.getRow(i);  //获取第i行
-            for (int j = 0; j < 10; j++) { // 第j个单元格
+            for (int j = 0; j < 9; j++) { // 第j个单元格
                 Cell cell = row.getCell(j); // 读单元格
                 if (cell == null) { // 空判断
                     list.add("");

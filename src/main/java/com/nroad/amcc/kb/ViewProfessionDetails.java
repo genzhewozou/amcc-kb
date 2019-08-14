@@ -1,5 +1,8 @@
 package com.nroad.amcc.kb;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ViewProfessionDetails {
     public String id;
 
@@ -11,30 +14,29 @@ public class ViewProfessionDetails {
 
     public String grantDegree;  //授予学位
 
+    public String classCategory;  //招生类别
+
     public String professionCategory;  //专业类别
 
-    public String employmentSalaryBefore1;  //1年前就业薪资
+    public String averageSalary;  //平均薪资
 
-    public String employmentRateBefore1;  //1年前就业率
-
-    public String employmentSalaryBefore2;
-
-    public String employmentRateBefore2;
-
-    public String employmentSalaryBefore3;
-
-    public String employmentRateBefore3;
-
-    public String careerDirection;  //就业方向
+    public String professionDirection;  //专业方向
 
     public String professionCourses;  //专业课程
 
-    public String constructionSituation;  //建设情况
+    public String careerDirection;  //就业方向
+
+    public String teacherPower;  //师资力量
 
     public String boyProportion;  //男生比例
 
-    public String girlProportion;
+    public String girlProportion;  //女生比例
 
+    public String testableCertificate;  //可考证书
+
+    public String cooperativeInstitution;  //合作机构
+
+    private List<ViewContractedArea> viewContractedAreas = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -76,6 +78,14 @@ public class ViewProfessionDetails {
         this.grantDegree = grantDegree;
     }
 
+    public String getClassCategory() {
+        return classCategory;
+    }
+
+    public void setClassCategory(String classCategory) {
+        this.classCategory = classCategory;
+    }
+
     public String getProfessionCategory() {
         return professionCategory;
     }
@@ -84,60 +94,20 @@ public class ViewProfessionDetails {
         this.professionCategory = professionCategory;
     }
 
-    public String getEmploymentSalaryBefore1() {
-        return employmentSalaryBefore1;
+    public String getAverageSalary() {
+        return averageSalary;
     }
 
-    public void setEmploymentSalaryBefore1(String employmentSalaryBefore1) {
-        this.employmentSalaryBefore1 = employmentSalaryBefore1;
+    public void setAverageSalary(String averageSalary) {
+        this.averageSalary = averageSalary;
     }
 
-    public String getEmploymentRateBefore1() {
-        return employmentRateBefore1;
+    public String getProfessionDirection() {
+        return professionDirection;
     }
 
-    public void setEmploymentRateBefore1(String employmentRateBefore1) {
-        this.employmentRateBefore1 = employmentRateBefore1;
-    }
-
-    public String getEmploymentSalaryBefore2() {
-        return employmentSalaryBefore2;
-    }
-
-    public void setEmploymentSalaryBefore2(String employmentSalaryBefore2) {
-        this.employmentSalaryBefore2 = employmentSalaryBefore2;
-    }
-
-    public String getEmploymentRateBefore2() {
-        return employmentRateBefore2;
-    }
-
-    public void setEmploymentRateBefore2(String employmentRateBefore2) {
-        this.employmentRateBefore2 = employmentRateBefore2;
-    }
-
-    public String getEmploymentSalaryBefore3() {
-        return employmentSalaryBefore3;
-    }
-
-    public void setEmploymentSalaryBefore3(String employmentSalaryBefore3) {
-        this.employmentSalaryBefore3 = employmentSalaryBefore3;
-    }
-
-    public String getEmploymentRateBefore3() {
-        return employmentRateBefore3;
-    }
-
-    public void setEmploymentRateBefore3(String employmentRateBefore3) {
-        this.employmentRateBefore3 = employmentRateBefore3;
-    }
-
-    public String getCareerDirection() {
-        return careerDirection;
-    }
-
-    public void setCareerDirection(String careerDirection) {
-        this.careerDirection = careerDirection;
+    public void setProfessionDirection(String professionDirection) {
+        this.professionDirection = professionDirection;
     }
 
     public String getProfessionCourses() {
@@ -148,12 +118,20 @@ public class ViewProfessionDetails {
         this.professionCourses = professionCourses;
     }
 
-    public String getConstructionSituation() {
-        return constructionSituation;
+    public String getCareerDirection() {
+        return careerDirection;
     }
 
-    public void setConstructionSituation(String constructionSituation) {
-        this.constructionSituation = constructionSituation;
+    public void setCareerDirection(String careerDirection) {
+        this.careerDirection = careerDirection;
+    }
+
+    public String getTeacherPower() {
+        return teacherPower;
+    }
+
+    public void setTeacherPower(String teacherPower) {
+        this.teacherPower = teacherPower;
     }
 
     public String getBoyProportion() {
@@ -170,5 +148,29 @@ public class ViewProfessionDetails {
 
     public void setGirlProportion(String girlProportion) {
         this.girlProportion = girlProportion;
+    }
+
+    public String getTestableCertificate() {
+        return testableCertificate;
+    }
+
+    public void setTestableCertificate(String testableCertificate) {
+        this.testableCertificate = testableCertificate;
+    }
+
+    public String getCooperativeInstitution() {
+        return cooperativeInstitution;
+    }
+
+    public void setCooperativeInstitution(String cooperativeInstitution) {
+        this.cooperativeInstitution = cooperativeInstitution;
+    }
+
+    public List<ViewContractedArea> getContractedAreas() {
+        return viewContractedAreas;
+    }
+
+    public void setContractedAreas(List<ViewContractedArea> viewContractedAreas) {
+        this.viewContractedAreas = viewContractedAreas;
     }
 }
