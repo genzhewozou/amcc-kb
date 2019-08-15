@@ -17,6 +17,8 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/professionData")
 public class ProfessionDataControllerV1 {
@@ -120,12 +122,19 @@ public class ProfessionDataControllerV1 {
             }
         }
 
-        return professionDataServiceV1.findProfession(new PageRequest(page,size),area, classCategory, prTitle, prCode, AuthenticationUtil.getTenantId());
+        return professionDataServiceV1.findProfession(new PageRequest(page, size), area, classCategory, prTitle, prCode, AuthenticationUtil.getTenantId());
     }
 
     @GetMapping(value = "/query/professionDetails")
     @ApiOperation(value = "查询专业详情", notes = "根据prCode")
     public ViewProfessionDetails getProfessionDetails(@RequestParam("prCode") String prCode) {
         return professionDataServiceV1.findProfessionDetails(prCode);
+    }
+
+    @GetMapping(value = "/query/recommend")
+    @ApiOperation(value = "专业推荐", notes = "根据预测分数")
+    public Page<ViewHistoryData> professionalRecommend(@RequestParam("source") String score, @RequestParam("page") int page,
+                                                       @RequestParam("size") int size) {
+        return professionDataServiceV1.professionalRecommend(new PageRequest(page, size),score);
     }
 }

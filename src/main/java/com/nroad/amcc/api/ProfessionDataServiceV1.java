@@ -20,9 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Predicate;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -180,7 +178,7 @@ public class ProfessionDataServiceV1 {
 //    }
 
     public Page<ViewHistoryData> findProfession(Pageable pageable, String area, String classCategory, String prTitle, String prCode,
-                                                    String tenantId) {
+                                                String tenantId) {
         List<HistoryData> historyDataList = historyDataJpaRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("tenantId").as(String.class), tenantId));
@@ -201,25 +199,8 @@ public class ProfessionDataServiceV1 {
 
         List<ViewHistoryData> viewHistoryDataList = new ArrayList<>();
 
-        for (int i = 0; i < historyDataList.size(); i++) {
-            HistoryData historyData = historyDataList.get(i);
-
-            ViewHistoryData viewHistoryData = new ViewHistoryData();
-
-            viewHistoryData.setId(historyData.getId());
-            viewHistoryData.setArea(historyData.getArea());
-            viewHistoryData.setClassCategory(historyData.getClassCategory());
-            viewHistoryData.setPrTitle(historyData.getPrTitle());
-            viewHistoryData.setPrCode(historyData.getPrCode());
-            viewHistoryData.setMinScoreBefore3(historyData.getMinScoreBefore3());
-            viewHistoryData.setMinScoreBefore2(historyData.getMinScoreBefore2());
-            viewHistoryData.setMinScoreBefore1(historyData.getMinScoreBefore1());
-            viewHistoryData.setForecastScore(historyData.getForecastScore());
-            viewHistoryData.setAdmissionBatch(historyData.getAdmissionBatch());
-            viewHistoryData.setPlanNumber(historyData.getPlanNumber());
-            viewHistoryDataList.add(viewHistoryData);
-        }
-        Page<ViewHistoryData> viewHistoryDataPage = new PageImpl<ViewHistoryData>(viewHistoryDataList,pageable,(long)(pageable.getOffset() + viewHistoryDataList.size()));
+        viewHistoryDataList = transformHistoryDataToView(historyDataList, viewHistoryDataList);
+        Page<ViewHistoryData> viewHistoryDataPage = new PageImpl<ViewHistoryData>(viewHistoryDataList, pageable, (long) (pageable.getOffset() + viewHistoryDataList.size()));
         return viewHistoryDataPage;
     }
 
@@ -236,6 +217,9 @@ public class ProfessionDataServiceV1 {
             viewContractedArea.setProportion(contractedAreas.get(i).getProportion());
             viewContractedAreas.add(viewContractedArea);
         }
+        viewContractedAreas.sort((x, y) -> Float.compare(Float.parseFloat(x.getProportion()), Float.parseFloat(y.getProportion())));
+        Collections.reverse(viewContractedAreas);
+
         viewProfessionDetails.setId(professionDetails.getId());
         viewProfessionDetails.setPrTitle(professionDetails.getPrTitle());
         viewProfessionDetails.setPrCode(professionDetails.getPrCode());
@@ -257,4 +241,33 @@ public class ProfessionDataServiceV1 {
     }
 
 
+    public Page<ViewHistoryData> professionalRecommend(Pageable pageable, String score) {
+        List<HistoryData> historyDataList = historyDataJpaRepository.professionRecommend(score);
+        List<ViewHistoryData> viewHistoryDataList = new ArrayList<>();
+        viewHistoryDataList = transformHistoryDataToView(historyDataList, viewHistoryDataList);
+        Page<ViewHistoryData> viewHistoryDataPage = new PageImpl<ViewHistoryData>(viewHistoryDataList, pageable, (long) (pageable.getOffset() + viewHistoryDataList.size()));
+        return viewHistoryDataPage;
+    }
+
+    private List<ViewHistoryData> transformHistoryDataToView(List<HistoryData> historyDataList, List<ViewHistoryData> viewHistoryDataList) {
+        for (int i = 0; i < historyDataList.size(); i++) {
+            HistoryData historyData = historyDataList.get(i);
+
+            ViewHistoryData viewHistoryData = new ViewHistoryData();
+
+            viewHistoryData.setId(historyData.getId());
+            viewHistoryData.setArea(historyData.getArea());
+            viewHistoryData.setClassCategory(historyData.getClassCategory());
+            viewHistoryData.setPrTitle(historyData.getPrTitle());
+            viewHistoryData.setPrCode(historyData.getPrCode());
+            viewHistoryData.setMinScoreBefore3(historyData.getMinScoreBefore3());
+            viewHistoryData.setMinScoreBefore2(historyData.getMinScoreBefore2());
+            viewHistoryData.setMinScoreBefore1(historyData.getMinScoreBefore1());
+            viewHistoryData.setForecastScore(historyData.getForecastScore());
+            viewHistoryData.setAdmissionBatch(historyData.getAdmissionBatch());
+            viewHistoryData.setPlanNumber(historyData.getPlanNumber());
+            viewHistoryDataList.add(viewHistoryData);
+        }
+        return viewHistoryDataList;
+    }
 }
