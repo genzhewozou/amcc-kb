@@ -1,4 +1,4 @@
-package com.nroad.amcc.kb;
+package com.nroad.amcc.support.View;
 
 import java.util.ArrayList;
 import java.util.List;

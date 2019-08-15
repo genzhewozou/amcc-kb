@@ -28,7 +28,7 @@ public class ProfessionDetails {
     public String grantDegree;  //授予学位
 
     @Column
-    public String classCategory;  //招生类别
+    public String classCategory;  //招生科类
 
     @Column
     public String professionCategory;  //专业类别
@@ -39,13 +39,13 @@ public class ProfessionDetails {
     @Column
     public String professionDirection;  //专业方向
 
-    @Column
+    @Column(columnDefinition = "varchar(500)")
     public String professionCourses;  //专业课程
 
-    @Column
+    @Column(columnDefinition = "varchar(500)")
     public String careerDirection;  //就业方向
 
-    @Column
+    @Column(columnDefinition = "varchar(500)")
     public String teacherPower;  //师资力量
 
     @Column
@@ -54,10 +54,10 @@ public class ProfessionDetails {
     @Column
     public String girlProportion;  //女生比例
 
-    @Column
+    @Column(columnDefinition = "varchar(500)")
     public String testableCertificate;  //可考证书
 
-    @Column
+    @Column(columnDefinition = "varchar(500)")
     public String cooperativeInstitution;  //合作机构
 
     @OneToMany(mappedBy = "professionDetails")

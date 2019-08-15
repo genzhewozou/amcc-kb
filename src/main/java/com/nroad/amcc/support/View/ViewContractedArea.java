@@ -1,4 +1,4 @@
-package com.nroad.amcc.kb;
+package com.nroad.amcc.support.View;
 
 public class ViewContractedArea {
 

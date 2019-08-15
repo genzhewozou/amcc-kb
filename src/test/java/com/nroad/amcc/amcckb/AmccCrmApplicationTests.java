@@ -94,4 +94,5 @@ public class AmccCrmApplicationTests {
             contractedAreaRepository.save(contractedArea);
         }
     }
+
 }

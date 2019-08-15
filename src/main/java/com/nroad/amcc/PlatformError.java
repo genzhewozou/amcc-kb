@@ -93,6 +93,7 @@ public enum PlatformError {
     PARENTID_IS_EXIST(4005,"Parentid is exist"),
     KB_UPLOAD_FILE_NOT_BLANK(4006,"Kb upload file not blank"),
     KB_UNKNOW_ERROR(4007,"Tenant org dept not exist"),
+    KB_OVER_ERROR(4008,"Not Allowed Over 500"),
 	
     /**
      * sms error

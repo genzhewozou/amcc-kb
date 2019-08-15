@@ -27,7 +27,33 @@ public class ExcelUtil {
 
         for (int i = 1; i < totalRows; i++) {
             Row row = sheet.getRow(i);
-            for (int j = 0; j < 16; j++) {
+            for (int j = 0; j < 15; j++) {
+                Cell cell = row.getCell(j);
+                if (cell == null) {
+                    list.add("");
+                } else {
+                    cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+                    list.add(cell.getStringCellValue());
+                }
+            }
+        }
+        return list;
+    }
+
+    public List<String> readProfessionDetailsArea(InputStream inputStream) throws IOException {
+        Workbook wb = new XSSFWorkbook(inputStream);
+        Sheet sheet = wb.getSheetAt(0);
+        totalRows = sheet.getPhysicalNumberOfRows();
+
+        List<String> list = new ArrayList<>();
+
+        for (int i = 1; i < totalRows; i++) {
+            Row row = sheet.getRow(i);
+            if (row == null) {
+                continue;
+            }
+
+            for (int j = 0; j < 3; j++) {
                 Cell cell = row.getCell(j);
                 if (cell == null) {
                     list.add("");
@@ -50,7 +76,7 @@ public class ExcelUtil {
 
         for (int i = 1; i < totalRows; i++) {
             Row row = sheet.getRow(i);  //获取第i行
-            for (int j = 0; j < 9; j++) { // 第j个单元格
+            for (int j = 0; j < 10; j++) { // 第j个单元格
                 Cell cell = row.getCell(j); // 读单元格
                 if (cell == null) { // 空判断
                     list.add("");
