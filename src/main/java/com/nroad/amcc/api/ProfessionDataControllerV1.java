@@ -2,6 +2,7 @@ package com.nroad.amcc.api;
 
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.PlatformException;
+import com.nroad.amcc.kb.Area;
 import com.nroad.amcc.kb.HistoryData;
 import com.nroad.amcc.support.View.ViewHistoryData;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
@@ -69,7 +70,7 @@ public class ProfessionDataControllerV1 {
 
     @GetMapping(value = "/query")
     @ApiOperation(value = "所有专业名字")
-    public List<String> getAllProfession(){
+    public List<String> getAllProfession() {
         return professionDataServiceV1.findAllProfession(AuthenticationUtil.getTenantId());
     }
 
@@ -82,6 +83,10 @@ public class ProfessionDataControllerV1 {
                                             @RequestParam("size") int size) {
         String prTitle = null;
         String prCode = null;
+        if (classCategory.isEmpty() && area.isEmpty()) {
+            classCategory = null;
+            area = null;
+        }
 
         if (StringUtils.isNotEmpty(profession)) {
             Boolean isPrCode = false;
@@ -113,12 +118,13 @@ public class ProfessionDataControllerV1 {
     @ApiOperation(value = "专业推荐", notes = "根据预测分数")
     public Page<ViewHistoryData> professionalRecommend(@RequestParam("source") String score, @RequestParam("page") int page,
                                                        @RequestParam("size") int size) {
-        return professionDataServiceV1.professionalRecommend(new PageRequest(page, size),score);
+        return professionDataServiceV1.professionalRecommend(new PageRequest(page, size), score);
     }
 
     @GetMapping(value = "/query/area")
     @ApiOperation(value = "查询所选市Top3专业", notes = "根据区域名字")
-    public void selectArea(@RequestParam("area") String area) {
-
+    public Area selectArea(@RequestParam("name") String name) {
+        return professionDataServiceV1.findByArea(name);
     }
+
 }

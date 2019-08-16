@@ -38,6 +38,12 @@ public class ProfessionDataServiceV1 {
     @Autowired
     private ContractedAreaRepository contractedAreaRepository;
 
+    @Autowired
+    AreaTop3ProfessionRepository areaTop3ProfessionRepository;
+
+    @Autowired
+    AreaRepository areaRepository;
+
     public Object uploadHistoryData(MultipartFile file) {
 
         List<String> list;
@@ -134,35 +140,8 @@ public class ProfessionDataServiceV1 {
         return null;
     }
 
-//    public Page<ViewHistoryData> findProfession(Pageable pageable, String area, String classCategory, String prTitle, String prCode,
-//                                                String tenantId) {
-//        List<HistoryData> historyDataList = historyDataJpaRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
-//            List<Predicate> predicates = new ArrayList<>();
-//            predicates.add(criteriaBuilder.equal(root.get("tenantId").as(String.class), tenantId));
-//            if (area != null) {
-//                predicates.add(criteriaBuilder.equal(root.get("area").as(String.class), area));
-//            }
-//            if (classCategory != null) {
-//                predicates.add(criteriaBuilder.equal(root.get("classCategory").as(String.class), classCategory));
-//            }
-//            if (prTitle != null) {
-//                predicates.add(criteriaBuilder.equal(root.get("prTitle").as(String.class), prTitle));
-//            }
-//            if (prCode != null) {
-//                predicates.add(criteriaBuilder.equal(root.get("prCode").as(String.class), prCode));
-//            }
-//            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-//        });
-//
-//        List<ViewHistoryData> viewHistoryDataList = new ArrayList<>();
-//
-//        viewHistoryDataList = transformHistoryDataToView(historyDataList, viewHistoryDataList);
-//        Page<ViewHistoryData> viewHistoryDataPage = new PageImpl<ViewHistoryData>(viewHistoryDataList, pageable, (long) (pageable.getOffset() + viewHistoryDataList.size()));
-//        return viewHistoryDataPage;
-//    }
-
     public Page<HistoryData> findProfession(Pageable pageable, String area, String classCategory, String prTitle, String prCode,
-                                                String tenantId) {
+                                            String tenantId) {
         Page<HistoryData> historyDataList = historyDataJpaRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("tenantId").as(String.class), tenantId));
@@ -179,15 +158,13 @@ public class ProfessionDataServiceV1 {
                 predicates.add(criteriaBuilder.equal(root.get("prCode").as(String.class), prCode));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        },pageable);
+        }, pageable);
 
 //        List<ViewHistoryData> viewHistoryDataList = new ArrayList<>();
-
 //        viewHistoryDataList = transformHistoryDataToView(historyDataList, viewHistoryDataList);
 //        Page<ViewHistoryData> viewHistoryDataPage = new PageImpl<ViewHistoryData>(viewHistoryDataList, pageable, (long) (pageable.getOffset() + viewHistoryDataList.size()));
         return historyDataList;
     }
-
 
     public ViewProfessionDetails findProfessionDetails(String prCode) {
         ProfessionDetails professionDetails = professionDetailsRepository.findByPrCode(prCode, AuthenticationUtil.getTenantId());
@@ -257,5 +234,10 @@ public class ProfessionDataServiceV1 {
 
     public List<String> findAllProfession(String tenantId) {
         return historyDataJpaRepository.findAllProfession(tenantId);
+    }
+
+    public Area findByArea(String name) {
+        Area area = areaRepository.findByName(name);
+        return area;
     }
 }
