@@ -2,6 +2,7 @@ package com.nroad.amcc.api;
 
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.PlatformException;
+import com.nroad.amcc.kb.HistoryData;
 import com.nroad.amcc.support.View.ViewHistoryData;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
 import com.nroad.amcc.support.configuration.AuthenticationUtil;
@@ -66,35 +67,6 @@ public class ProfessionDataControllerV1 {
         professionDataServiceV1.uploadProfessionArea(file);
     }
 
-
-//    @GetMapping(value = "/queryProfession")
-//    @ApiOperation(value = "查询专业列表", notes = "根据area、classCategory、prTitle、prCode")
-//    public List<ViewHistoryData> findProfession(@RequestParam(value = "area", required = false) String area,
-//                                                @RequestParam(value = "classCategory", required = false) String classCategory,
-//                                                @RequestParam(value = "profession", required = false) String profession) {
-//        String prTitle = null;
-//        String prCode = null;
-//
-//        if (StringUtils.isNotEmpty(profession)) {
-//            Boolean isPrCode = false;
-//            for (int i = 0; i < profession.length(); i++) {
-//                if (Character.isDigit(profession.charAt(i))) {  //如果是数字
-//                    isPrCode = true;
-//                    break;
-//                } else {
-//                    isPrCode = false;
-//                }
-//            }
-//            if (isPrCode) {
-//                prCode = profession;
-//            } else {
-//                prTitle = profession;
-//            }
-//        }
-//
-//        return professionDataServiceV1.findProfession(area, classCategory, prTitle, prCode, AuthenticationUtil.getTenantId());
-//    }
-
     @GetMapping(value = "/query")
     public List<String> getAllProfession(){
         return professionDataServiceV1.findAllProfession();
@@ -102,11 +74,11 @@ public class ProfessionDataControllerV1 {
 
     @GetMapping(value = "/queryProfession")
     @ApiOperation(value = "查询专业列表", notes = "根据area、classCategory、prTitle、prCode")
-    public Page<ViewHistoryData> findProfession(@RequestParam(value = "area", required = false) String area,
-                                                @RequestParam(value = "classCategory", required = false) String classCategory,
-                                                @RequestParam(value = "profession", required = false) String profession,
-                                                @RequestParam("page") int page,
-                                                @RequestParam("size") int size) {
+    public Page<HistoryData> findProfession(@RequestParam(value = "area", required = false) String area,
+                                            @RequestParam(value = "classCategory", required = false) String classCategory,
+                                            @RequestParam(value = "profession", required = false) String profession,
+                                            @RequestParam("page") int page,
+                                            @RequestParam("size") int size) {
         String prTitle = null;
         String prCode = null;
 

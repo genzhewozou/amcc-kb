@@ -134,8 +134,8 @@ public class ProfessionDataServiceV1 {
         return null;
     }
 
-
-//    public List<ViewHistoryData> findProfession(String area, String classCategory, String prTitle, String prCode, String tenantId) {
+//    public Page<ViewHistoryData> findProfession(Pageable pageable, String area, String classCategory, String prTitle, String prCode,
+//                                                String tenantId) {
 //        List<HistoryData> historyDataList = historyDataJpaRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
 //            List<Predicate> predicates = new ArrayList<>();
 //            predicates.add(criteriaBuilder.equal(root.get("tenantId").as(String.class), tenantId));
@@ -156,30 +156,14 @@ public class ProfessionDataServiceV1 {
 //
 //        List<ViewHistoryData> viewHistoryDataList = new ArrayList<>();
 //
-//        for (int i = 0; i < historyDataList.size(); i++) {
-//            HistoryData historyData = historyDataList.get(i);
-//
-//            ViewHistoryData viewHistoryData = new ViewHistoryData();
-//
-//            viewHistoryData.setId(historyData.getId());
-//            viewHistoryData.setArea(historyData.getArea());
-//            viewHistoryData.setClassCategory(historyData.getClassCategory());
-//            viewHistoryData.setPrTitle(historyData.getPrTitle());
-//            viewHistoryData.setPrCode(historyData.getPrCode());
-//            viewHistoryData.setMinScoreBefore3(historyData.getMinScoreBefore3());
-//            viewHistoryData.setMinScoreBefore2(historyData.getMinScoreBefore2());
-//            viewHistoryData.setMinScoreBefore1(historyData.getMinScoreBefore1());
-//            viewHistoryData.setForecastScore(historyData.getForecastScore());
-//            viewHistoryData.setAdmissionBatch(historyData.getAdmissionBatch());
-//            viewHistoryData.setPlanNumber(historyData.getPlanNumber());
-//            viewHistoryDataList.add(viewHistoryData);
-//        }
-//        return viewHistoryDataList;
+//        viewHistoryDataList = transformHistoryDataToView(historyDataList, viewHistoryDataList);
+//        Page<ViewHistoryData> viewHistoryDataPage = new PageImpl<ViewHistoryData>(viewHistoryDataList, pageable, (long) (pageable.getOffset() + viewHistoryDataList.size()));
+//        return viewHistoryDataPage;
 //    }
 
-    public Page<ViewHistoryData> findProfession(Pageable pageable, String area, String classCategory, String prTitle, String prCode,
+    public Page<HistoryData> findProfession(Pageable pageable, String area, String classCategory, String prTitle, String prCode,
                                                 String tenantId) {
-        List<HistoryData> historyDataList = historyDataJpaRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
+        Page<HistoryData> historyDataList = historyDataJpaRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("tenantId").as(String.class), tenantId));
             if (area != null) {
@@ -195,13 +179,13 @@ public class ProfessionDataServiceV1 {
                 predicates.add(criteriaBuilder.equal(root.get("prCode").as(String.class), prCode));
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        });
+        },pageable);
 
-        List<ViewHistoryData> viewHistoryDataList = new ArrayList<>();
+//        List<ViewHistoryData> viewHistoryDataList = new ArrayList<>();
 
-        viewHistoryDataList = transformHistoryDataToView(historyDataList, viewHistoryDataList);
-        Page<ViewHistoryData> viewHistoryDataPage = new PageImpl<ViewHistoryData>(viewHistoryDataList, pageable, (long) (pageable.getOffset() + viewHistoryDataList.size()));
-        return viewHistoryDataPage;
+//        viewHistoryDataList = transformHistoryDataToView(historyDataList, viewHistoryDataList);
+//        Page<ViewHistoryData> viewHistoryDataPage = new PageImpl<ViewHistoryData>(viewHistoryDataList, pageable, (long) (pageable.getOffset() + viewHistoryDataList.size()));
+        return historyDataList;
     }
 
 
