@@ -270,4 +270,8 @@ public class ProfessionDataServiceV1 {
         }
         return viewHistoryDataList;
     }
+
+    public List<String> findAllProfession() {
+        return historyDataJpaRepository.findAllProfession();
+    }
 }

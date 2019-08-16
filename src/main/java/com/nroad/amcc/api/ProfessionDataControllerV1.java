@@ -95,6 +95,11 @@ public class ProfessionDataControllerV1 {
 //        return professionDataServiceV1.findProfession(area, classCategory, prTitle, prCode, AuthenticationUtil.getTenantId());
 //    }
 
+    @GetMapping(value = "/query")
+    public List<String> getAllProfession(){
+        return professionDataServiceV1.findAllProfession();
+    }
+
     @GetMapping(value = "/queryProfession")
     @ApiOperation(value = "查询专业列表", notes = "根据area、classCategory、prTitle、prCode")
     public Page<ViewHistoryData> findProfession(@RequestParam(value = "area", required = false) String area,

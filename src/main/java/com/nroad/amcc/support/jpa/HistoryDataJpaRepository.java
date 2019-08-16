@@ -15,4 +15,7 @@ public interface HistoryDataJpaRepository extends JpaRepository<HistoryData, Str
 
     @Query(value = "select * from kb_history_data where ?1 > forecast_score",nativeQuery = true)
     List<HistoryData> professionRecommend(@Param("score")String score);
+
+    @Query(value = "select DISTINCT pr_title FROM kb_profession_details",nativeQuery = true)
+    List<String> findAllProfession();
 }
