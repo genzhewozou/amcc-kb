@@ -3,10 +3,11 @@ package com.nroad.amcc.kb;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "`kb_area_top_three`")
-public class AreaTop3Profession {
+@Table(name = "`kb_area`")
+public class Area {
 
     @GenericGenerator(name = "idGenerator", strategy = "uuid")
     @GeneratedValue(generator = "idGenerator")
@@ -16,10 +17,6 @@ public class AreaTop3Profession {
     @Column
     public String name;
 
-    @ManyToOne
-    public Area area;
-
-    @Column
-    public int rank;
-
+    @OneToMany(mappedBy = "area")
+    public List<AreaTop3Profession> areaTop3Professions;
 }

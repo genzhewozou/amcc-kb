@@ -68,8 +68,9 @@ public class ProfessionDataControllerV1 {
     }
 
     @GetMapping(value = "/query")
+    @ApiOperation(value = "所有专业名字")
     public List<String> getAllProfession(){
-        return professionDataServiceV1.findAllProfession();
+        return professionDataServiceV1.findAllProfession(AuthenticationUtil.getTenantId());
     }
 
     @GetMapping(value = "/queryProfession")
@@ -113,5 +114,11 @@ public class ProfessionDataControllerV1 {
     public Page<ViewHistoryData> professionalRecommend(@RequestParam("source") String score, @RequestParam("page") int page,
                                                        @RequestParam("size") int size) {
         return professionDataServiceV1.professionalRecommend(new PageRequest(page, size),score);
+    }
+
+    @GetMapping(value = "/query/area")
+    @ApiOperation(value = "查询所选市Top3专业", notes = "根据区域名字")
+    public void selectArea(@RequestParam("area") String area) {
+
     }
 }
