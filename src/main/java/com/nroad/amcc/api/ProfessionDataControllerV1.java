@@ -2,10 +2,8 @@ package com.nroad.amcc.api;
 
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.PlatformException;
-import com.nroad.amcc.kb.Area;
 import com.nroad.amcc.kb.HistoryData;
 import com.nroad.amcc.kb.UserPortrait;
-import com.nroad.amcc.support.View.ViewHistoryData;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
 import com.nroad.amcc.support.configuration.AuthenticationUtil;
 import io.swagger.annotations.ApiOperation;
@@ -85,7 +83,7 @@ public class ProfessionDataControllerV1 {
                                             @RequestParam("size") int size) {
         String prTitle = null;
         String prCode = null;
-        
+
         if (StringUtils.isNotEmpty(profession)) {
             Boolean isPrCode = false;
             for (int i = 0; i < profession.length(); i++) {
@@ -113,19 +111,12 @@ public class ProfessionDataControllerV1 {
         return professionDataServiceV1.findProfessionDetails(prCode);
     }
 
-    @GetMapping(value = "/query/recommend")
-    @ApiOperation(value = "专业推荐", notes = "根据预测分数")
-    public Page<ViewHistoryData> professionalRecommend(@RequestParam("source") String score, @RequestParam("page") int page,
-                                                       @RequestParam("size") int size) {
-        return professionDataServiceV1.professionalRecommend(new PageRequest(page, size), score);
-    }
-
     @GetMapping(value = "/generate/userPortrait")
     @ApiOperation(value = "生成用户画像", notes = "根据用户所在区域名字，分数以及意向专业")
     public UserPortrait generateUserPortrait(@RequestParam(value = "areaName") String areaName,
                                              @RequestParam(value = "score") int score,
                                              @RequestParam(value = "classCategory") String classCategory,
-                                             @RequestParam(value = "prCodes", required = false) List<String> prCodes) {
+                                             @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
         return professionDataServiceV1.generateUserPortrait(areaName, score, classCategory, prCodes);
     }
 

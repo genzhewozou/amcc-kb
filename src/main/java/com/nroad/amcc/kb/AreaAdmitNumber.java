@@ -1,19 +1,20 @@
 package com.nroad.amcc.kb;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 
+/*
+区域专业招生人数
+ */
 @Entity
-@Table(name = "`kb_area_top_three`")
+@Table(name = "`kb_area_admit_number`")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AreaTop3Profession {
+public class AreaAdmitNumber {
 
     @GenericGenerator(name = "idGenerator", strategy = "uuid")
     @GeneratedValue(generator = "idGenerator")
@@ -31,23 +32,7 @@ public class AreaTop3Profession {
 
     @Column
     @JsonProperty
-    public double scoreRank;  //排名位次
-
-    @Column
-    @JsonProperty
-    public double employmentSalary;  //就业薪资
-
-    @Column
-    @JsonProperty
-    public double employmentRate;  //就业率
-
-    @Column
-    @JsonProperty
-    public String employmentArea;  //就业地区
-
-    @Column
-    @JsonProperty
-    public String classCategory;  //科类
+    public String areaName;
 
     @Column
     @JsonProperty
@@ -81,44 +66,12 @@ public class AreaTop3Profession {
         this.prCode = prCode;
     }
 
-    public double getScoreRank() {
-        return scoreRank;
+    public String getAreaName() {
+        return areaName;
     }
 
-    public void setScoreRank(double scoreRank) {
-        this.scoreRank = scoreRank;
-    }
-
-    public double getEmploymentSalary() {
-        return employmentSalary;
-    }
-
-    public void setEmploymentSalary(double employmentSalary) {
-        this.employmentSalary = employmentSalary;
-    }
-
-    public String getEmploymentArea() {
-        return employmentArea;
-    }
-
-    public void setEmploymentArea(String employmentArea) {
-        this.employmentArea = employmentArea;
-    }
-
-    public double getEmploymentRate() {
-        return employmentRate;
-    }
-
-    public void setEmploymentRate(double employmentRate) {
-        this.employmentRate = employmentRate;
-    }
-
-    public String getClassCategory() {
-        return classCategory;
-    }
-
-    public void setClassCategory(String classCategory) {
-        this.classCategory = classCategory;
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
     }
 
     public int getAdmitNumber() {

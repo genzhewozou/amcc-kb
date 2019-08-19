@@ -1,5 +1,6 @@
 package com.nroad.amcc.kb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -62,6 +63,11 @@ public class ProfessionDetails {
 
     @OneToMany(mappedBy = "professionDetails")
     private List<ContractedArea> contractedAreas = new ArrayList<>();
+
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "profession_details_id", foreignKey = @ForeignKey(name = "fk_profession_details_id_admit"))
+//    @JsonProperty
+//    private List<AreaAdmitNumber> areaAdmitNumbers = new ArrayList<>();
 
     @Column
     public String tenantId;
