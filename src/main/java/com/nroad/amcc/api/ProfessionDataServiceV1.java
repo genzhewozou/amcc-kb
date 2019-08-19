@@ -3,12 +3,14 @@ package com.nroad.amcc.api;
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.PlatformException;
 import com.nroad.amcc.kb.*;
+import com.nroad.amcc.support.View.ViewAreaTop3Profession;
 import com.nroad.amcc.support.View.ViewContractedArea;
 import com.nroad.amcc.support.View.ViewHistoryData;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
 import com.nroad.amcc.support.configuration.AuthenticationUtil;
 import com.nroad.amcc.support.jpa.HistoryDataJpaRepository;
 import com.nroad.amcc.support.utils.ExcelUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Predicate;
+import javax.swing.text.View;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -44,6 +48,9 @@ public class ProfessionDataServiceV1 {
     @Autowired
     AreaRepository areaRepository;
 
+    @Autowired
+    StudentsScoreRepository studentsScoreRepository;
+
     public Object uploadHistoryData(MultipartFile file) {
 
         List<String> list;
@@ -61,7 +68,7 @@ public class ProfessionDataServiceV1 {
                 historyData.setMinScoreBefore3(list.get(i + count + 4));
                 historyData.setMinScoreBefore2(list.get(i + count + 5));
                 historyData.setMinScoreBefore1(list.get(i + count + 6));
-                historyData.setForecastScore(list.get(i + count + 7));
+                historyData.setForecastScore(Integer.parseInt(list.get(i + count + 7)));
                 historyData.setAdmissionBatch(list.get(i + count + 8));
                 historyData.setPlanNumber(list.get(i + count + 9));
                 historyData.setTenantId(AuthenticationUtil.getTenantId());
@@ -141,14 +148,17 @@ public class ProfessionDataServiceV1 {
     }
 
     public Page<HistoryData> findProfession(Pageable pageable, String area, String classCategory, String prTitle, String prCode,
-                                            String tenantId) {
+                                            Integer studentScore, String tenantId) {
         Page<HistoryData> historyDataList = historyDataJpaRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("tenantId").as(String.class), tenantId));
-            if (area != null) {
+            if (area != null && StringUtils.isNotEmpty(area)) {
                 predicates.add(criteriaBuilder.equal(root.get("area").as(String.class), area));
             }
-            if (classCategory != null) {
+            if (studentScore != null && studentScore != 0) {
+                predicates.add(criteriaBuilder.le(root.<Integer>get("forecastScore"), studentScore));
+            }
+            if (classCategory != null && StringUtils.isNotEmpty(classCategory)) {
                 predicates.add(criteriaBuilder.equal(root.get("classCategory").as(String.class), classCategory));
             }
             if (prTitle != null) {
@@ -236,8 +246,80 @@ public class ProfessionDataServiceV1 {
         return historyDataJpaRepository.findAllProfession(tenantId);
     }
 
-    public Area findByArea(String name) {
-        Area area = areaRepository.findByName(name);
-        return area;
+
+    public UserPortrait generateUserPortrait(String areaName, int score, String classCategory, List<String> prCodes) {
+        UserPortrait userPortrait = new UserPortrait();
+        userPortrait.setViewAreaTop3Professions(accessAreaTop3Profession(areaName, score, classCategory));
+        userPortrait.setStudentsCheckProfessions(accessStudentsProfession(prCodes, score, classCategory));
+        return userPortrait;
     }
+
+    private List<ViewAreaTop3Profession> accessAreaTop3Profession(String areaName, int score, String classCategory) {  //组装区域Top3
+        Area area = areaRepository.findByName(areaName);
+        List<AreaTop3Profession> areaTop3ProfessionsTemp = area.getAreaTop3Professions();
+        List<AreaTop3Profession> areaTop3Professions = new ArrayList<>();
+        for (int i = 0; i < areaTop3ProfessionsTemp.size(); i++) {
+            if (areaTop3ProfessionsTemp.get(i).getProfessionRank() != 0) {
+                areaTop3Professions.add(areaTop3ProfessionsTemp.get(i));
+            }
+        }
+
+        areaTop3Professions = accessScoreRank(areaTop3Professions, score, classCategory);
+        List<ViewAreaTop3Profession> viewAreaTop3Professions = accessViewAreaTop3Profession(areaTop3Professions);
+        viewAreaTop3Professions.sort((x, y) -> Double.compare(x.getCompeteIndex(), y.getCompeteIndex()));
+        Collections.reverse(viewAreaTop3Professions);
+        return viewAreaTop3Professions;
+    }
+
+    private List<ViewAreaTop3Profession> accessStudentsProfession(List<String> prCodes, int score, String classCategory) {  //组装考生自选专业
+        List<AreaTop3Profession> areaTop3Professions = new ArrayList<>();
+
+        for (int i = 0; i < prCodes.size(); i++) {
+            AreaTop3Profession areaTop3Profession = new AreaTop3Profession();
+            areaTop3Profession = areaTop3ProfessionRepository.findByPrCodeAndRank(prCodes.get(i), 0);
+            areaTop3Professions.add(areaTop3Profession);
+        }
+        areaTop3Professions = accessScoreRank(areaTop3Professions, score, classCategory);
+        List<ViewAreaTop3Profession> viewAreaTop3Professions = accessViewAreaTop3Profession(areaTop3Professions);
+        viewAreaTop3Professions.sort((x, y) -> Double.compare(x.getCompeteIndex(), y.getCompeteIndex()));
+        Collections.reverse(viewAreaTop3Professions);
+        return viewAreaTop3Professions;
+    }
+
+    private List<AreaTop3Profession> accessScoreRank(List<AreaTop3Profession> areaTop3Professions, int score, String classCategory) {
+
+        for (int i = 0; i < areaTop3Professions.size(); i++) {
+            AreaTop3Profession areaTop3Profession = new AreaTop3Profession();
+            areaTop3Profession = areaTop3Professions.get(i);
+            int number = studentsScoreRepository.getTotalNumber(classCategory, areaTop3Profession.getPrCode(),
+                    AuthenticationUtil.getTenantId());  //获取本专业所有录取人数
+            int surpassingNumber = studentsScoreRepository.getSurpassingNumber(classCategory, areaTop3Profession.getPrCode(),
+                    AuthenticationUtil.getTenantId(), score);  //获取考生超过的人数
+            if (surpassingNumber == 0 || number == 0) {
+                areaTop3Profession.setScoreRank(0.00);
+            } else {
+                BigDecimal b = new BigDecimal((double) surpassingNumber / number);
+                areaTop3Profession.setScoreRank(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            }
+            areaTop3Professions.set(i, areaTop3Profession);
+        }
+        return areaTop3Professions;
+    }
+
+    private List<ViewAreaTop3Profession> accessViewAreaTop3Profession(List<AreaTop3Profession> areaTop3Professions) {
+        List<ViewAreaTop3Profession> viewAreaTop3Professions = new ArrayList<>();
+
+        for (int i = 0; i < areaTop3Professions.size(); i++) {
+            AreaTop3Profession areaTop3Profession = areaTop3Professions.get(i);
+            ViewAreaTop3Profession viewAreaTop3Profession = new ViewAreaTop3Profession();
+            viewAreaTop3Profession.setCompeteIndex(areaTop3Profession.getScoreRank());
+            viewAreaTop3Profession.setEmploymentRate(areaTop3Profession.getEmploymentRate());
+            viewAreaTop3Profession.setEmploymentSalary(areaTop3Profession.getEmploymentSalary());
+            viewAreaTop3Profession.setPrCode(areaTop3Profession.getPrCode());
+            viewAreaTop3Profession.setPrTitle(areaTop3Profession.getPrTitle());
+            viewAreaTop3Professions.add(viewAreaTop3Profession);
+        }
+        return viewAreaTop3Professions;
+    }
+
 }

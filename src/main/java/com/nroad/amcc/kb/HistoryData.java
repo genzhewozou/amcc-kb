@@ -35,7 +35,7 @@ public class HistoryData {
     public String minScoreBefore3;
 
     @Column
-    public String forecastScore;
+    public int forecastScore;
 
     @Column
     public String admissionBatch;  //录取批次
@@ -110,11 +110,11 @@ public class HistoryData {
         this.minScoreBefore3 = minScoreBefore3;
     }
 
-    public String getForecastScore() {
+    public int getForecastScore() {
         return forecastScore;
     }
 
-    public void setForecastScore(String forecastScore) {
+    public void setForecastScore(int forecastScore) {
         this.forecastScore = forecastScore;
     }
 

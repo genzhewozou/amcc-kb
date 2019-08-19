@@ -11,4 +11,7 @@ public interface AreaTop3ProfessionRepository extends JpaRepository<AreaTop3Prof
 
     @Query(value = "select * from kb_area_top_three where area_id=?1",nativeQuery = true)
     List<AreaTop3Profession> findAllByArea(String id);
+
+    @Query(value = "SELECT * from kb_area_top_three where pr_code=?1 AND profession_rank=?2",nativeQuery = true)
+    AreaTop3Profession findByPrCodeAndRank(String prCode,int professionRank);
 }

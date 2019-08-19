@@ -95,4 +95,17 @@ public class AmccCrmApplicationTests {
         }
     }
 
+    @Test
+    public void save_score() {
+        List<HistoryData> historyDataList = historyDataJpaRepository.findAll();
+        for (int i = 0; i < historyDataList.size(); i++) {
+            HistoryData historyData = new HistoryData();
+            historyData =historyDataList.get(i);
+//            historyData.setForecastScore(Integer.parseInt(historyData.getMinScoreBefore2()));
+            historyData.setMinScoreBefore1(historyData.getMinScoreBefore2());
+            historyData.setMinScoreBefore3(historyData.getMinScoreBefore2());
+            historyDataJpaRepository.saveAndFlush(historyData);
+        }
+    }
+
 }

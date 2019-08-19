@@ -4,6 +4,7 @@ import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.PlatformException;
 import com.nroad.amcc.kb.Area;
 import com.nroad.amcc.kb.HistoryData;
+import com.nroad.amcc.kb.UserPortrait;
 import com.nroad.amcc.support.View.ViewHistoryData;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
 import com.nroad.amcc.support.configuration.AuthenticationUtil;
@@ -79,15 +80,11 @@ public class ProfessionDataControllerV1 {
     public Page<HistoryData> findProfession(@RequestParam(value = "area", required = false) String area,
                                             @RequestParam(value = "classCategory", required = false) String classCategory,
                                             @RequestParam(value = "profession", required = false) String profession,
+                                            @RequestParam(value = "studentScore", required = false) Integer studentScore,
                                             @RequestParam("page") int page,
                                             @RequestParam("size") int size) {
         String prTitle = null;
         String prCode = null;
-        if (classCategory.isEmpty() && area.isEmpty()) {
-            classCategory = null;
-            area = null;
-        }
-
         if (StringUtils.isNotEmpty(profession)) {
             Boolean isPrCode = false;
             for (int i = 0; i < profession.length(); i++) {
@@ -105,7 +102,8 @@ public class ProfessionDataControllerV1 {
             }
         }
 
-        return professionDataServiceV1.findProfession(new PageRequest(page, size), area, classCategory, prTitle, prCode, AuthenticationUtil.getTenantId());
+        return professionDataServiceV1.findProfession(new PageRequest(page, size), area, classCategory, prTitle, prCode,
+                studentScore, AuthenticationUtil.getTenantId());
     }
 
     @GetMapping(value = "/query/professionDetails")
@@ -121,10 +119,13 @@ public class ProfessionDataControllerV1 {
         return professionDataServiceV1.professionalRecommend(new PageRequest(page, size), score);
     }
 
-    @GetMapping(value = "/query/area")
-    @ApiOperation(value = "查询所选市Top3专业", notes = "根据区域名字")
-    public Area selectArea(@RequestParam("name") String name) {
-        return professionDataServiceV1.findByArea(name);
+    @GetMapping(value = "/generate/userPortrait")
+    @ApiOperation(value = "生成用户画像", notes = "根据用户所在区域名字，分数以及意向专业")
+    public UserPortrait generateUserPortrait(@RequestParam(value = "areaName") String areaName,
+                                             @RequestParam(value = "score") int score,
+                                             @RequestParam(value = "classCategory") String classCategory,
+                                             @RequestParam(value = "prCodes", required = false) List<String> prCodes) {
+        return professionDataServiceV1.generateUserPortrait(areaName, score, classCategory, prCodes);
     }
 
 }

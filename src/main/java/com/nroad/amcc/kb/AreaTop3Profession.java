@@ -22,7 +22,11 @@ public class AreaTop3Profession {
 
     @Column
     @JsonProperty
-    public String name;
+    public String prTitle;
+
+    @Column
+    @JsonProperty
+    public String prCode;
 
     @ManyToOne
     @JsonIgnore
@@ -30,7 +34,31 @@ public class AreaTop3Profession {
 
     @Column
     @JsonProperty
-    public int rank;
+    public double scoreRank;  //排名位次
+
+    @Column
+    @JsonProperty
+    public double employmentSalary;  //就业薪资
+
+    @Column
+    @JsonProperty
+    public double employmentRate;  //就业率
+
+    @Column
+    @JsonProperty
+    public String classCategory;  //科类
+
+    @Column
+    @JsonProperty
+    public int admitNumber;  //录取人数
+
+    @Column
+    @JsonProperty
+    public int professionRank;  //专业位次
+
+    @Column
+    @JsonProperty
+    public String tenantId;  //专业位次
 
     public String getId() {
         return id;
@@ -40,12 +68,20 @@ public class AreaTop3Profession {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getPrTitle() {
+        return prTitle;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPrTitle(String prTitle) {
+        this.prTitle = prTitle;
+    }
+
+    public String getPrCode() {
+        return prCode;
+    }
+
+    public void setPrCode(String prCode) {
+        this.prCode = prCode;
     }
 
     public Area getArea() {
@@ -56,11 +92,59 @@ public class AreaTop3Profession {
         this.area = area;
     }
 
-    public int getRank() {
-        return rank;
+    public double getScoreRank() {
+        return scoreRank;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setScoreRank(double scoreRank) {
+        this.scoreRank = scoreRank;
+    }
+
+    public double getEmploymentSalary() {
+        return employmentSalary;
+    }
+
+    public void setEmploymentSalary(double employmentSalary) {
+        this.employmentSalary = employmentSalary;
+    }
+
+    public double getEmploymentRate() {
+        return employmentRate;
+    }
+
+    public void setEmploymentRate(double employmentRate) {
+        this.employmentRate = employmentRate;
+    }
+
+    public String getClassCategory() {
+        return classCategory;
+    }
+
+    public void setClassCategory(String classCategory) {
+        this.classCategory = classCategory;
+    }
+
+    public int getAdmitNumber() {
+        return admitNumber;
+    }
+
+    public void setAdmitNumber(int admitNumber) {
+        this.admitNumber = admitNumber;
+    }
+
+    public int getProfessionRank() {
+        return professionRank;
+    }
+
+    public void setProfessionRank(int professionRank) {
+        this.professionRank = professionRank;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }
