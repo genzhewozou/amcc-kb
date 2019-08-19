@@ -22,18 +22,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class AmccCrmApplicationTests {
 
-    @Test
-    public void contextLoads() {
-    }
-
-    @Autowired
-    HistoryDataJpaRepository historyDataJpaRepository;
-
-    @Autowired
-    ProfessionDetailsRepository professionDetailsRepository;
-
-    @Autowired
-    ContractedAreaRepository contractedAreaRepository;
+//    @Test
+//    public void contextLoads() {
+//    }
+//
+//    @Autowired
+//    HistoryDataJpaRepository historyDataJpaRepository;
+//
+//    @Autowired
+//    ProfessionDetailsRepository professionDetailsRepository;
+//
+//    @Autowired
+//    ContractedAreaRepository contractedAreaRepository;
 
 //    @Test
 //    public void ReadExcelAndSave(MultipartFile file) throws IOException {
@@ -73,39 +73,39 @@ public class AmccCrmApplicationTests {
 //        }
 //    }
 
-    @Test
-    public void save_profession_details() {
-        ProfessionDetails professionDetails = new ProfessionDetails();
-
-        professionDetails.setId(UUID.randomUUID().toString());
-        professionDetails.setProfessionCourses("a");
-        professionDetailsRepository.save(professionDetails);
-    }
-
-    @Test
-    public void save_contracted_area() {
-        ProfessionDetails professionDetails = professionDetailsRepository.findOne("297eb1fd6c8a72a7016c8a72c7e20000");
-        for (int i = 0; i < 3; i++) {
-            ContractedArea contractedArea = new ContractedArea();
-            contractedArea.setId(UUID.randomUUID().toString());
-            contractedArea.setName("" + i);
-            contractedArea.setProportion("82.99" + i);
-            contractedArea.setProfessionDetails(professionDetails);
-            contractedAreaRepository.save(contractedArea);
-        }
-    }
-
-    @Test
-    public void save_score() {
-        List<HistoryData> historyDataList = historyDataJpaRepository.findAll();
-        for (int i = 0; i < historyDataList.size(); i++) {
-            HistoryData historyData = new HistoryData();
-            historyData =historyDataList.get(i);
-//            historyData.setForecastScore(Integer.parseInt(historyData.getMinScoreBefore2()));
-            historyData.setMinScoreBefore1(historyData.getMinScoreBefore2());
-            historyData.setMinScoreBefore3(historyData.getMinScoreBefore2());
-            historyDataJpaRepository.saveAndFlush(historyData);
-        }
-    }
+//    @Test
+//    public void save_profession_details() {
+//        ProfessionDetails professionDetails = new ProfessionDetails();
+//
+//        professionDetails.setId(UUID.randomUUID().toString());
+//        professionDetails.setProfessionCourses("a");
+//        professionDetailsRepository.save(professionDetails);
+//    }
+//
+//    @Test
+//    public void save_contracted_area() {
+//        ProfessionDetails professionDetails = professionDetailsRepository.findOne("297eb1fd6c8a72a7016c8a72c7e20000");
+//        for (int i = 0; i < 3; i++) {
+//            ContractedArea contractedArea = new ContractedArea();
+//            contractedArea.setId(UUID.randomUUID().toString());
+//            contractedArea.setName("" + i);
+//            contractedArea.setProportion("82.99" + i);
+//            contractedArea.setProfessionDetails(professionDetails);
+//            contractedAreaRepository.save(contractedArea);
+//        }
+//    }
+//
+//    @Test
+//    public void save_score() {
+//        List<HistoryData> historyDataList = historyDataJpaRepository.findAll();
+//        for (int i = 0; i < historyDataList.size(); i++) {
+//            HistoryData historyData = new HistoryData();
+//            historyData =historyDataList.get(i);
+////            historyData.setForecastScore(Integer.parseInt(historyData.getMinScoreBefore2()));
+//            historyData.setMinScoreBefore1(historyData.getMinScoreBefore2());
+//            historyData.setMinScoreBefore3(historyData.getMinScoreBefore2());
+//            historyDataJpaRepository.saveAndFlush(historyData);
+//        }
+//    }
 
 }
