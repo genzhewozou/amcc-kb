@@ -12,6 +12,8 @@ public class ViewAreaTop3Profession {
 
     public double employmentRate;  //就业率
 
+    public String employmentArea;
+
     public String getPrTitle() {
         return prTitle;
     }
@@ -50,5 +52,13 @@ public class ViewAreaTop3Profession {
 
     public void setEmploymentRate(double employmentRate) {
         this.employmentRate = employmentRate;
+    }
+
+    public String getEmploymentArea() {
+        return employmentArea;
+    }
+
+    public void setEmploymentArea(String employmentArea) {
+        this.employmentArea = employmentArea;
     }
 }

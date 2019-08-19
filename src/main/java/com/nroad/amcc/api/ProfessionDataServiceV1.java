@@ -329,6 +329,7 @@ public class ProfessionDataServiceV1 {
             viewAreaTop3Profession.setEmploymentSalary(areaTop3Profession.getEmploymentSalary());
             viewAreaTop3Profession.setPrCode(areaTop3Profession.getPrCode());
             viewAreaTop3Profession.setPrTitle(areaTop3Profession.getPrTitle());
+            viewAreaTop3Profession.setEmploymentArea(areaTop3Profession.getEmploymentArea());
             viewAreaTop3Professions.add(viewAreaTop3Profession);
         }
         return viewAreaTop3Professions;
