@@ -85,6 +85,7 @@ public class ProfessionDataControllerV1 {
                                             @RequestParam("size") int size) {
         String prTitle = null;
         String prCode = null;
+        
         if (StringUtils.isNotEmpty(profession)) {
             Boolean isPrCode = false;
             for (int i = 0; i < profession.length(); i++) {
