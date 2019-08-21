@@ -18,7 +18,7 @@ public class ContractedArea {
     public String name;
 
     @Column
-    public String proportion;
+    public double proportion;
 
     @ManyToOne
     private ProfessionDetails professionDetails;
@@ -39,11 +39,11 @@ public class ContractedArea {
         this.name = name;
     }
 
-    public String getProportion() {
+    public double getProportion() {
         return proportion;
     }
 
-    public void setProportion(String proportion) {
+    public void setProportion(double proportion) {
         this.proportion = proportion;
     }
 

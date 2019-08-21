@@ -1,18 +1,29 @@
 package com.nroad.amcc.support.View;
 
+
+import java.util.Map;
+
 public class ViewAreaTop3Profession {
 
     public String prTitle;
 
     public String prCode;
 
-    public double competeIndex;  //竞争力指数
+//    public double competeIndex;  //竞争力指数
 
     public double employmentSalary;  //就业薪资
 
     public double employmentRate;  //就业率
 
-    public String employmentArea;
+    public String employmentArea;  //top1就业地区
+
+    public Map<String, Integer> admissionMap;
+
+    public String boyProportion;  //男生比例
+
+    public String girlProportion;  //女生比例
+
+    public double surpassingProfessionNumber;  //就业薪资超越同校其他专业情况
 
     public String getPrTitle() {
         return prTitle;
@@ -30,13 +41,13 @@ public class ViewAreaTop3Profession {
         this.prCode = prCode;
     }
 
-    public double getCompeteIndex() {
-        return competeIndex;
-    }
-
-    public void setCompeteIndex(double competeIndex) {
-        this.competeIndex = competeIndex;
-    }
+//    public double getCompeteIndex() {
+//        return competeIndex;
+//    }
+//
+//    public void setCompeteIndex(double competeIndex) {
+//        this.competeIndex = competeIndex;
+//    }
 
     public double getEmploymentSalary() {
         return employmentSalary;
@@ -60,5 +71,37 @@ public class ViewAreaTop3Profession {
 
     public void setEmploymentArea(String employmentArea) {
         this.employmentArea = employmentArea;
+    }
+
+    public Map<String, Integer> getAdmissionMap() {
+        return admissionMap;
+    }
+
+    public void setAdmissionMap(Map<String, Integer> admissionMap) {
+        this.admissionMap = admissionMap;
+    }
+
+    public String getBoyProportion() {
+        return boyProportion;
+    }
+
+    public void setBoyProportion(String boyProportion) {
+        this.boyProportion = boyProportion;
+    }
+
+    public String getGirlProportion() {
+        return girlProportion;
+    }
+
+    public void setGirlProportion(String girlProportion) {
+        this.girlProportion = girlProportion;
+    }
+
+    public double getSurpassingProfessionNumber() {
+        return surpassingProfessionNumber;
+    }
+
+    public void setSurpassingProfessionNumber(double surpassingProfessionNumber) {
+        this.surpassingProfessionNumber = surpassingProfessionNumber;
     }
 }

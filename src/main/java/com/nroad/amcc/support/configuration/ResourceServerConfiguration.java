@@ -1,6 +1,8 @@
 package com.nroad.amcc.support.configuration;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,6 +95,11 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 		return customResourceTokenServices;
 	}
 	// ===================================================以上代码与认证服务器一致=========================================
-	
-	
+
+
+	@Bean("classCategoryList")
+	public List<String> classCategoryList(){
+		return  Arrays.asList("理工", "文史");
+	}
+
 }

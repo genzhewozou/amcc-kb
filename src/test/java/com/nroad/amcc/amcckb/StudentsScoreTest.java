@@ -14,73 +14,73 @@ import java.util.UUID;
 @SpringBootTest
 public class StudentsScoreTest {
 
-//    @Autowired
-//    StudentsScoreRepository studentsScoreRepository;
-//
-//    @Test
-//    public void save_1() {
-//        StudentsScore studentsScore = new StudentsScore();
-//        studentsScore.setId(UUID.randomUUID().toString());
-//        studentsScore.setClassCategory("理工");
-//        studentsScore.setPrCode("120207");
-//        studentsScore.setScore(356);
-//        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-//        studentsScoreRepository.save(studentsScore);
-//    }
-//
-//    @Test
-//    public void save_2() {
-//        StudentsScore studentsScore = new StudentsScore();
-//        studentsScore.setId(UUID.randomUUID().toString());
-//        studentsScore.setClassCategory("理工");
-//        studentsScore.setPrCode("120207");
-//        studentsScore.setScore(353);
-//        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-//        studentsScoreRepository.save(studentsScore);
-//    }
-//
-//    @Test
-//    public void save_3() {
-//        StudentsScore studentsScore = new StudentsScore();
-//        studentsScore.setId(UUID.randomUUID().toString());
-//        studentsScore.setClassCategory("理工");
-//        studentsScore.setPrCode("120207");
-//        studentsScore.setScore(344);
-//        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-//        studentsScoreRepository.save(studentsScore);
-//    }
-//
-//    @Test
-//    public void save_4() {
-//        StudentsScore studentsScore = new StudentsScore();
-//        studentsScore.setId(UUID.randomUUID().toString());
-//        studentsScore.setClassCategory("理工");
-//        studentsScore.setPrCode("120207");
-//        studentsScore.setScore(350);
-//        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-//        studentsScoreRepository.save(studentsScore);
-//    }
-//
-//    @Test
-//    public void save_5() {
-//        StudentsScore studentsScore = new StudentsScore();
-//        studentsScore.setId(UUID.randomUUID().toString());
-//        studentsScore.setClassCategory("理工");
-//        studentsScore.setPrCode("120207");
-//        studentsScore.setScore(340);
-//        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-//        studentsScoreRepository.save(studentsScore);
-//    }
-//
-//    @Test
-//    public void save_6() {
-//        StudentsScore studentsScore = new StudentsScore();
-//        studentsScore.setId(UUID.randomUUID().toString());
-//        studentsScore.setClassCategory("理工");
-//        studentsScore.setPrCode("120207");
-//        studentsScore.setScore(362);
-//        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-//        studentsScoreRepository.save(studentsScore);
-//    }
+    @Autowired
+    StudentsScoreRepository studentsScoreRepository;
+
+    @Test
+    public void save_1() {
+        StudentsScore studentsScore = new StudentsScore();
+        studentsScore.setId(UUID.randomUUID().toString());
+        studentsScore.setClassCategory("理工");
+        studentsScore.setPrCode("120207");
+        studentsScore.setScore(356);
+        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
+        studentsScoreRepository.save(studentsScore);
+    }
+
+    @Test
+    public void save_2() {
+        StudentsScore studentsScore = new StudentsScore();
+        studentsScore.setId(UUID.randomUUID().toString());
+        studentsScore.setClassCategory("理工");
+        studentsScore.setPrCode("120207");
+        studentsScore.setScore(353);
+        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
+        studentsScoreRepository.save(studentsScore);
+    }
+
+    @Test
+    public void save_3() {
+        StudentsScore studentsScore = new StudentsScore();
+        studentsScore.setId(UUID.randomUUID().toString());
+        studentsScore.setClassCategory("理工");
+        studentsScore.setPrCode("120207");
+        studentsScore.setScore(344);
+        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
+        studentsScoreRepository.save(studentsScore);
+    }
+
+    @Test
+    public void save_4() {
+        StudentsScore studentsScore = new StudentsScore();
+        studentsScore.setId(UUID.randomUUID().toString());
+        studentsScore.setClassCategory("理工");
+        studentsScore.setPrCode("120207");
+        studentsScore.setScore(350);
+        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
+        studentsScoreRepository.save(studentsScore);
+    }
+
+    @Test
+    public void save_5() {
+        StudentsScore studentsScore = new StudentsScore();
+        studentsScore.setId(UUID.randomUUID().toString());
+        studentsScore.setClassCategory("理工");
+        studentsScore.setPrCode("120207");
+        studentsScore.setScore(340);
+        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
+        studentsScoreRepository.save(studentsScore);
+    }
+
+    @Test
+    public void save_6() {
+        StudentsScore studentsScore = new StudentsScore();
+        studentsScore.setId(UUID.randomUUID().toString());
+        studentsScore.setClassCategory("理工");
+        studentsScore.setPrCode("120207");
+        studentsScore.setScore(362);
+        studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
+        studentsScoreRepository.save(studentsScore);
+    }
 
 }

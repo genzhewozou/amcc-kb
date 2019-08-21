@@ -1,7 +1,9 @@
 package com.nroad.amcc.api;
 
+import com.aliyuncs.exceptions.ClientException;
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.PlatformException;
+import com.nroad.amcc.Sms.SmsUtil;
 import com.nroad.amcc.kb.HistoryData;
 import com.nroad.amcc.kb.UserPortrait;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/professionData")
@@ -113,11 +117,18 @@ public class ProfessionDataControllerV1 {
 
     @GetMapping(value = "/generate/userPortrait")
     @ApiOperation(value = "生成用户画像", notes = "根据用户所在区域名字，分数以及意向专业")
-    public UserPortrait generateUserPortrait(@RequestParam(value = "areaName") String areaName,
+    public UserPortrait generateUserPortrait(@RequestParam(value = "provinceName") String provinceName,
                                              @RequestParam(value = "score") int score,
                                              @RequestParam(value = "classCategory") String classCategory,
                                              @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
-        return professionDataServiceV1.generateUserPortrait(areaName, score, classCategory, prCodes);
+
+        return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes);
+    }
+
+    @PostMapping(value = "/send/Sms")
+    public void senSms(@RequestParam(value = "mobile", required = false) String mobile) {
+        SmsUtil smsUtil = new SmsUtil();
+        smsUtil.sendSms(mobile, "54651");
     }
 
 }

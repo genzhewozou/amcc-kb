@@ -18,7 +18,7 @@ public class ViewProfessionDetails {
 
     public String professionCategory;  //专业类别
 
-    public String averageSalary;  //平均薪资
+    public double averageSalary;  //平均薪资
 
     public String professionDirection;  //专业方向
 
@@ -94,11 +94,11 @@ public class ViewProfessionDetails {
         this.professionCategory = professionCategory;
     }
 
-    public String getAverageSalary() {
+    public double getAverageSalary() {
         return averageSalary;
     }
 
-    public void setAverageSalary(String averageSalary) {
+    public void setAverageSalary(double averageSalary) {
         this.averageSalary = averageSalary;
     }
 

@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "`kb_area_top_three`")
@@ -29,7 +30,6 @@ public class AreaTop3Profession {
     @JsonProperty
     public String prCode;
 
-    @Column
     @JsonProperty
     public double scoreRank;  //排名位次
 
@@ -41,9 +41,7 @@ public class AreaTop3Profession {
     @JsonProperty
     public double employmentRate;  //就业率
 
-    @Column
-    @JsonProperty
-    public String employmentArea;  //就业地区
+    public String employmentArea;  //就业最热地区
 
     @Column
     @JsonProperty
@@ -52,6 +50,22 @@ public class AreaTop3Profession {
     @Column
     @JsonProperty
     public int admitNumber;  //录取人数
+
+    @JsonProperty
+    @Transient
+    public Map<String, Integer> admissionMap;
+
+    @JsonProperty
+    @Transient
+    public String boyProportion;  //男生比例
+
+    @JsonProperty
+    @Transient
+    public String girlProportion;  //女生比例
+
+    @JsonProperty
+    @Transient
+    public double surpassingProfessionNumber;  //就业薪资超越同校其他专业情况
 
     @Column
     @JsonProperty
@@ -135,5 +149,37 @@ public class AreaTop3Profession {
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public Map<String, Integer> getAdmissionMap() {
+        return admissionMap;
+    }
+
+    public void setAdmissionMap(Map<String, Integer> admissionMap) {
+        this.admissionMap = admissionMap;
+    }
+
+    public String getBoyProportion() {
+        return boyProportion;
+    }
+
+    public void setBoyProportion(String boyProportion) {
+        this.boyProportion = boyProportion;
+    }
+
+    public String getGirlProportion() {
+        return girlProportion;
+    }
+
+    public void setGirlProportion(String girlProportion) {
+        this.girlProportion = girlProportion;
+    }
+
+    public double getSurpassingProfessionNumber() {
+        return surpassingProfessionNumber;
+    }
+
+    public void setSurpassingProfessionNumber(double surpassingProfessionNumber) {
+        this.surpassingProfessionNumber = surpassingProfessionNumber;
     }
 }

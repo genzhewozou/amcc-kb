@@ -4,7 +4,7 @@ public class ViewContractedArea {
 
     public String name;
 
-    public String proportion;
+    public double proportion;
 
     public String getName() {
         return name;
@@ -14,11 +14,11 @@ public class ViewContractedArea {
         this.name = name;
     }
 
-    public String getProportion() {
+    public double getProportion() {
         return proportion;
     }
 
-    public void setProportion(String proportion) {
+    public void setProportion(double proportion) {
         this.proportion = proportion;
     }
 }
