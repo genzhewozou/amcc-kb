@@ -26,7 +26,7 @@ public class LastYearScoreTest {
             lastYearScore.setId(UUID.randomUUID().toString());
             lastYearScore.setScore(350+i);
             lastYearScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-            lastYearScoreRepository.save(lastYearScore);
+//            lastYearScoreRepository.save(lastYearScore);
         }
         for (int i = 0; i < 50; i++) {
             LastYearScore lastYearScore = new LastYearScore();
@@ -34,7 +34,7 @@ public class LastYearScoreTest {
             lastYearScore.setId(UUID.randomUUID().toString());
             lastYearScore.setScore(360+i);
             lastYearScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-            lastYearScoreRepository.save(lastYearScore);
+//            lastYearScoreRepository.save(lastYearScore);
         }
 
     }

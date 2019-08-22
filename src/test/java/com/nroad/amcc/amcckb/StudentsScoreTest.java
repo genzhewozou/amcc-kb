@@ -25,7 +25,7 @@ public class StudentsScoreTest {
         studentsScore.setPrCode("120207");
         studentsScore.setScore(356);
         studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        studentsScoreRepository.save(studentsScore);
+//        studentsScoreRepository.save(studentsScore);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class StudentsScoreTest {
         studentsScore.setPrCode("120207");
         studentsScore.setScore(353);
         studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        studentsScoreRepository.save(studentsScore);
+//        studentsScoreRepository.save(studentsScore);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class StudentsScoreTest {
         studentsScore.setPrCode("120207");
         studentsScore.setScore(344);
         studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        studentsScoreRepository.save(studentsScore);
+//        studentsScoreRepository.save(studentsScore);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class StudentsScoreTest {
         studentsScore.setPrCode("120207");
         studentsScore.setScore(350);
         studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        studentsScoreRepository.save(studentsScore);
+//        studentsScoreRepository.save(studentsScore);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class StudentsScoreTest {
         studentsScore.setPrCode("120207");
         studentsScore.setScore(340);
         studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        studentsScoreRepository.save(studentsScore);
+//        studentsScoreRepository.save(studentsScore);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class StudentsScoreTest {
         studentsScore.setPrCode("120207");
         studentsScore.setScore(362);
         studentsScore.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        studentsScoreRepository.save(studentsScore);
+//        studentsScoreRepository.save(studentsScore);
     }
 
 }

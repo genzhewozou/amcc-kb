@@ -34,7 +34,7 @@ public class AreaTest {
         areaTop3Profession.setEmploymentRate(65.62);
         areaTop3Profession.setEmploymentSalary(8500.33);
         areaTop3Profession.setAdmitNumber(30);
-        areaTop3ProfessionRepository.save(areaTop3Profession);
+//        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class AreaTest {
         areaTop3Profession.setEmploymentRate(81.22);
         areaTop3Profession.setEmploymentSalary(6983.47);
         areaTop3Profession.setAdmitNumber(40);
-        areaTop3ProfessionRepository.save(areaTop3Profession);
+//        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class AreaTest {
         areaTop3Profession.setEmploymentRate(86.94);
         areaTop3Profession.setEmploymentSalary(53547.36);
         areaTop3Profession.setAdmitNumber(50);
-        areaTop3ProfessionRepository.save(areaTop3Profession);
+//        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class AreaTest {
         areaTop3Profession.setEmploymentRate(78.35);
         areaTop3Profession.setEmploymentSalary(4961.64);
         areaTop3Profession.setAdmitNumber(60);
-        areaTop3ProfessionRepository.save(areaTop3Profession);
+//        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class AreaTest {
         areaTop3Profession.setEmploymentRate(69.41);
         areaTop3Profession.setEmploymentSalary(4562.78);
         areaTop3Profession.setAdmitNumber(70);
-        areaTop3ProfessionRepository.save(areaTop3Profession);
+//        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class AreaTest {
         areaTop3Profession.setEmploymentRate(75.62);
         areaTop3Profession.setEmploymentSalary(7456.21);
         areaTop3Profession.setAdmitNumber(80);
-        areaTop3ProfessionRepository.save(areaTop3Profession);
+//        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class AreaTest {
         areaTop3Profession.setEmploymentSalary(7456.21);
         areaTop3Profession.setAdmitNumber(80);
         areaTop3Profession.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        areaTop3ProfessionRepository.save(areaTop3Profession);
+//        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class AreaTest {
         areaAdmitNumber.setPrCode("120203K");
         areaAdmitNumber.setPrTitle("会计学");
         areaAdmitNumber.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        areaAdmitNumberRepository.save(areaAdmitNumber);
+//        areaAdmitNumberRepository.save(areaAdmitNumber);
     }
 
     @Test
@@ -143,7 +143,7 @@ public class AreaTest {
         areaAdmitNumber.setPrCode("120204");
         areaAdmitNumber.setPrTitle("财务管理");
         areaAdmitNumber.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        areaAdmitNumberRepository.save(areaAdmitNumber);
+//        areaAdmitNumberRepository.save(areaAdmitNumber);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class AreaTest {
         areaAdmitNumber.setPrCode("120207");
         areaAdmitNumber.setPrTitle("审计学");
         areaAdmitNumber.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        areaAdmitNumberRepository.save(areaAdmitNumber);
+//        areaAdmitNumberRepository.save(areaAdmitNumber);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class AreaTest {
         areaAdmitNumber.setPrCode("080902");
         areaAdmitNumber.setPrTitle("软件工程");
         areaAdmitNumber.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        areaAdmitNumberRepository.save(areaAdmitNumber);
+//        areaAdmitNumberRepository.save(areaAdmitNumber);
     }
     @Test
     public void saveareatop3_11() {
@@ -178,7 +178,7 @@ public class AreaTest {
         areaAdmitNumber.setPrCode("080703");
         areaAdmitNumber.setPrTitle("通信工程");
         areaAdmitNumber.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
-        areaAdmitNumberRepository.save(areaAdmitNumber);
+//        areaAdmitNumberRepository.save(areaAdmitNumber);
     }
 
 

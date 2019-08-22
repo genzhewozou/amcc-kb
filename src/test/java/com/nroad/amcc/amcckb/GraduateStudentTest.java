@@ -26,7 +26,7 @@ public class GraduateStudentTest {
         graduateStudent.setId(UUID.randomUUID().toString());
         graduateStudent.setPrCode("120207");
         graduateStudent.setPrTitle("审计学");
-        graduateStudentRepository.save(graduateStudent);
+//        graduateStudentRepository.save(graduateStudent);
     }
     @Test
     public void saveareatop3_2() {
@@ -36,7 +36,7 @@ public class GraduateStudentTest {
         graduateStudent.setId(UUID.randomUUID().toString());
         graduateStudent.setPrCode("120207");
         graduateStudent.setPrTitle("审计学");
-        graduateStudentRepository.save(graduateStudent);
+//        graduateStudentRepository.save(graduateStudent);
     }
     @Test
     public void saveareatop3_3() {
@@ -46,7 +46,7 @@ public class GraduateStudentTest {
         graduateStudent.setId(UUID.randomUUID().toString());
         graduateStudent.setPrCode("120207");
         graduateStudent.setPrTitle("审计学");
-        graduateStudentRepository.save(graduateStudent);
+//        graduateStudentRepository.save(graduateStudent);
     }
     @Test
     public void saveareatop3_4() {
@@ -56,7 +56,7 @@ public class GraduateStudentTest {
         graduateStudent.setId(UUID.randomUUID().toString());
         graduateStudent.setPrCode("120207");
         graduateStudent.setPrTitle("审计学");
-        graduateStudentRepository.save(graduateStudent);
+//        graduateStudentRepository.save(graduateStudent);
     }
     @Test
     public void saveareatop3_5() {
@@ -66,7 +66,7 @@ public class GraduateStudentTest {
         graduateStudent.setId(UUID.randomUUID().toString());
         graduateStudent.setPrCode("120207");
         graduateStudent.setPrTitle("审计学");
-        graduateStudentRepository.save(graduateStudent);
+//        graduateStudentRepository.save(graduateStudent);
     }
     @Test
     public void saveareatop3_6() {
@@ -76,7 +76,7 @@ public class GraduateStudentTest {
         graduateStudent.setId(UUID.randomUUID().toString());
         graduateStudent.setPrCode("120207");
         graduateStudent.setPrTitle("审计学");
-        graduateStudentRepository.save(graduateStudent);
+//        graduateStudentRepository.save(graduateStudent);
     }
     @Test
     public void saveareatop3_7() {
@@ -86,7 +86,7 @@ public class GraduateStudentTest {
         graduateStudent.setId(UUID.randomUUID().toString());
         graduateStudent.setPrCode("120207");
         graduateStudent.setPrTitle("审计学");
-        graduateStudentRepository.save(graduateStudent);
+//        graduateStudentRepository.save(graduateStudent);
     }
     @Test
     public void saveareatop3_8() {
@@ -96,7 +96,7 @@ public class GraduateStudentTest {
         graduateStudent.setId(UUID.randomUUID().toString());
         graduateStudent.setPrCode("120207");
         graduateStudent.setPrTitle("审计学");
-        graduateStudentRepository.save(graduateStudent);
+//        graduateStudentRepository.save(graduateStudent);
     }
     @Test
     public void saveareatop3_9() {
@@ -106,6 +106,6 @@ public class GraduateStudentTest {
         graduateStudent.setId(UUID.randomUUID().toString());
         graduateStudent.setPrCode("120207");
         graduateStudent.setPrTitle("审计学");
-        graduateStudentRepository.save(graduateStudent);
+//        graduateStudentRepository.save(graduateStudent);
     }
 }

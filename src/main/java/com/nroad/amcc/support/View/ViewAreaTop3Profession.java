@@ -17,6 +17,8 @@ public class ViewAreaTop3Profession {
 
     public String employmentArea;  //top1就业地区
 
+    public double employmentAreaProportion;  //就业最热地区比例
+
     public Map<String, Integer> admissionMap;
 
     public String boyProportion;  //男生比例
@@ -103,5 +105,13 @@ public class ViewAreaTop3Profession {
 
     public void setSurpassingProfessionNumber(double surpassingProfessionNumber) {
         this.surpassingProfessionNumber = surpassingProfessionNumber;
+    }
+
+    public double getEmploymentAreaProportion() {
+        return employmentAreaProportion;
+    }
+
+    public void setEmploymentAreaProportion(double employmentAreaProportion) {
+        this.employmentAreaProportion = employmentAreaProportion;
     }
 }

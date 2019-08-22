@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "`kb_profession_details`")
@@ -68,6 +69,19 @@ public class ProfessionDetails {
 //    @JoinColumn(name = "profession_details_id", foreignKey = @ForeignKey(name = "fk_profession_details_id_admit"))
 //    @JsonProperty
 //    private List<AreaAdmitNumber> areaAdmitNumbers = new ArrayList<>();
+
+
+    @JsonProperty
+    @Transient
+    public String employmentArea;  //就业最热地区
+
+    @JsonProperty
+    @Transient
+    public Map<String, Integer> admissionMap;
+
+    @JsonProperty
+    @Transient
+    public double surpassingProfessionNumber;  //就业薪资超越同校其他专业情况
 
     @Column
     public String tenantId;
@@ -206,6 +220,30 @@ public class ProfessionDetails {
 
     public void setContractedAreas(List<ContractedArea> contractedAreas) {
         this.contractedAreas = contractedAreas;
+    }
+
+    public String getEmploymentArea() {
+        return employmentArea;
+    }
+
+    public void setEmploymentArea(String employmentArea) {
+        this.employmentArea = employmentArea;
+    }
+
+    public Map<String, Integer> getAdmissionMap() {
+        return admissionMap;
+    }
+
+    public void setAdmissionMap(Map<String, Integer> admissionMap) {
+        this.admissionMap = admissionMap;
+    }
+
+    public double getSurpassingProfessionNumber() {
+        return surpassingProfessionNumber;
+    }
+
+    public void setSurpassingProfessionNumber(double surpassingProfessionNumber) {
+        this.surpassingProfessionNumber = surpassingProfessionNumber;
     }
 
     public String getTenantId() {

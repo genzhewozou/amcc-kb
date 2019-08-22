@@ -2,7 +2,9 @@ package com.nroad.amcc.kb;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface StudentsScoreRepository extends JpaRepository<StudentsScore, String> {
 
     @Query(value = "select count(id) from kb_students_score where class_category=?1 AND pr_code=?2 AND tenant_id=?3", nativeQuery = true)

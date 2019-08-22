@@ -43,6 +43,10 @@ public class AreaTop3Profession {
 
     public String employmentArea;  //就业最热地区
 
+    @JsonProperty
+    @Transient
+    public double employmentAreaProportion;  //就业最热地区比例
+
     @Column
     @JsonProperty
     public String classCategory;  //科类
@@ -181,5 +185,13 @@ public class AreaTop3Profession {
 
     public void setSurpassingProfessionNumber(double surpassingProfessionNumber) {
         this.surpassingProfessionNumber = surpassingProfessionNumber;
+    }
+
+    public double getEmploymentAreaProportion() {
+        return employmentAreaProportion;
+    }
+
+    public void setEmploymentAreaProportion(double employmentAreaProportion) {
+        this.employmentAreaProportion = employmentAreaProportion;
     }
 }

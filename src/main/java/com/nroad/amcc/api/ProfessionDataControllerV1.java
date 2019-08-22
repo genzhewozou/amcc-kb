@@ -4,8 +4,9 @@ import com.aliyuncs.exceptions.ClientException;
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.PlatformException;
 import com.nroad.amcc.Sms.SmsUtil;
-import com.nroad.amcc.kb.HistoryData;
-import com.nroad.amcc.kb.UserPortrait;
+import com.nroad.amcc.kb.*;
+import com.nroad.amcc.support.View.ViewCommonQuestion;
+import com.nroad.amcc.support.View.ViewLastYearScore;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
 import com.nroad.amcc.support.configuration.AuthenticationUtil;
 import io.swagger.annotations.ApiOperation;
@@ -19,10 +20,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/professionData")
@@ -32,10 +32,20 @@ public class ProfessionDataControllerV1 {
 
     private ProfessionDataServiceV1 professionDataServiceV1;
 
+    private CommonQuestionRepository commonQuestionRepository;
+
+    private AdmissionPolicyRepository admissionPolicyRepository;
+
     @Autowired
-    public ProfessionDataControllerV1(ProfessionDataServiceV1 professionDataServiceV1) {
+    public ProfessionDataControllerV1(ProfessionDataServiceV1 professionDataServiceV1,
+                                      CommonQuestionRepository commonQuestionRepository,
+                                      AdmissionPolicyRepository admissionPolicyRepository) {
         Assert.notNull(professionDataServiceV1, "HistoryDataServiceV1 can not be null");
+        Assert.notNull(commonQuestionRepository, "commonQuestionRepository can not be null");
+        Assert.notNull(admissionPolicyRepository, "admissionPolicyRepository can not be null");
         this.professionDataServiceV1 = professionDataServiceV1;
+        this.commonQuestionRepository = commonQuestionRepository;
+        this.admissionPolicyRepository = admissionPolicyRepository;
     }
 
     @PostMapping("/upload/historyData")
@@ -58,6 +68,28 @@ public class ProfessionDataControllerV1 {
             throw PlatformException.of(PlatformError.KB_UPLOAD_FILE_NOT_BLANK);
         }
         professionDataServiceV1.uploadProfessionData(file);
+    }
+
+    @PostMapping("/upload/commonQuestion")
+    @ApiOperation(value = "上传常见问题", notes = "")
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    public void uploadCommonQuestion(@RequestParam("file") MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        if (file.isEmpty() || StringUtils.isEmpty(filename) || !filename.endsWith(".xlsx")) {
+            throw PlatformException.of(PlatformError.KB_UPLOAD_FILE_NOT_BLANK);
+        }
+        professionDataServiceV1.uploadCommonQuestion(file);
+    }
+
+    @PostMapping("/upload/admissionPolicy")
+    @ApiOperation(value = "上传招生政策", notes = "")
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    public void uploadAdmissionPolicy(@RequestParam("file") MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        if (file.isEmpty() || StringUtils.isEmpty(filename) || !filename.endsWith(".xlsx")) {
+            throw PlatformException.of(PlatformError.KB_UPLOAD_FILE_NOT_BLANK);
+        }
+        professionDataServiceV1.uploadAdmissionPolicy(file);
     }
 
     @PostMapping("/upload/professionArea")
@@ -120,15 +152,62 @@ public class ProfessionDataControllerV1 {
     public UserPortrait generateUserPortrait(@RequestParam(value = "provinceName") String provinceName,
                                              @RequestParam(value = "score") int score,
                                              @RequestParam(value = "classCategory") String classCategory,
+                                             @RequestParam(value = "mobilePhone") String mobilePhone,
                                              @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
 
-        return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes);
+        return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone);
     }
 
+
     @PostMapping(value = "/send/Sms")
-    public void senSms(@RequestParam(value = "mobile", required = false) String mobile) {
+    @ApiOperation(value = "发送短信")
+    public void senSms(@RequestParam(value = "mobile", required = false) String mobile,
+                       @RequestParam(value = "name", required = false) String name,
+                       @RequestParam(value = "code", required = false) String code) {
         SmsUtil smsUtil = new SmsUtil();
-        smsUtil.sendSms(mobile, "54651");
+        smsUtil.sendSms(name, mobile, code);
     }
+
+    @GetMapping(value = "/query/answer")
+    @ApiOperation(value = "模糊查询常见问题")
+    public List<ViewCommonQuestion> findAnswerByKeyWord(@RequestParam(value = "keyWord", required = false) String keyWord) {
+        List<ViewCommonQuestion> viewCommonQuestions = new ArrayList<>();
+
+        if (keyWord != null) {
+            List<String> questionList = commonQuestionRepository.findByKeyWord(keyWord);
+            for (int i = 0; i < questionList.size(); i++) {
+                ViewCommonQuestion viewCommonQuestion = new ViewCommonQuestion();
+                String answer = commonQuestionRepository.findAnswerByQuestion(questionList.get(i));
+                viewCommonQuestion.setQuestion(questionList.get(i));
+                viewCommonQuestion.setAnswer(answer);
+                viewCommonQuestions.add(viewCommonQuestion);
+            }
+            return viewCommonQuestions;
+        }
+        return null;
+    }
+
+    @GetMapping(value = "/query/policy")
+    @ApiOperation(value = "模糊查询招生政策")
+    public List<AdmissionPolicy> findPolicyByKeyWord(@RequestParam(value = "keyWord", required = false) String keyWord) {
+        List<AdmissionPolicy> admissionPolicies = new ArrayList<>();
+
+        if (keyWord != null) {
+            List<String> titleList = admissionPolicyRepository.findByKeyWord(keyWord);
+            for (int i = 0; i < titleList.size(); i++) {
+                AdmissionPolicy admissionPolicy = admissionPolicyRepository.findUrlByTitle(titleList.get(i));
+                admissionPolicies.add(admissionPolicy);
+            }
+            return admissionPolicies;
+        }
+        return admissionPolicies;
+    }
+
+    @PostMapping(value = "/upload/image")
+    @ApiOperation(value = "上传图片到服务器")
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/images/**").addResourceLocations("file:/app/image/aa.png");
+    }
+
 
 }

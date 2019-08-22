@@ -21,7 +21,7 @@ public class SmsUtil {
     static final String accessKeyId = "LTAInrYdr8AGTrSM";
     static final String accessKeySecret = "nq7fqPStFZstFc5fdPh4iV2g8iiNTT";
 
-    public void sendSms(String mobile,String code){
+    public void sendSms(String name, String mobile, String code) {
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
         IAcsClient client = new DefaultAcsClient(profile);
 
@@ -33,8 +33,8 @@ public class SmsUtil {
         request.putQueryParameter("RegionId", "cn-hangzhou");
         request.putQueryParameter("PhoneNumbers", mobile);
         request.putQueryParameter("SignName", "考生画像");
-        request.putQueryParameter("TemplateCode", "SMS_172735092");
-        request.putQueryParameter("TemplateParam", "{\"code\":" + code + "}");
+        request.putQueryParameter("TemplateCode", "SMS_172740567");  //
+        request.putQueryParameter("TemplateParam", "{\"name\":" + name + " ,\"code\":" + code + "}");
         try {
             CommonResponse response = client.getCommonResponse(request);
             System.out.println(response.getData());
