@@ -21,7 +21,9 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import sun.misc.BASE64Encoder;
 
+import java.net.URLDecoder;
 import java.util.*;
 
 @RestController
@@ -158,6 +160,59 @@ public class ProfessionDataControllerV1 {
         return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone);
     }
 
+    @GetMapping(value = "/generateKey")
+    @ApiOperation(value = "生成加密串", notes = "根据用户所在区域名字，分数以及意向专业")
+    public String encryption(@RequestParam(value = "provinceName") String provinceName,
+                             @RequestParam(value = "score") int score,
+                             @RequestParam(value = "classCategory") String classCategory,
+                             @RequestParam(value = "mobilePhone") String mobilePhone,
+                             @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
+        int length = prCodes.size();
+        String prCode = "";
+        if (length == 0) {
+            String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
+                    classCategory + "," + score);
+            String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
+            return professionDataServiceV1.encrypt(toBeEncrypted, password);
+        }
+        if (length != 0 && length == 1) {
+            prCode = prCodes.get(0);
+        }
+        if (length != 0 && length > 1) {
+            prCode = prCodes.get(0) + ",";
+            for (int i = 1; i < prCodes.size(); i++) {
+                prCode = prCode + prCodes.get(i) + ",";
+            }
+            prCode = prCode.substring(0, prCode.length() - 1);
+        }
+
+        String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
+                classCategory + "," + score + "," + prCode);
+        log.info(toBeEncrypted);
+        String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
+        return professionDataServiceV1.encrypt(toBeEncrypted, password);
+    }
+
+    @GetMapping(value = "/sendByKey")
+    @ApiOperation(value = "解密加密串并且生成链接")
+    public UserPortrait decrypt(@RequestParam(value = "encryptionString") String encryptionString) throws Exception {
+        String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
+        String list = professionDataServiceV1.decrypt(encryptionString, password);
+        String[] totalList = list.split(",");
+        String mobilePhone = totalList[0];
+        String provinceName = totalList[1];
+        String classCategory = totalList[2];
+        int score = Integer.parseInt(totalList[3]);
+        int length = totalList.length;
+        log.info(length + "");
+        List<String> prCodes = new ArrayList<>();
+        if (length > 4) {
+            for (int i = 0; i < length - 4; i++) {
+                prCodes.add(totalList[4 + i]);
+            }
+        }
+        return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone);
+    }
 
     @PostMapping(value = "/send/Sms")
     @ApiOperation(value = "发送短信")

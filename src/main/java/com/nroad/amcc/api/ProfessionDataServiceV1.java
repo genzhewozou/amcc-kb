@@ -18,12 +18,38 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.persistence.criteria.Predicate;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.text.MessageFormat;
 import java.util.*;
+
+
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 
 
 @Service
@@ -337,31 +363,36 @@ public class ProfessionDataServiceV1 {
             String temp = new String();
             temp = areaAdmitNumbers.get(i).getPrCode();
             prCodes.add(temp);
-
         }
+        log.info("sss");
         if (null != studentsPrCodes && studentsPrCodes.size() != 0) {  //如果考生选择了专业
 
             List<String> accessLists = available(studentsPrCodes, score, provinceName, classCategory);
 
-            if (accessLists.size() == 0 || accessLists == null) {
+            if (accessLists.size() == 0) {
+
                 return accessEmploymentArea(prCodes, score, classCategory, provinceName);
             } else {
                 List<String> prCodesTemps = sortStudentsPrCodes(accessLists, provinceName);  //排序
+
                 if (prCodesTemps.size() != 0 && prCodesTemps != null) {
+
                     if (prCodesTemps.size() != 3) {
                         for (int i = 0; i < prCodes.size(); i++) {
                             if (prCodesTemps.contains(prCodes.get(i))) {
                                 continue;
-                            } else {
+                            } else
                                 prCodesTemps.add(prCodes.get(i));
-                            }
                             if (prCodesTemps.size() == 3) {
                                 break;
                             }
                         }
                     }
-                    return accessEmploymentArea(prCodesTemps, score, classCategory, provinceName);
                 }
+                for (int k = 0; k < prCodesTemps.size(); k++) {
+                    log.info(prCodesTemps.get(k) + "sssm");
+                }
+                return accessEmploymentArea(prCodesTemps, score, classCategory, provinceName);
             }
         }
         return accessEmploymentArea(prCodes, score, classCategory, provinceName);
@@ -414,6 +445,9 @@ public class ProfessionDataServiceV1 {
                         }
                     }
                 }
+                for (int k = 0; k < prCodesTemps.size(); k++) {
+                    log.info(prCodesTemps.get(k) + "sss");
+                }
                 return accessGraduate(prCodesTemps);
             }
         }
@@ -430,6 +464,7 @@ public class ProfessionDataServiceV1 {
         for (int i = 0; i < prCodes.size(); i++) {
             AreaTop3Profession areaTop3Profession = new AreaTop3Profession();
             areaTop3Profession = areaTop3ProfessionRepository.findByPrCode(prCodes.get(i), AuthenticationUtil.getTenantId());
+            log.info(areaTop3Profession.getPrCode() + "ok");
 
             //组装各个专业热门就业地区top1
             if (null != areaTop3Profession) {
@@ -502,13 +537,19 @@ public class ProfessionDataServiceV1 {
         List<String> prCodes = new ArrayList<>();
         if (areaAdmitNumberStudents == null || areaAdmitNumberStudents.size() == 0) {
             throw new Exception("NON Data");
-//            return null;
         } else {
             for (int i = 0; i < areaAdmitNumberStudents.size(); i++) {
                 String temp = new String();
                 temp = areaAdmitNumberStudents.get(i).getPrCode();
+                log.info(temp + "xxx");
                 prCodes.add(temp);
             }
+        }
+        for (int j = 0; j < studentsPrCodes.size(); j++) {  //如果这个专业课可以上，但是在去年这个地区没有招生，今年招生了，那么需要加上
+            if (prCodes.contains(studentsPrCodes.get(j))) {
+                continue;
+            } else
+                prCodes.add(studentsPrCodes.get(j));
         }
         return prCodes;
     }
@@ -536,6 +577,9 @@ public class ProfessionDataServiceV1 {
                 accessLists.add(studentsPrCodes.get(m));
                 continue;
             }
+        }
+        for (int i = 0; i < accessLists.size(); i++) {
+            log.info(accessLists.get(i) + "");
         }
         return accessLists;
     }
@@ -652,6 +696,119 @@ public class ProfessionDataServiceV1 {
             viewAreaTop3Professions.add(viewAreaTop3Profession);
         }
         return viewAreaTop3Professions;
+    }
+
+
+    private static final String defaultCharset = "UTF-8";
+    private static final String KEY_AES = "AES";
+
+    /**
+     * 加密
+     *
+     * @param data 需要加密的内容
+     * @param key  加密密码
+     * @return
+     */
+    public static String encrypt(String data, String key) {
+        return doAES(data, key, Cipher.ENCRYPT_MODE);
+    }
+
+    /**
+     * 解密
+     *
+     * @param data 待解密内容
+     * @param key  解密密钥
+     * @return
+     */
+    public static String decrypt(String data, String key) {
+        return doAES(data, key, Cipher.DECRYPT_MODE);
+    }
+
+    /**
+     * 加解密
+     *
+     * @param data     待处理数据
+     * @param password 密钥
+     * @param mode     加解密mode
+     * @return
+     */
+    private static String doAES(String data, String password, int mode) {
+        try {
+            if (StringUtils.isBlank(data) || StringUtils.isBlank(password)) {
+                return null;
+            }
+            //判断是加密还是解密
+            boolean encrypt = mode == Cipher.ENCRYPT_MODE;
+            byte[] content;
+            //true 加密内容 false 解密内容
+            if (encrypt) {
+                content = data.getBytes(defaultCharset);
+            } else {
+                content = parseHexStr2Byte(data);
+            }
+            //1.构造密钥生成器，指定为AES算法,不区分大小写
+            KeyGenerator kgen = KeyGenerator.getInstance(KEY_AES);
+            //2.根据ecnodeRules规则初始化密钥生成器
+            //生成一个128位的随机源,根据传入的字节数组
+            kgen.init(128, new SecureRandom(password.getBytes()));
+            //3.产生原始对称密钥
+            SecretKey secretKey = kgen.generateKey();
+            //4.获得原始对称密钥的字节数组
+            byte[] enCodeFormat = secretKey.getEncoded();
+            //5.根据字节数组生成AES密钥
+            SecretKeySpec keySpec = new SecretKeySpec(enCodeFormat, KEY_AES);
+            //6.根据指定算法AES自成密码器
+            Cipher cipher = Cipher.getInstance(KEY_AES);// 创建密码器
+            //7.初始化密码器，第一个参数为加密(Encrypt_mode)或者解密解密(Decrypt_mode)操作，第二个参数为使用的KEY
+            cipher.init(mode, keySpec);// 初始化
+            byte[] result = cipher.doFinal(content);
+            if (encrypt) {
+                //将二进制转换成16进制
+                return parseByte2HexStr(result);
+            } else {
+                return new String(result, defaultCharset);
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return null;
+    }
+
+    /**
+     * 将二进制转换成16进制
+     *
+     * @param buf
+     * @return
+     */
+    public static String parseByte2HexStr(byte buf[]) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < buf.length; i++) {
+            String hex = Integer.toHexString(buf[i] & 0xFF);
+            if (hex.length() == 1) {
+                hex = '0' + hex;
+            }
+            sb.append(hex.toUpperCase());
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 将16进制转换为二进制
+     *
+     * @param hexStr
+     * @return
+     */
+    public static byte[] parseHexStr2Byte(String hexStr) {
+        if (hexStr.length() < 1) {
+            return null;
+        }
+        byte[] result = new byte[hexStr.length() / 2];
+        for (int i = 0; i < hexStr.length() / 2; i++) {
+            int high = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 1), 16);
+            int low = Integer.parseInt(hexStr.substring(i * 2 + 1, i * 2 + 2), 16);
+            result[i] = (byte) (high * 16 + low);
+        }
+        return result;
     }
 
 }

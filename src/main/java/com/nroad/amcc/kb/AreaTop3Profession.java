@@ -1,13 +1,11 @@
 package com.nroad.amcc.kb;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -53,10 +51,6 @@ public class AreaTop3Profession {
     @Column
     @JsonProperty
     public String classCategory;  //科类
-
-//    @Column
-//    @JsonProperty
-//    public int admitNumber;  //录取人数
 
     @JsonProperty
     @Transient
@@ -141,14 +135,6 @@ public class AreaTop3Profession {
     public void setClassCategory(String classCategory) {
         this.classCategory = classCategory;
     }
-//
-//    public int getAdmitNumber() {
-//        return admitNumber;
-//    }
-//
-//    public void setAdmitNumber(int admitNumber) {
-//        this.admitNumber = admitNumber;
-//    }
 
     public String getTenantId() {
         return tenantId;

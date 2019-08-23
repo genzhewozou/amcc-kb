@@ -15,15 +15,15 @@ public class CandidateInformation {
 
     public String area;
 
-    public double chineseScore;
+    public String chineseScore;
 
-    public double mathScore;
+    public String mathScore;
 
-    public double englishScore;
+    public String englishScore;
 
-    public double comprehensiveScore;
+    public String comprehensiveScore;
 
-    public double totalScore;
+    public String totalScore;
 
     public String highSchool;
 
@@ -59,43 +59,43 @@ public class CandidateInformation {
         this.area = area;
     }
 
-    public double getChineseScore() {
+    public String getChineseScore() {
         return chineseScore;
     }
 
-    public void setChineseScore(double chineseScore) {
+    public void setChineseScore(String chineseScore) {
         this.chineseScore = chineseScore;
     }
 
-    public double getMathScore() {
+    public String getMathScore() {
         return mathScore;
     }
 
-    public void setMathScore(double mathScore) {
+    public void setMathScore(String mathScore) {
         this.mathScore = mathScore;
     }
 
-    public double getEnglishScore() {
+    public String getEnglishScore() {
         return englishScore;
     }
 
-    public void setEnglishScore(double englishScore) {
+    public void setEnglishScore(String englishScore) {
         this.englishScore = englishScore;
     }
 
-    public double getComprehensiveScore() {
+    public String getComprehensiveScore() {
         return comprehensiveScore;
     }
 
-    public void setComprehensiveScore(double comprehensiveScore) {
+    public void setComprehensiveScore(String comprehensiveScore) {
         this.comprehensiveScore = comprehensiveScore;
     }
 
-    public double getTotalScore() {
+    public String getTotalScore() {
         return totalScore;
     }
 
-    public void setTotalScore(double totalScore) {
+    public void setTotalScore(String totalScore) {
         this.totalScore = totalScore;
     }
 
