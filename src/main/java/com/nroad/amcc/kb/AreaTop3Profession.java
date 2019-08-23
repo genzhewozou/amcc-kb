@@ -31,6 +31,7 @@ public class AreaTop3Profession {
     public String prCode;
 
     @JsonProperty
+    @Transient
     public double scoreRank;  //排名位次
 
     @Column
@@ -41,6 +42,8 @@ public class AreaTop3Profession {
     @JsonProperty
     public double employmentRate;  //就业率
 
+    @Transient
+    @Column
     public String employmentArea;  //就业最热地区
 
     @JsonProperty
@@ -51,9 +54,9 @@ public class AreaTop3Profession {
     @JsonProperty
     public String classCategory;  //科类
 
-    @Column
-    @JsonProperty
-    public int admitNumber;  //录取人数
+//    @Column
+//    @JsonProperty
+//    public int admitNumber;  //录取人数
 
     @JsonProperty
     @Transient
@@ -138,14 +141,14 @@ public class AreaTop3Profession {
     public void setClassCategory(String classCategory) {
         this.classCategory = classCategory;
     }
-
-    public int getAdmitNumber() {
-        return admitNumber;
-    }
-
-    public void setAdmitNumber(int admitNumber) {
-        this.admitNumber = admitNumber;
-    }
+//
+//    public int getAdmitNumber() {
+//        return admitNumber;
+//    }
+//
+//    public void setAdmitNumber(int admitNumber) {
+//        this.admitNumber = admitNumber;
+//    }
 
     public String getTenantId() {
         return tenantId;

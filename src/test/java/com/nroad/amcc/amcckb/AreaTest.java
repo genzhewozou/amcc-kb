@@ -33,7 +33,7 @@ public class AreaTest {
         areaTop3Profession.setClassCategory("理工");
         areaTop3Profession.setEmploymentRate(65.62);
         areaTop3Profession.setEmploymentSalary(8500.33);
-        areaTop3Profession.setAdmitNumber(30);
+        areaTop3Profession.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
 //        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
@@ -47,7 +47,7 @@ public class AreaTest {
         areaTop3Profession.setClassCategory("理工");
         areaTop3Profession.setEmploymentRate(81.22);
         areaTop3Profession.setEmploymentSalary(6983.47);
-        areaTop3Profession.setAdmitNumber(40);
+        areaTop3Profession.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
 //        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
@@ -61,7 +61,7 @@ public class AreaTest {
         areaTop3Profession.setClassCategory("理工");
         areaTop3Profession.setEmploymentRate(86.94);
         areaTop3Profession.setEmploymentSalary(53547.36);
-        areaTop3Profession.setAdmitNumber(50);
+        areaTop3Profession.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
 //        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
@@ -75,7 +75,7 @@ public class AreaTest {
         areaTop3Profession.setClassCategory("理工");
         areaTop3Profession.setEmploymentRate(78.35);
         areaTop3Profession.setEmploymentSalary(4961.64);
-        areaTop3Profession.setAdmitNumber(60);
+        areaTop3Profession.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
 //        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
@@ -89,7 +89,7 @@ public class AreaTest {
         areaTop3Profession.setClassCategory("理工");
         areaTop3Profession.setEmploymentRate(69.41);
         areaTop3Profession.setEmploymentSalary(4562.78);
-        areaTop3Profession.setAdmitNumber(70);
+        areaTop3Profession.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
 //        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
@@ -103,7 +103,7 @@ public class AreaTest {
         areaTop3Profession.setClassCategory("理工");
         areaTop3Profession.setEmploymentRate(75.62);
         areaTop3Profession.setEmploymentSalary(7456.21);
-        areaTop3Profession.setAdmitNumber(80);
+        areaTop3Profession.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
 //        areaTop3ProfessionRepository.save(areaTop3Profession);
     }
 
@@ -117,7 +117,6 @@ public class AreaTest {
         areaTop3Profession.setClassCategory("理工");
         areaTop3Profession.setEmploymentRate(75.62);
         areaTop3Profession.setEmploymentSalary(7456.21);
-        areaTop3Profession.setAdmitNumber(80);
         areaTop3Profession.setTenantId("d7ee6efb-a965-4446-8080-683feee76395");
 //        areaTop3ProfessionRepository.save(areaTop3Profession);
     }

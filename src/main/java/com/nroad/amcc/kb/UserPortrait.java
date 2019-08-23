@@ -13,8 +13,6 @@ public class UserPortrait {
 
     public List<ViewAreaTop3Profession> viewBestProfessions;
 
-    public CandidateInformation candidateInformation;
-
 //    private Map<Integer, Integer> lastYearScoreMap = new HashMap<>();
 //
 //    public Map<String, Integer> areaMap;  //专业top1的毕业生去向统计图
@@ -27,20 +25,14 @@ public class UserPortrait {
 
     public int alumni;
 
+    public CandidateInformation candidateInformation;
+
     public List<ViewAreaTop3Profession> getViewBestProfessions() {
         return viewBestProfessions;
     }
 
     public void setViewBestProfessions(List<ViewAreaTop3Profession> viewBestProfessions) {
         this.viewBestProfessions = viewBestProfessions;
-    }
-
-    public CandidateInformation getCandidateInformation() {
-        return candidateInformation;
-    }
-
-    public void setCandidateInformation(CandidateInformation candidateInformation) {
-        this.candidateInformation = candidateInformation;
     }
 
 //    public Map<Integer, Integer> getLastYearScoreMap() {
@@ -90,5 +82,13 @@ public class UserPortrait {
 
     public void setAlumni(int alumni) {
         this.alumni = alumni;
+    }
+
+    public CandidateInformation getCandidateInformation() {
+        return candidateInformation;
+    }
+
+    public void setCandidateInformation(CandidateInformation candidateInformation) {
+        this.candidateInformation = candidateInformation;
     }
 }

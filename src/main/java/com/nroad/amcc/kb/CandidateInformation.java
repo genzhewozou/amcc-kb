@@ -2,62 +2,30 @@ package com.nroad.amcc.kb;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "`kb_candidate_information`")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CandidateInformation {
 
-    @GenericGenerator(name = "idGenerator", strategy = "uuid")
-    @GeneratedValue(generator = "idGenerator")
-    @Id
-    @JsonProperty
-    public String id;
-
-    @Column
-    @JsonProperty
     public String name;
 
-    @Column
-    @JsonProperty
-    public int chineseScore;
+    public String gender;
 
-    @Column
-    @JsonProperty
-    public int mathScore;
+    public String classCategory;
 
-    @Column
-    @JsonProperty
-    public int englishScore;
+    public String area;
 
-    @Column
-    @JsonProperty
-    public int comprehensiveScore;
+    public double chineseScore;
 
-    @Column
-    @JsonProperty
+    public double mathScore;
+
+    public double englishScore;
+
+    public double comprehensiveScore;
+
+    public double totalScore;
+
     public String highSchool;
-
-    @Column
-    @JsonProperty
-    public int alumniNumber;  //历届高中校友人数
-
-    @Column
-    @JsonProperty
-    public String tenantId;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -67,36 +35,68 @@ public class CandidateInformation {
         this.name = name;
     }
 
-    public int getChineseScore() {
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getClassCategory() {
+        return classCategory;
+    }
+
+    public void setClassCategory(String classCategory) {
+        this.classCategory = classCategory;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public double getChineseScore() {
         return chineseScore;
     }
 
-    public void setChineseScore(int chineseScore) {
+    public void setChineseScore(double chineseScore) {
         this.chineseScore = chineseScore;
     }
 
-    public int getMathScore() {
+    public double getMathScore() {
         return mathScore;
     }
 
-    public void setMathScore(int mathScore) {
+    public void setMathScore(double mathScore) {
         this.mathScore = mathScore;
     }
 
-    public int getEnglishScore() {
+    public double getEnglishScore() {
         return englishScore;
     }
 
-    public void setEnglishScore(int englishScore) {
+    public void setEnglishScore(double englishScore) {
         this.englishScore = englishScore;
     }
 
-    public int getComprehensiveScore() {
+    public double getComprehensiveScore() {
         return comprehensiveScore;
     }
 
-    public void setComprehensiveScore(int comprehensiveScore) {
+    public void setComprehensiveScore(double comprehensiveScore) {
         this.comprehensiveScore = comprehensiveScore;
+    }
+
+    public double getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(double totalScore) {
+        this.totalScore = totalScore;
     }
 
     public String getHighSchool() {
@@ -105,21 +105,5 @@ public class CandidateInformation {
 
     public void setHighSchool(String highSchool) {
         this.highSchool = highSchool;
-    }
-
-    public int getAlumniNumber() {
-        return alumniNumber;
-    }
-
-    public void setAlumniNumber(int alumniNumber) {
-        this.alumniNumber = alumniNumber;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 }

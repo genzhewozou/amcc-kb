@@ -203,11 +203,4 @@ public class ProfessionDataControllerV1 {
         return admissionPolicies;
     }
 
-    @PostMapping(value = "/upload/image")
-    @ApiOperation(value = "上传图片到服务器")
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/images/**").addResourceLocations("file:/app/image/aa.png");
-    }
-
-
 }

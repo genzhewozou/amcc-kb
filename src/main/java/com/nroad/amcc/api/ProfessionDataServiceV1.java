@@ -286,34 +286,13 @@ public class ProfessionDataServiceV1 {
         UserPortrait userPortrait = new UserPortrait();
 
         userPortrait.setViewBestProfessions(accessBestProfession(provinceName, prCodes, score, classCategory));
-//        userPortrait.setLastYearScoreMap(accessLastYearScore(provinceName));
         userPortrait.setViewLastYearScores(accessLastYearScore(provinceName, classCategory));
-//        userPortrait.setAreaMap(BestProfessionArea(provinceName, prCodes, score, classCategory));
         userPortrait.setViewGraduateAreas(BestProfessionArea(provinceName, prCodes, score, classCategory));
         userPortrait.setRank(accessRank(provinceName, score, classCategory));
         userPortrait.setAlumni(accessAlumni(mobilePhone));
+        userPortrait.setCandidateInformation(accessCandidateInformation(mobilePhone));
         return userPortrait;
     }
-
-    /*
-    查询去年本校招生的各个科类所有分数对应人数
-     */
-//    public Map<Integer, Integer> accessLastYearScore(String area) {
-//
-//        List<Integer> scoreList = lastYearScoreRepository.getAllScore(AuthenticationUtil.getTenantId(), area);
-//        if (scoreList != null && scoreList.size() != 0) {
-//            Map<Integer, Integer> lastYearScoreMap = new HashMap<>();
-//            classCategoryList.forEach(classCategory -> {
-//                scoreList.forEach(score ->
-//                {
-//                    lastYearScoreMap.put(score, lastYearScoreRepository.getCountScoreByClassCategory(classCategory, score,
-//                            AuthenticationUtil.getTenantId(), area));
-//                });
-//            });
-//            return lastYearScoreMap;
-//        }
-//        return null;
-//    }
 
     /*
     查询去年本校招生的各个科类所有分数对应人数
@@ -561,25 +540,6 @@ public class ProfessionDataServiceV1 {
         return accessLists;
     }
 
-//    /*
-//    组装专业top1的毕业生去向
-//     */
-//    public Map<String, Integer> accessGraduate(List<String> prCodes) {
-//        List<String> allAreas = graduateStudentRepository.getAllArea();
-//        if (allAreas.size() == 0 || allAreas == null) {
-//            return null;
-//        }
-//        if (prCodes.size() == 0 || prCodes == null) {
-//            return null;
-//        }
-//        String prCode = prCodes.get(0);
-//        Map<String, Integer> areaMap = new HashMap<>();
-//        allAreas.forEach(area -> {
-//            areaMap.put(area, graduateStudentRepository.getAllAreaCount(prCode, area, AuthenticationUtil.getTenantId()));
-//        });
-//        return areaMap;
-//    }
-
     /*
     组装专业top1的毕业生去向
      */
@@ -623,12 +583,23 @@ public class ProfessionDataServiceV1 {
      */
     public int accessAlumni(String mobilePhone) {
         String url = MessageFormat.format(crmUrl + "/api/v1/cust/getSchoolByMobilePhone?mobilePhone={0}&tenantId={1}",
-                mobilePhone,AuthenticationUtil.getTenantId());
+                mobilePhone, AuthenticationUtil.getTenantId());
         log.info("getFreeSeatUrl:{}", url);
         String school = restTemplate.getForObject(url, String.class);
         log.info(school);
         int number = graduateStudentRepository.getAlumni(school, AuthenticationUtil.getTenantId());
         return number;
+    }
+
+    /*
+    组装考生基本信息
+     */
+    public CandidateInformation accessCandidateInformation(String mobilePhone) {
+        String url = MessageFormat.format(crmUrl + "/api/v1/cust/getInformationByMobilePhone?mobilePhone={0}&tenantId={1}",
+                mobilePhone, AuthenticationUtil.getTenantId());
+        log.info("getFreeSeatUrl:{}", url);
+        CandidateInformation candidateInformation = restTemplate.getForObject(url, CandidateInformation.class);
+        return candidateInformation;
     }
 
     /*
