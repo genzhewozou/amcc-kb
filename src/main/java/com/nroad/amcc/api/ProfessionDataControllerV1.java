@@ -9,6 +9,7 @@ import com.nroad.amcc.support.View.ViewCommonQuestion;
 import com.nroad.amcc.support.View.ViewLastYearScore;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
 import com.nroad.amcc.support.configuration.AuthenticationUtil;
+import com.nroad.amcc.support.utils.AESUtils;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -173,7 +174,7 @@ public class ProfessionDataControllerV1 {
             String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
                     classCategory + "," + score);
             String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
-            return professionDataServiceV1.encrypt(toBeEncrypted, password);
+            return AESUtils.encrypt(toBeEncrypted, password);
         }
         if (length != 0 && length == 1) {
             prCode = prCodes.get(0);
@@ -190,14 +191,14 @@ public class ProfessionDataControllerV1 {
                 classCategory + "," + score + "," + prCode);
         log.info(toBeEncrypted);
         String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
-        return professionDataServiceV1.encrypt(toBeEncrypted, password);
+        return AESUtils.encrypt(toBeEncrypted, password);
     }
 
     @GetMapping(value = "/sendByKey")
     @ApiOperation(value = "解密加密串并且生成链接")
     public UserPortrait decrypt(@RequestParam(value = "encryptionString") String encryptionString) throws Exception {
         String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
-        String list = professionDataServiceV1.decrypt(encryptionString, password);
+        String list = AESUtils.decrypt(encryptionString, password);
         String[] totalList = list.split(",");
         String mobilePhone = totalList[0];
         String provinceName = totalList[1];
