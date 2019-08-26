@@ -323,33 +323,33 @@ public class ProfessionDataServiceV1 {
                 AuthenticationUtil.getTenantId(), provinceName, classCategory);
         List<AreaAdmitNumber> areaAdmitNumbers = new ArrayList<>();
 
+        List<String> prCodes = new ArrayList<>();
+
         if (accessPrCodes == null || accessPrCodes.size() == 0) {  //如果没有满足考生分数的专业
-            return null;
+            prCodes = null;
         } else {
             areaAdmitNumbers = areaAdmitNumberRepository.findAllByName(provinceName, accessPrCodes,
                     AuthenticationUtil.getTenantId());  //查询出省top3
+
+            for (int i = 0; i < areaAdmitNumbers.size(); i++) {  //在history-data表中有的专业，在area-admit-number中也一定有
+                String temp = new String();
+                temp = areaAdmitNumbers.get(i).getPrCode();
+                prCodes.add(temp);
+            }
+            log.info("sss");
         }
 
-        List<String> prCodes = new ArrayList<>();
-
-        for (int i = 0; i < areaAdmitNumbers.size(); i++) {  //在history-data表中有的专业，在area-admit-number中也一定有
-            String temp = new String();
-            temp = areaAdmitNumbers.get(i).getPrCode();
-            prCodes.add(temp);
-        }
-        log.info("sss");
         if (null != studentsPrCodes && studentsPrCodes.size() != 0) {  //如果考生选择了专业
 
-            List<String> accessLists = available(studentsPrCodes, score, provinceName, classCategory);
+//            List<String> accessLists = available(studentsPrCodes, score, provinceName, classCategory);
 
-            if (accessLists.size() == 0) {
-
-                return accessEmploymentArea(prCodes, score, classCategory, provinceName);
-            } else {
-                List<String> prCodesTemps = sortStudentsPrCodes(accessLists, provinceName);  //排序
-
-                if (prCodesTemps.size() != 0 && prCodesTemps != null) {
-
+//            if (accessLists == null || accessLists.size() == 0) {
+//                return accessEmploymentArea(prCodes, score, classCategory, provinceName);
+//            } else {
+//                List<String> prCodesTemps = sortStudentsPrCodes(accessLists, provinceName);  //排序
+            List<String> prCodesTemps = sortStudentsPrCodes(studentsPrCodes, provinceName);  //排序
+            if (prCodesTemps.size() != 0 && prCodesTemps != null) {
+                if (prCodes != null) {
                     if (prCodesTemps.size() != 3) {
                         for (int i = 0; i < prCodes.size(); i++) {
                             if (prCodesTemps.contains(prCodes.get(i))) {
@@ -362,11 +362,9 @@ public class ProfessionDataServiceV1 {
                         }
                     }
                 }
-                for (int k = 0; k < prCodesTemps.size(); k++) {
-                    log.info(prCodesTemps.get(k) + "sssm");
-                }
-                return accessEmploymentArea(prCodesTemps, score, classCategory, provinceName);
             }
+            return accessEmploymentArea(prCodesTemps, score, classCategory, provinceName);
+//            }
         }
         return accessEmploymentArea(prCodes, score, classCategory, provinceName);
     }
@@ -380,46 +378,45 @@ public class ProfessionDataServiceV1 {
                 AuthenticationUtil.getTenantId(), provinceName, classCategory);
         List<AreaAdmitNumber> areaAdmitNumbers = new ArrayList<>();
 
+        List<String> prCodes = new ArrayList<>();
+
         if (accessPrCodes == null || accessPrCodes.size() == 0) {  //如果没有满足考生分数的专业
-            return null;
+            prCodes = null;
         } else {
             areaAdmitNumbers = areaAdmitNumberRepository.findAllByName(provinceName, accessPrCodes,
                     AuthenticationUtil.getTenantId());  //查询出省top3
-        }
-
-        List<String> prCodes = new ArrayList<>();
-
-        for (int i = 0; i < areaAdmitNumbers.size(); i++) {  //在history-data表中有的专业，在area-admit-number中也一定有
-            String temp = new String();
-            temp = areaAdmitNumbers.get(i).getPrCode();
-            prCodes.add(temp);
+            for (int i = 0; i < areaAdmitNumbers.size(); i++) {  //在history-data表中有的专业，在area-admit-number中也一定有
+                String temp = new String();
+                temp = areaAdmitNumbers.get(i).getPrCode();
+                prCodes.add(temp);
+            }
         }
 
         if (null != studentsPrCodes && studentsPrCodes.size() != 0) {  //如果考生选择了专业
 
-            List<String> accessLists = available(studentsPrCodes, score, provinceName, classCategory);
+//            List<String> accessLists = available(studentsPrCodes, score, provinceName, classCategory);
 
-            if (accessLists.size() == 0) {
-                return accessGraduate(prCodes);
-            }
+//            if (accessLists == null || accessLists.size() == 0) {
+//                return accessGraduate(prCodes);
+//            }
 
 
-            List<String> prCodesTemps = sortStudentsPrCodes(accessLists, provinceName);  //排序
+//            List<String> prCodesTemps = sortStudentsPrCodes(accessLists, provinceName);  //排序
+            List<String> prCodesTemps = sortStudentsPrCodes(studentsPrCodes, provinceName);  //排序
 
             if (prCodesTemps.size() != 0 && prCodesTemps != null) {
-                if (prCodesTemps.size() != 3) {
-                    for (int i = 0; i < prCodes.size(); i++) {
-                        if (prCodesTemps.contains(prCodes.get(i))) {
-                            continue;
-                        } else
-                            prCodesTemps.add(prCodes.get(i));
-                        if (prCodesTemps.size() == 3) {
-                            break;
+                if (prCodes != null) {
+                    if (prCodesTemps.size() != 3) {
+                        for (int i = 0; i < prCodes.size(); i++) {
+                            if (prCodesTemps.contains(prCodes.get(i))) {
+                                continue;
+                            } else
+                                prCodesTemps.add(prCodes.get(i));
+                            if (prCodesTemps.size() == 3) {
+                                break;
+                            }
                         }
                     }
-                }
-                for (int k = 0; k < prCodesTemps.size(); k++) {
-                    log.info(prCodesTemps.get(k) + "sss");
                 }
                 return accessGraduate(prCodesTemps);
             }
@@ -431,6 +428,9 @@ public class ProfessionDataServiceV1 {
     组装各个专业热门就业地区top1,录取批次对应人数,男女分布情况,毕业薪资超越情况
      */
     private List<ViewAreaTop3Profession> accessEmploymentArea(List<String> prCodes, int score, String classCategory, String provinceName) {
+        if (null == prCodes) {
+            return null;
+        }
         List<AreaTop3Profession> areaTop3Professions = new ArrayList<>();
         int totalProfession = professionDetailsRepository.getAllPrCode(AuthenticationUtil.getTenantId());//获取本校所有专业数目
 
@@ -524,48 +524,55 @@ public class ProfessionDataServiceV1 {
             } else
                 prCodes.add(studentsPrCodes.get(j));
         }
+        for (int m = 0; m < prCodes.size(); m++) {
+            log.info("eeff");
+            log.info(prCodes.get(m) + "ccded");
+        }
         return prCodes;
     }
 
     /*
     判断考生自选专业是否可上
      */
-    public List<String> available(List<String> studentsPrCodes, int score, String provinceName, String classCategory) {
-        List<String> accessLists = new ArrayList<>();
-        for (int m = 0; m < studentsPrCodes.size(); m++) {  //判断考生自选的是否可以上
-
-            List<Integer> accessList = historyDataJpaRepository.findScore(studentsPrCodes.get(m), provinceName
-                    , AuthenticationUtil.getTenantId(), classCategory);
-            Collections.sort(accessList);
-
-            if (accessList.size() == 2) {
-                if ((score + 10) >= accessList.get(1)) {
-                    accessLists.add(studentsPrCodes.get(m));  //此处无法区分本科还是专科
-                    continue;
-                } else if ((score + 10) >= accessList.get(0)) {
-                    accessLists.add(studentsPrCodes.get(m));
-                    continue;
-                }
-            } else if ((score + 10) >= accessList.get(0)) {
-                accessLists.add(studentsPrCodes.get(m));
-                continue;
-            }
-        }
-        for (int i = 0; i < accessLists.size(); i++) {
-            log.info(accessLists.get(i) + "");
-        }
-        return accessLists;
-    }
+//    public List<String> available(List<String> studentsPrCodes, int score, String provinceName, String classCategory) {
+//        List<String> accessLists = new ArrayList<>();
+//        for (int m = 0; m < studentsPrCodes.size(); m++) {  //判断考生自选的是否可以上
+//
+//            List<Integer> accessList = historyDataJpaRepository.findScore(studentsPrCodes.get(m), provinceName
+//                    , AuthenticationUtil.getTenantId(), classCategory);
+//            Collections.sort(accessList);
+//
+//            if (accessList.size() == 0) {
+//                return null;
+//            }
+//            if (accessList.size() == 2) {
+//                if ((score + 10) >= accessList.get(1)) {
+//                    accessLists.add(studentsPrCodes.get(m));  //此处无法区分本科还是专科
+//                    continue;
+//                } else if ((score + 10) >= accessList.get(0)) {
+//                    accessLists.add(studentsPrCodes.get(m));
+//                    continue;
+//                }
+//            } else if ((score + 10) >= accessList.get(0)) {
+//                accessLists.add(studentsPrCodes.get(m));
+//                continue;
+//            }
+//        }
+//        for (int i = 0; i < accessLists.size(); i++) {
+//            log.info(accessLists.get(i) + "");
+//        }
+//        return accessLists;
+//    }
 
     /*
     组装专业top1的毕业生去向
      */
     public List<ViewGraduateArea> accessGraduate(List<String> prCodes) {
         List<String> allAreas = graduateStudentRepository.getAllArea();
-        if (allAreas.size() == 0 || allAreas == null) {
+        if (allAreas == null || allAreas.size() == 0) {
             return null;
         }
-        if (prCodes.size() == 0 || prCodes == null) {
+        if (prCodes == null || prCodes.size() == 0) {
             return null;
         }
         String prCode = prCodes.get(0);
@@ -604,6 +611,9 @@ public class ProfessionDataServiceV1 {
         log.info("getFreeSeatUrl:{}", url);
         String school = restTemplate.getForObject(url, String.class);
         log.info(school);
+        if (school == null) {
+            return 0;
+        }
         int number = graduateStudentRepository.getAlumni(school, AuthenticationUtil.getTenantId());
         return number;
     }
@@ -617,6 +627,17 @@ public class ProfessionDataServiceV1 {
         log.info("getFreeSeatUrl:{}", url);
         CandidateInformation candidateInformation = restTemplate.getForObject(url, CandidateInformation.class);
         return candidateInformation;
+    }
+
+    /*
+   组装考生姓名
+    */
+    public String accessCandidateName(String mobilePhone) {
+        String url = MessageFormat.format(crmUrl + "/api/v1/cust/getInformationByMobilePhone?mobilePhone={0}&tenantId={1}",
+                mobilePhone, AuthenticationUtil.getTenantId());
+        CandidateInformation candidateInformation = restTemplate.getForObject(url, CandidateInformation.class);
+        String name = candidateInformation.getName();
+        return name;
     }
 
     /*

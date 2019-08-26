@@ -161,23 +161,38 @@ public class ProfessionDataControllerV1 {
         return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone);
     }
 
-    @GetMapping(value = "/generateKey")
+    @PostMapping(value = "/generateKey")
     @ApiOperation(value = "生成加密串", notes = "根据用户所在区域名字，分数以及意向专业")
-    public String encryption(@RequestParam(value = "provinceName") String provinceName,
-                             @RequestParam(value = "score") int score,
-                             @RequestParam(value = "classCategory") String classCategory,
-                             @RequestParam(value = "mobilePhone") String mobilePhone,
-                             @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
+    public void encryption(@RequestParam(value = "provinceName") String provinceName,
+                           @RequestParam(value = "score") int score,
+                           @RequestParam(value = "classCategory") String classCategory,
+                           @RequestParam(value = "mobilePhone") String mobilePhone,
+                           @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
         int length = prCodes.size();
         String prCode = "";
+
+        String name = professionDataServiceV1.accessCandidateName(mobilePhone);
+
+        SmsUtil smsUtil = new SmsUtil();
+        String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
+
         if (length == 0) {
             String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
                     classCategory + "," + score);
-            String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
-            return AESUtils.encrypt(toBeEncrypted, password);
+
+            log.info(toBeEncrypted + "");
+            String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
+            log.info(encryptionString + "");
+            smsUtil.sendSms(name, mobilePhone, encryptionString);
         }
         if (length != 0 && length == 1) {
             prCode = prCodes.get(0);
+            String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
+                    classCategory + "," + score + "," + prCode);
+            log.info(toBeEncrypted + "");
+            String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
+            log.info(encryptionString + "");
+            smsUtil.sendSms(name, mobilePhone, encryptionString);
         }
         if (length != 0 && length > 1) {
             prCode = prCodes.get(0) + ",";
@@ -185,17 +200,19 @@ public class ProfessionDataControllerV1 {
                 prCode = prCode + prCodes.get(i) + ",";
             }
             prCode = prCode.substring(0, prCode.length() - 1);
+
+            String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
+                    classCategory + "," + score + "," + prCode);
+            log.info(toBeEncrypted + "");
+            String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
+            log.info(encryptionString + "");
+            smsUtil.sendSms(name, mobilePhone, encryptionString);
         }
 
-        String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
-                classCategory + "," + score + "," + prCode);
-        log.info(toBeEncrypted);
-        String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
-        return AESUtils.encrypt(toBeEncrypted, password);
     }
 
-    @GetMapping(value = "/sendByKey")
-    @ApiOperation(value = "解密加密串并且生成链接")
+    @GetMapping(value = "/accessByKey")
+    @ApiOperation(value = "解密加密串并访问")
     public UserPortrait decrypt(@RequestParam(value = "encryptionString") String encryptionString) throws Exception {
         String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
         String list = AESUtils.decrypt(encryptionString, password);
@@ -215,15 +232,6 @@ public class ProfessionDataControllerV1 {
         return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone);
     }
 
-    @PostMapping(value = "/send/Sms")
-    @ApiOperation(value = "发送短信")
-    public void senSms(@RequestParam(value = "mobile", required = false) String mobile,
-                       @RequestParam(value = "name", required = false) String name,
-                       @RequestParam(value = "code", required = false) String code) {
-        SmsUtil smsUtil = new SmsUtil();
-        smsUtil.sendSms(name, mobile, code);
-    }
-
     @GetMapping(value = "/query/answer")
     @ApiOperation(value = "模糊查询常见问题")
     public List<ViewCommonQuestion> findAnswerByKeyWord(@RequestParam(value = "keyWord", required = false) String keyWord) {
@@ -239,17 +247,27 @@ public class ProfessionDataControllerV1 {
                 viewCommonQuestions.add(viewCommonQuestion);
             }
             return viewCommonQuestions;
+        } else {
+            List<CommonQuestion> questionList = commonQuestionRepository.findAll();
+            for (int i = 0; i < questionList.size(); i++) {
+                ViewCommonQuestion viewCommonQuestion = new ViewCommonQuestion();
+                CommonQuestion commonQuestion = questionList.get(i);
+                viewCommonQuestion.setQuestion(commonQuestion.getQuestion());
+                viewCommonQuestion.setAnswer(commonQuestion.getAnswer());
+                viewCommonQuestions.add(viewCommonQuestion);
+            }
+            return viewCommonQuestions;
         }
-        return null;
     }
 
     @GetMapping(value = "/query/policy")
     @ApiOperation(value = "模糊查询招生政策")
-    public List<AdmissionPolicy> findPolicyByKeyWord(@RequestParam(value = "keyWord", required = false) String keyWord) {
+    public List<AdmissionPolicy> findPolicyByKeyWord(@RequestParam(value = "keyWord", required = false) String keyWord,
+                                                     @RequestParam(value = "area") String area) {
         List<AdmissionPolicy> admissionPolicies = new ArrayList<>();
 
         if (keyWord != null) {
-            List<String> titleList = admissionPolicyRepository.findByKeyWord(keyWord);
+            List<String> titleList = admissionPolicyRepository.findByKeyWord(keyWord, area);
             for (int i = 0; i < titleList.size(); i++) {
                 AdmissionPolicy admissionPolicy = admissionPolicyRepository.findUrlByTitle(titleList.get(i));
                 admissionPolicies.add(admissionPolicy);

@@ -18,7 +18,7 @@ public class SmsUtil {
     //产品域名,开发者无需替换
     static final String domain = "dysmsapi.aliyuncs.com";
 
-    static final String accessKeyId = "LTAInrYdr8AGTrSM";
+    static final String accessKeyId = "LTAI3M4xgUsKGEnl";
     static final String accessKeySecret = "nq7fqPStFZstFc5fdPh4iV2g8iiNTT";
 
     public void sendSms(String name, String mobile, String code) {
@@ -32,7 +32,7 @@ public class SmsUtil {
         request.setAction("SendSms");
         request.putQueryParameter("RegionId", "cn-hangzhou");
         request.putQueryParameter("PhoneNumbers", mobile);
-        request.putQueryParameter("SignName", "考生画像");
+        request.putQueryParameter("SignName", "大鱼测试");
         request.putQueryParameter("TemplateCode", "SMS_172740567");  //
         request.putQueryParameter("TemplateParam", "{\"name\":" + name + " ,\"code\":" + code + "}");
         try {
