@@ -41,9 +41,6 @@ public class ProfessionDataServiceV1 {
     private ContractedAreaRepository contractedAreaRepository;
 
     @Autowired
-    AreaTop3ProfessionRepository areaTop3ProfessionRepository;
-
-    @Autowired
     StudentsScoreRepository studentsScoreRepository;
 
     @Autowired
@@ -191,29 +188,6 @@ public class ProfessionDataServiceV1 {
         return null;
     }
 
-    public Object uploadAdmissionPolicy(MultipartFile file) {
-
-        List<String> list;
-
-        try {
-            list = new ExcelUtil().readAdmissionPolicy(file.getInputStream());
-            AdmissionPolicy admissionPolicy = new AdmissionPolicy();
-            int count = 0;
-            for (int i = 0; i < (list.size() / 4); i++) {
-                admissionPolicy.setId(UUID.randomUUID().toString());
-                admissionPolicy.setArea(list.get(i + count));
-                admissionPolicy.setDate(list.get(i + count + 1));
-                admissionPolicy.setTitle(list.get(i + count + 2));
-                admissionPolicy.setUrl(list.get(i + count + 3));
-                count += 3;
-                admissionPolicyRepository.save(admissionPolicy);
-            }
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            throw PlatformException.of(PlatformError.KB_UNKNOW_ERROR, e1.getMessage());
-        }
-        return null;
-    }
 
     public Page<HistoryData> findProfession(Pageable pageable, String area, String classCategory, String prTitle, String prCode,
                                             Integer studentScore, String tenantId) {
@@ -341,12 +315,6 @@ public class ProfessionDataServiceV1 {
 
         if (null != studentsPrCodes && studentsPrCodes.size() != 0) {  //如果考生选择了专业
 
-//            List<String> accessLists = available(studentsPrCodes, score, provinceName, classCategory);
-
-//            if (accessLists == null || accessLists.size() == 0) {
-//                return accessEmploymentArea(prCodes, score, classCategory, provinceName);
-//            } else {
-//                List<String> prCodesTemps = sortStudentsPrCodes(accessLists, provinceName);  //排序
             List<String> prCodesTemps = sortStudentsPrCodes(studentsPrCodes, provinceName);  //排序
             if (prCodesTemps.size() != 0 && prCodesTemps != null) {
                 if (prCodes != null) {
@@ -394,14 +362,6 @@ public class ProfessionDataServiceV1 {
 
         if (null != studentsPrCodes && studentsPrCodes.size() != 0) {  //如果考生选择了专业
 
-//            List<String> accessLists = available(studentsPrCodes, score, provinceName, classCategory);
-
-//            if (accessLists == null || accessLists.size() == 0) {
-//                return accessGraduate(prCodes);
-//            }
-
-
-//            List<String> prCodesTemps = sortStudentsPrCodes(accessLists, provinceName);  //排序
             List<String> prCodesTemps = sortStudentsPrCodes(studentsPrCodes, provinceName);  //排序
 
             if (prCodesTemps.size() != 0 && prCodesTemps != null) {
@@ -431,71 +391,63 @@ public class ProfessionDataServiceV1 {
         if (null == prCodes) {
             return null;
         }
-        List<AreaTop3Profession> areaTop3Professions = new ArrayList<>();
+        List<ProfessionDetails> professionDetailsList = new ArrayList<>();
         int totalProfession = professionDetailsRepository.getAllPrCode(AuthenticationUtil.getTenantId());//获取本校所有专业数目
 
         for (int i = 0; i < prCodes.size(); i++) {
-            AreaTop3Profession areaTop3Profession = new AreaTop3Profession();
-            areaTop3Profession = areaTop3ProfessionRepository.findByPrCode(prCodes.get(i), AuthenticationUtil.getTenantId());
-            log.info(areaTop3Profession.getPrCode() + "ok");
 
             //组装各个专业热门就业地区top1
-            if (null != areaTop3Profession) {
-                ProfessionDetails professionDetails = new ProfessionDetails();
-                professionDetails = professionDetailsRepository.findByPrCode(prCodes.get(i), AuthenticationUtil.getTenantId());
-                List<ContractedArea> contractedAreas = contractedAreaRepository.findAllByProfession(professionDetails.getId());
-                if (contractedAreas == null || contractedAreas.size() == 0) {
-                    areaTop3Profession.setEmploymentArea(null);
-                } else {
-                    contractedAreas.sort((x, y) -> Double.compare(x.getProportion(), y.getProportion()));
-                    Collections.reverse(contractedAreas);
-                    ContractedArea contractedArea = contractedAreas.get(0);
-                    areaTop3Profession.setEmploymentArea(contractedArea.getName());
-                    areaTop3Profession.setEmploymentAreaProportion(contractedArea.getProportion());
-                }
-
-                //组装录取批次map
-                String prCode = new String();
-                prCode = prCodes.get(i);
-                Map<String, Integer> admissionMap = new HashMap<>();
-                List<String> admissions = new ArrayList<>();
-                admissions = historyDataJpaRepository.findAllBatch(prCodes.get(i), provinceName,
-                        classCategory, AuthenticationUtil.getTenantId());
-                for (int j = 0; j < admissions.size(); j++) {
-                    int panNumber = historyDataJpaRepository.findNUmber(prCode, provinceName,
-                            classCategory, AuthenticationUtil.getTenantId(), admissions.get(j));
-                    admissionMap.put(admissions.get(j), panNumber);
-                }
-                areaTop3Profession.setAdmissionMap(admissionMap);
-
-                //组装男女比例
-                String boyProportion = professionDetails.getBoyProportion();
-                String girlProportion = professionDetails.getGirlProportion();
-                areaTop3Profession.setGirlProportion(girlProportion);
-                areaTop3Profession.setBoyProportion(boyProportion);
-
-                //组装毕业薪资超越情况
-                double salary = professionDetails.getAverageSalary();
-
-                log.info(totalProfession + "");
-                int surpassingProfessionNumber = professionDetailsRepository.getSurpassingProfessionNumber(salary,
-                        AuthenticationUtil.getTenantId());
-                log.info(surpassingProfessionNumber + "");
-                if (totalProfession == 0 || surpassingProfessionNumber == 0) {
-                    areaTop3Profession.setSurpassingProfessionNumber(0.00);
-                } else {
-                    BigDecimal b = new BigDecimal((double) surpassingProfessionNumber / totalProfession);
-                    areaTop3Profession.setSurpassingProfessionNumber(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                }
-
-                areaTop3Professions.add(areaTop3Profession);
+            ProfessionDetails professionDetails = new ProfessionDetails();
+            professionDetails = professionDetailsRepository.findByPrCode(prCodes.get(i), AuthenticationUtil.getTenantId());
+            List<ContractedArea> contractedAreas = contractedAreaRepository.findAllByProfession(professionDetails.getId());
+            if (contractedAreas == null || contractedAreas.size() == 0) {
+                professionDetails.setEmploymentArea(null);
+            } else {
+                contractedAreas.sort((x, y) -> Double.compare(x.getProportion(), y.getProportion()));
+                Collections.reverse(contractedAreas);
+                ContractedArea contractedArea = contractedAreas.get(0);
+                professionDetails.setEmploymentArea(contractedArea.getName());
+                professionDetails.setEmploymentAreaProportion(contractedArea.getProportion());
             }
 
+            //组装录取批次map
+            String prCode = new String();
+            prCode = prCodes.get(i);
+            Map<String, Integer> admissionMap = new HashMap<>();
+            List<String> admissions = new ArrayList<>();
+            admissions = historyDataJpaRepository.findAllBatch(prCodes.get(i), provinceName,
+                    classCategory, AuthenticationUtil.getTenantId());
+            for (int j = 0; j < admissions.size(); j++) {
+                int panNumber = historyDataJpaRepository.findNUmber(prCode, provinceName,
+                        classCategory, AuthenticationUtil.getTenantId(), admissions.get(j));
+                admissionMap.put(admissions.get(j), panNumber);
+            }
+            professionDetails.setAdmissionMap(admissionMap);
+
+            //组装男女比例
+            String boyProportion = professionDetails.getBoyProportion();
+            String girlProportion = professionDetails.getGirlProportion();
+            professionDetails.setGirlProportion(girlProportion);
+            professionDetails.setBoyProportion(boyProportion);
+
+            //组装毕业薪资超越情况
+            double salary = professionDetails.getAverageSalary();
+
+            log.info(totalProfession + "");
+            int surpassingProfessionNumber = professionDetailsRepository.getSurpassingProfessionNumber(salary,
+                    AuthenticationUtil.getTenantId());
+            log.info(surpassingProfessionNumber + "");
+            if (totalProfession == 0 || surpassingProfessionNumber == 0) {
+                professionDetails.setSurpassingProfessionNumber(0.00);
+            } else {
+                BigDecimal b = new BigDecimal((double) surpassingProfessionNumber / totalProfession);
+                professionDetails.setSurpassingProfessionNumber(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            }
+
+            professionDetailsList.add(professionDetails);
         }
-//        areaTop3Professions = accessScoreRank(areaTop3Professions, score, classCategory);
-        List<ViewAreaTop3Profession> viewAreaTop3Professions = accessViewAreaTop3Profession(areaTop3Professions);
-//        viewAreaTop3Professions.sort((x, y) -> Double.compare(x.getCompeteIndex(), y.getCompeteIndex()));
-//        Collections.reverse(viewAreaTop3Professions);
+
+        List<ViewAreaTop3Profession> viewAreaTop3Professions = accessViewAreaTop3Profession(professionDetailsList);
         return viewAreaTop3Professions;
     }
 
@@ -530,39 +482,6 @@ public class ProfessionDataServiceV1 {
         }
         return prCodes;
     }
-
-    /*
-    判断考生自选专业是否可上
-     */
-//    public List<String> available(List<String> studentsPrCodes, int score, String provinceName, String classCategory) {
-//        List<String> accessLists = new ArrayList<>();
-//        for (int m = 0; m < studentsPrCodes.size(); m++) {  //判断考生自选的是否可以上
-//
-//            List<Integer> accessList = historyDataJpaRepository.findScore(studentsPrCodes.get(m), provinceName
-//                    , AuthenticationUtil.getTenantId(), classCategory);
-//            Collections.sort(accessList);
-//
-//            if (accessList.size() == 0) {
-//                return null;
-//            }
-//            if (accessList.size() == 2) {
-//                if ((score + 10) >= accessList.get(1)) {
-//                    accessLists.add(studentsPrCodes.get(m));  //此处无法区分本科还是专科
-//                    continue;
-//                } else if ((score + 10) >= accessList.get(0)) {
-//                    accessLists.add(studentsPrCodes.get(m));
-//                    continue;
-//                }
-//            } else if ((score + 10) >= accessList.get(0)) {
-//                accessLists.add(studentsPrCodes.get(m));
-//                continue;
-//            }
-//        }
-//        for (int i = 0; i < accessLists.size(); i++) {
-//            log.info(accessLists.get(i) + "");
-//        }
-//        return accessLists;
-//    }
 
     /*
     组装专业top1的毕业生去向
@@ -641,52 +560,25 @@ public class ProfessionDataServiceV1 {
     }
 
     /*
-    组装竞争力
-     */
-    private List<AreaTop3Profession> accessScoreRank(List<AreaTop3Profession> areaTop3Professions,
-                                                     int score, String classCategory) {
-        if (null != areaTop3Professions) {
-            for (int i = 0; i < areaTop3Professions.size(); i++) {
-                AreaTop3Profession areaTop3Profession = new AreaTop3Profession();
-                areaTop3Profession = areaTop3Professions.get(i);
-                int number = studentsScoreRepository.getTotalNumber(classCategory, areaTop3Profession.getPrCode(),
-                        AuthenticationUtil.getTenantId());  //获取本专业所有录取人数
-                int surpassingNumber = studentsScoreRepository.getSurpassingNumber(classCategory, areaTop3Profession.getPrCode(),
-                        AuthenticationUtil.getTenantId(), score);  //获取考生超过的人数
-                if (surpassingNumber == 0 || number == 0) {
-                    areaTop3Profession.setScoreRank(0.00);
-                } else {
-                    BigDecimal b = new BigDecimal((double) surpassingNumber / number);
-                    areaTop3Profession.setScoreRank(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                }
-                areaTop3Professions.set(i, areaTop3Profession);
-            }
-            return areaTop3Professions;
-        }
-        return null;
-    }
-
-    /*
     组装视图返回
      */
     private List<ViewAreaTop3Profession> accessViewAreaTop3Profession
-    (List<AreaTop3Profession> areaTop3Professions) {
+    (List<ProfessionDetails> professionDetailsList) {
         List<ViewAreaTop3Profession> viewAreaTop3Professions = new ArrayList<>();
 
-        for (int i = 0; i < areaTop3Professions.size(); i++) {
-            AreaTop3Profession areaTop3Profession = areaTop3Professions.get(i);
+        for (int i = 0; i < professionDetailsList.size(); i++) {
+            ProfessionDetails professionDetails = professionDetailsList.get(i);
             ViewAreaTop3Profession viewAreaTop3Profession = new ViewAreaTop3Profession();
-//            viewAreaTop3Profession.setCompeteIndex(areaTop3Profession.getScoreRank());
-            viewAreaTop3Profession.setEmploymentRate(areaTop3Profession.getEmploymentRate());
-            viewAreaTop3Profession.setEmploymentSalary(areaTop3Profession.getEmploymentSalary());
-            viewAreaTop3Profession.setPrCode(areaTop3Profession.getPrCode());
-            viewAreaTop3Profession.setPrTitle(areaTop3Profession.getPrTitle());
-            viewAreaTop3Profession.setEmploymentArea(areaTop3Profession.getEmploymentArea());
-            viewAreaTop3Profession.setAdmissionMap(areaTop3Profession.getAdmissionMap());
-            viewAreaTop3Profession.setBoyProportion(areaTop3Profession.getBoyProportion());
-            viewAreaTop3Profession.setGirlProportion(areaTop3Profession.getGirlProportion());
-            viewAreaTop3Profession.setSurpassingProfessionNumber(areaTop3Profession.getSurpassingProfessionNumber());
-            viewAreaTop3Profession.setEmploymentAreaProportion(areaTop3Profession.getEmploymentAreaProportion());
+            viewAreaTop3Profession.setEmploymentRate(professionDetails.getEmploymentRate());
+            viewAreaTop3Profession.setEmploymentSalary(professionDetails.getAverageSalary());
+            viewAreaTop3Profession.setPrCode(professionDetails.getPrCode());
+            viewAreaTop3Profession.setPrTitle(professionDetails.getPrTitle());
+            viewAreaTop3Profession.setEmploymentArea(professionDetails.getEmploymentArea());
+            viewAreaTop3Profession.setAdmissionMap(professionDetails.getAdmissionMap());
+            viewAreaTop3Profession.setBoyProportion(professionDetails.getBoyProportion());
+            viewAreaTop3Profession.setGirlProportion(professionDetails.getGirlProportion());
+            viewAreaTop3Profession.setSurpassingProfessionNumber(professionDetails.getSurpassingProfessionNumber());
+            viewAreaTop3Profession.setEmploymentAreaProportion(professionDetails.getEmploymentAreaProportion());
             viewAreaTop3Professions.add(viewAreaTop3Profession);
         }
         return viewAreaTop3Professions;

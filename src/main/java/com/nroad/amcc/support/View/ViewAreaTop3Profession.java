@@ -9,8 +9,6 @@ public class ViewAreaTop3Profession {
 
     public String prCode;
 
-//    public double competeIndex;  //竞争力指数
-
     public double employmentSalary;  //就业薪资
 
     public double employmentRate;  //就业率
@@ -42,14 +40,6 @@ public class ViewAreaTop3Profession {
     public void setPrCode(String prCode) {
         this.prCode = prCode;
     }
-
-//    public double getCompeteIndex() {
-//        return competeIndex;
-//    }
-//
-//    public void setCompeteIndex(double competeIndex) {
-//        this.competeIndex = competeIndex;
-//    }
 
     public double getEmploymentSalary() {
         return employmentSalary;

@@ -65,10 +65,29 @@ public class ProfessionDetails {
     @OneToMany(mappedBy = "professionDetails")
     private List<ContractedArea> contractedAreas = new ArrayList<>();
 
-//    @OneToMany(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "profession_details_id", foreignKey = @ForeignKey(name = "fk_profession_details_id_admit"))
-//    @JsonProperty
-//    private List<AreaAdmitNumber> areaAdmitNumbers = new ArrayList<>();
+    @Column
+    @JsonProperty
+    public double employmentRate;  //就业率
+
+    @JsonProperty
+    @Transient
+    public double scoreRank;  //排名位次
+
+    @Transient
+    @Column
+    public String employmentArea;  //就业最热地区
+
+    @JsonProperty
+    @Transient
+    public double employmentAreaProportion;  //就业最热地区比例
+
+    @JsonProperty
+    @Transient
+    public Map<String, Integer> admissionMap;
+
+    @JsonProperty
+    @Transient
+    public double surpassingProfessionNumber;  //就业薪资超越同校其他专业情况
 
     @Column
     public String tenantId;
@@ -207,6 +226,54 @@ public class ProfessionDetails {
 
     public void setContractedAreas(List<ContractedArea> contractedAreas) {
         this.contractedAreas = contractedAreas;
+    }
+
+    public double getEmploymentRate() {
+        return employmentRate;
+    }
+
+    public void setEmploymentRate(double employmentRate) {
+        this.employmentRate = employmentRate;
+    }
+
+    public double getScoreRank() {
+        return scoreRank;
+    }
+
+    public void setScoreRank(double scoreRank) {
+        this.scoreRank = scoreRank;
+    }
+
+    public String getEmploymentArea() {
+        return employmentArea;
+    }
+
+    public void setEmploymentArea(String employmentArea) {
+        this.employmentArea = employmentArea;
+    }
+
+    public double getEmploymentAreaProportion() {
+        return employmentAreaProportion;
+    }
+
+    public void setEmploymentAreaProportion(double employmentAreaProportion) {
+        this.employmentAreaProportion = employmentAreaProportion;
+    }
+
+    public Map<String, Integer> getAdmissionMap() {
+        return admissionMap;
+    }
+
+    public void setAdmissionMap(Map<String, Integer> admissionMap) {
+        this.admissionMap = admissionMap;
+    }
+
+    public double getSurpassingProfessionNumber() {
+        return surpassingProfessionNumber;
+    }
+
+    public void setSurpassingProfessionNumber(double surpassingProfessionNumber) {
+        this.surpassingProfessionNumber = surpassingProfessionNumber;
     }
 
     public String getTenantId() {

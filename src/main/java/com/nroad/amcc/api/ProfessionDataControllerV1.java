@@ -84,17 +84,6 @@ public class ProfessionDataControllerV1 {
         professionDataServiceV1.uploadCommonQuestion(file);
     }
 
-    @PostMapping("/upload/admissionPolicy")
-    @ApiOperation(value = "上传招生政策", notes = "")
-    @PreAuthorize("hasRole('TENANT_ADMIN')")
-    public void uploadAdmissionPolicy(@RequestParam("file") MultipartFile file) {
-        String filename = file.getOriginalFilename();
-        if (file.isEmpty() || StringUtils.isEmpty(filename) || !filename.endsWith(".xlsx")) {
-            throw PlatformException.of(PlatformError.KB_UPLOAD_FILE_NOT_BLANK);
-        }
-        professionDataServiceV1.uploadAdmissionPolicy(file);
-    }
-
     @PostMapping("/upload/professionArea")
     @ApiOperation(value = "上传专业详情的毕业生去向Top3", notes = "")
     @PreAuthorize("hasRole('TENANT_ADMIN')")
