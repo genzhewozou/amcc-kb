@@ -3,6 +3,7 @@ package com.nroad.amcc.api;
 import com.aliyuncs.exceptions.ClientException;
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.PlatformException;
+import com.nroad.amcc.Sms.SmsClient;
 import com.nroad.amcc.Sms.SmsUtil;
 import com.nroad.amcc.kb.*;
 import com.nroad.amcc.support.View.ViewCommonQuestion;
@@ -172,7 +173,7 @@ public class ProfessionDataControllerV1 {
             log.info(toBeEncrypted + "");
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             log.info(encryptionString + "");
-            smsUtil.sendSms(name, mobilePhone, encryptionString);
+            SmsClient.sendSms(name, mobilePhone, encryptionString);
             return encryptionString;
         }
         if (length != 0 && length == 1) {
@@ -182,7 +183,7 @@ public class ProfessionDataControllerV1 {
             log.info(toBeEncrypted + "");
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             log.info(encryptionString + "");
-            smsUtil.sendSms(name, mobilePhone, encryptionString);
+            SmsClient.sendSms(name, mobilePhone, encryptionString);
             return encryptionString;
         }
         if (length != 0 && length > 1) {
@@ -197,7 +198,7 @@ public class ProfessionDataControllerV1 {
             log.info(toBeEncrypted + "");
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             log.info(encryptionString + "");
-            smsUtil.sendSms(name, mobilePhone, encryptionString);
+            SmsClient.sendSms(name, mobilePhone, encryptionString);
             return encryptionString;
         }
         return null;

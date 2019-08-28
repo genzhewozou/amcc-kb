@@ -18,8 +18,8 @@ public class SmsUtil {
     //产品域名,开发者无需替换
     static final String domain = "dysmsapi.aliyuncs.com";
 
-    static final String accessKeyId = "LTAI3M4xgUsKGEnl";
-    static final String accessKeySecret = "nq7fqPStFZstFc5fdPh4iV2g8iiNTT";
+    static final String accessKeyId = "23416522";
+    static final String accessKeySecret = "c36a9eb8d991476f7fb8599523b9da28";
 
     public void sendSms(String name, String mobile, String code) {
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
