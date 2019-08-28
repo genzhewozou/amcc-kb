@@ -150,9 +150,9 @@ public class ProfessionDataControllerV1 {
         return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone);
     }
 
-    @PostMapping(value = "/generateKey")
+    @GetMapping(value = "/generateKey")
     @ApiOperation(value = "生成加密串", notes = "根据用户所在区域名字，分数以及意向专业")
-    public void encryption(@RequestParam(value = "provinceName") String provinceName,
+    public String encryption(@RequestParam(value = "provinceName") String provinceName,
                            @RequestParam(value = "score") int score,
                            @RequestParam(value = "classCategory") String classCategory,
                            @RequestParam(value = "mobilePhone") String mobilePhone,
@@ -173,6 +173,7 @@ public class ProfessionDataControllerV1 {
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             log.info(encryptionString + "");
             smsUtil.sendSms(name, mobilePhone, encryptionString);
+            return encryptionString;
         }
         if (length != 0 && length == 1) {
             prCode = prCodes.get(0);
@@ -182,6 +183,7 @@ public class ProfessionDataControllerV1 {
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             log.info(encryptionString + "");
             smsUtil.sendSms(name, mobilePhone, encryptionString);
+            return encryptionString;
         }
         if (length != 0 && length > 1) {
             prCode = prCodes.get(0) + ",";
@@ -196,8 +198,9 @@ public class ProfessionDataControllerV1 {
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             log.info(encryptionString + "");
             smsUtil.sendSms(name, mobilePhone, encryptionString);
+            return encryptionString;
         }
-
+        return null;
     }
 
     @GetMapping(value = "/accessByKey")
