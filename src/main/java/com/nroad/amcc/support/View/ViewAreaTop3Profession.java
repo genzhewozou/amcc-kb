@@ -25,6 +25,8 @@ public class ViewAreaTop3Profession {
 
     public double surpassingProfessionNumber;  //就业薪资超越同校其他专业情况
 
+    public int areaAdmitNumber;  //区域专业录取人数
+
     public String getPrTitle() {
         return prTitle;
     }
@@ -103,5 +105,13 @@ public class ViewAreaTop3Profession {
 
     public void setEmploymentAreaProportion(double employmentAreaProportion) {
         this.employmentAreaProportion = employmentAreaProportion;
+    }
+
+    public int getAreaAdmitNumber() {
+        return areaAdmitNumber;
+    }
+
+    public void setAreaAdmitNumber(int areaAdmitNumber) {
+        this.areaAdmitNumber = areaAdmitNumber;
     }
 }

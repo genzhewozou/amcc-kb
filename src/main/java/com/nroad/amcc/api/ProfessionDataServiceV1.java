@@ -259,7 +259,7 @@ public class ProfessionDataServiceV1 {
         UserPortrait userPortrait = new UserPortrait();
 
         userPortrait.setViewBestProfessions(accessBestProfession(provinceName, prCodes, score, classCategory));
-        userPortrait.setViewLastYearScores(accessLastYearScore(provinceName, classCategory));
+        userPortrait.setViewLastYearScores(accessLastYearScore(classCategory));
         userPortrait.setViewGraduateAreas(BestProfessionArea(provinceName, prCodes, score, classCategory));
         userPortrait.setRank(accessRank(provinceName, score, classCategory));
         userPortrait.setAlumni(accessAlumni(mobilePhone));
@@ -270,8 +270,8 @@ public class ProfessionDataServiceV1 {
     /*
     查询去年本校招生的各个科类所有分数对应人数
      */
-    public List<ViewLastYearScore> accessLastYearScore(String area, String classCategory) {
-        List<Integer> scoreList = lastYearScoreRepository.getAllScore(AuthenticationUtil.getTenantId(), area);
+    public List<ViewLastYearScore> accessLastYearScore(String classCategory) {
+        List<Integer> scoreList = lastYearScoreRepository.getAllScore(AuthenticationUtil.getTenantId());
         List<ViewLastYearScore> viewLastYearScores = new ArrayList<>();
         if (scoreList != null && scoreList.size() != 0) {
             scoreList.forEach(score ->
@@ -279,7 +279,7 @@ public class ProfessionDataServiceV1 {
                 ViewLastYearScore viewLastYearScore = new ViewLastYearScore();
                 viewLastYearScore.setScore(score);
                 viewLastYearScore.setNumber(lastYearScoreRepository.getCountScoreByClassCategory(classCategory, score,
-                        AuthenticationUtil.getTenantId(), area));
+                        AuthenticationUtil.getTenantId()));
                 viewLastYearScores.add(viewLastYearScore);
             });
             return viewLastYearScores;
@@ -310,7 +310,6 @@ public class ProfessionDataServiceV1 {
                 temp = areaAdmitNumbers.get(i).getPrCode();
                 prCodes.add(temp);
             }
-            log.info("sss");
         }
 
         if (null != studentsPrCodes && studentsPrCodes.size() != 0) {  //如果考生选择了专业
@@ -410,6 +409,9 @@ public class ProfessionDataServiceV1 {
                 professionDetails.setEmploymentAreaProportion(contractedArea.getProportion());
             }
 
+            //组装此专业在此地区的招生人数
+            professionDetails.setAreaAdmitNumber(areaAdmitNumberRepository.findNumberByPrCode(prCodes.get(i), AuthenticationUtil.getTenantId()));
+
             //组装录取批次map
             String prCode = new String();
             prCode = prCodes.get(i);
@@ -495,12 +497,16 @@ public class ProfessionDataServiceV1 {
             return null;
         }
         String prCode = prCodes.get(0);
+        int totalNumber = graduateStudentRepository.getAllCount(prCode, AuthenticationUtil.getTenantId());
+
         List<ViewGraduateArea> viewGraduateAreas = new ArrayList<>();
 
         allAreas.forEach(area -> {
             ViewGraduateArea viewGraduateArea = new ViewGraduateArea();
             viewGraduateArea.setArea(area);
-            viewGraduateArea.setNumber(graduateStudentRepository.getAllAreaCount(prCode, area, AuthenticationUtil.getTenantId()));
+            int areaNumber = graduateStudentRepository.getAllAreaCount(prCode, area, AuthenticationUtil.getTenantId());
+            BigDecimal b = new BigDecimal((double) areaNumber / totalNumber);
+            viewGraduateArea.setProportion(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
             viewGraduateAreas.add(viewGraduateArea);
         });
         return viewGraduateAreas;
@@ -579,6 +585,7 @@ public class ProfessionDataServiceV1 {
             viewAreaTop3Profession.setGirlProportion(professionDetails.getGirlProportion());
             viewAreaTop3Profession.setSurpassingProfessionNumber(professionDetails.getSurpassingProfessionNumber());
             viewAreaTop3Profession.setEmploymentAreaProportion(professionDetails.getEmploymentAreaProportion());
+            viewAreaTop3Profession.setAreaAdmitNumber(professionDetails.getAreaAdmitNumber());
             viewAreaTop3Professions.add(viewAreaTop3Profession);
         }
         return viewAreaTop3Professions;

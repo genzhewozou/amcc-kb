@@ -52,9 +52,15 @@
 	<repositories>
 		<repository>
 			<id>nexus</id>
-			<name>Nexus nroad</name>
-			<url>http://192.168.8.46/repository/maven-public/</url>
+			<name>Nexus hosted by Nroad Network</name>
+			<url>https://nexus.nroad.com.cn/repository/maven-public</url>
 		</repository>
+
+		<!--<repository>-->
+			<!--<id>nexus</id>-->
+			<!--<name>Nexus nroad</name>-->
+			<!--<url>http://192.168.8.46/repository/maven-public/</url>-->
+		<!--</repository>-->
 	</repositories>
 
 	<dependencies>

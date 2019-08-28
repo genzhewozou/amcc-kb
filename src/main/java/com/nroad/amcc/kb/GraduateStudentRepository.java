@@ -16,6 +16,9 @@ public interface GraduateStudentRepository extends JpaRepository<GraduateStudent
     @Query(value = "SELECT count(id)  from kb_graduate_student where pr_code=?1 and graduate_area=?2 and tenant_id=?3", nativeQuery = true)
     int getAllAreaCount(String prCode, String area, String tenantId);
 
+    @Query(value = "SELECT count(id)  from kb_graduate_student where pr_code=?1 and tenant_id=?2", nativeQuery = true)
+    int getAllCount(String prCode, String tenantId);
+
     @Query(value = "SELECT count(id) from kb_graduate_student where high_school=?1 and tenant_id=?2", nativeQuery = true)
     int getAlumni(String school, String tenantId);
 

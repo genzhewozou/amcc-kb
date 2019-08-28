@@ -89,6 +89,10 @@ public class ProfessionDetails {
     @Transient
     public double surpassingProfessionNumber;  //就业薪资超越同校其他专业情况
 
+    @JsonProperty
+    @Transient
+    public int areaAdmitNumber;  //区域专业录取人数
+
     @Column
     public String tenantId;
 
@@ -282,5 +286,13 @@ public class ProfessionDetails {
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public int getAreaAdmitNumber() {
+        return areaAdmitNumber;
+    }
+
+    public void setAreaAdmitNumber(int areaAdmitNumber) {
+        this.areaAdmitNumber = areaAdmitNumber;
     }
 }

@@ -4,7 +4,7 @@ public class ViewGraduateArea {
 
     public String area;
 
-    public int number;
+    public double proportion;
 
     public String getArea() {
         return area;
@@ -14,11 +14,11 @@ public class ViewGraduateArea {
         this.area = area;
     }
 
-    public int getNumber() {
-        return number;
+    public double getProportion() {
+        return proportion;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
+    public void setProportion(double proportion) {
+        this.proportion = proportion;
     }
 }
