@@ -11,6 +11,7 @@ import com.nroad.amcc.support.View.ViewLastYearScore;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
 import com.nroad.amcc.support.configuration.AuthenticationUtil;
 import com.nroad.amcc.support.utils.AESUtils;
+import com.nroad.amcc.support.utils.PasswordUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,16 +41,20 @@ public class ProfessionDataControllerV1 {
 
     private AdmissionPolicyRepository admissionPolicyRepository;
 
+    private PasswordMappingRepository passwordMappingRepository;
+
     @Autowired
     public ProfessionDataControllerV1(ProfessionDataServiceV1 professionDataServiceV1,
                                       CommonQuestionRepository commonQuestionRepository,
-                                      AdmissionPolicyRepository admissionPolicyRepository) {
+                                      AdmissionPolicyRepository admissionPolicyRepository,
+                                      PasswordMappingRepository passwordMappingRepository) {
         Assert.notNull(professionDataServiceV1, "HistoryDataServiceV1 can not be null");
         Assert.notNull(commonQuestionRepository, "commonQuestionRepository can not be null");
         Assert.notNull(admissionPolicyRepository, "admissionPolicyRepository can not be null");
         this.professionDataServiceV1 = professionDataServiceV1;
         this.commonQuestionRepository = commonQuestionRepository;
         this.admissionPolicyRepository = admissionPolicyRepository;
+        this.passwordMappingRepository = passwordMappingRepository;
     }
 
     @PostMapping("/upload/historyData")
@@ -146,45 +151,64 @@ public class ProfessionDataControllerV1 {
                                              @RequestParam(value = "score") int score,
                                              @RequestParam(value = "classCategory") String classCategory,
                                              @RequestParam(value = "mobilePhone") String mobilePhone,
+                                             @RequestParam(value = "tenantId") String tenantId,
                                              @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
 
-        return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone);
+        return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone, tenantId);
     }
 
     @GetMapping(value = "/generateKey")
     @ApiOperation(value = "生成加密串", notes = "根据用户所在区域名字，分数以及意向专业")
     public String encryption(@RequestParam(value = "provinceName") String provinceName,
-                           @RequestParam(value = "score") int score,
-                           @RequestParam(value = "classCategory") String classCategory,
-                           @RequestParam(value = "mobilePhone") String mobilePhone,
-                           @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
+                             @RequestParam(value = "score") int score,
+                             @RequestParam(value = "classCategory") String classCategory,
+                             @RequestParam(value = "mobilePhone") String mobilePhone,
+                             @RequestParam(value = "tenantId") String tenantId,
+                             @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
         int length = prCodes.size();
         String prCode = "";
 
         String name = professionDataServiceV1.accessCandidateName(mobilePhone);
 
-        SmsUtil smsUtil = new SmsUtil();
         String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
 
         if (length == 0) {
             String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
-                    classCategory + "," + score);
+                    classCategory + "," + score + "," + tenantId);
 
             log.info(toBeEncrypted + "");
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
+            String eightPassword = new PasswordUtil().generateEightPassword();
             log.info(encryptionString + "");
-            SmsClient.sendSms(name, mobilePhone, encryptionString);
-            return encryptionString;
+            log.info(eightPassword + "");
+
+            PasswordMapping passwordMapping = new PasswordMapping();
+            passwordMapping.setId(UUID.randomUUID().toString());
+            passwordMapping.setEncryptedString(encryptionString);
+            passwordMapping.setMapString(eightPassword);
+            passwordMappingRepository.saveAndFlush(passwordMapping);
+
+            SmsClient.sendSms(name, mobilePhone, eightPassword);
+            return eightPassword;
         }
         if (length != 0 && length == 1) {
             prCode = prCodes.get(0);
             String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
-                    classCategory + "," + score + "," + prCode);
+                    classCategory + "," + score + "," + tenantId + "," + prCode);
             log.info(toBeEncrypted + "");
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
+            String eightPassword = new PasswordUtil().generateEightPassword();
             log.info(encryptionString + "");
-            SmsClient.sendSms(name, mobilePhone, encryptionString);
-            return encryptionString;
+            log.info(eightPassword + "");
+
+            PasswordMapping passwordMapping = new PasswordMapping();
+            passwordMapping.setId(UUID.randomUUID().toString());
+            passwordMapping.setEncryptedString(encryptionString);
+            passwordMapping.setMapString(eightPassword);
+            passwordMappingRepository.saveAndFlush(passwordMapping);
+
+            SmsClient.sendSms(name, mobilePhone, eightPassword);
+            return eightPassword;
         }
         if (length != 0 && length > 1) {
             prCode = prCodes.get(0) + ",";
@@ -194,35 +218,49 @@ public class ProfessionDataControllerV1 {
             prCode = prCode.substring(0, prCode.length() - 1);
 
             String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
-                    classCategory + "," + score + "," + prCode);
+                    classCategory + "," + score + "," + tenantId + "," + prCode);
             log.info(toBeEncrypted + "");
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
+            String eightPassword = new PasswordUtil().generateEightPassword();
             log.info(encryptionString + "");
-            SmsClient.sendSms(name, mobilePhone, encryptionString);
-            return encryptionString;
+            log.info(eightPassword + "");
+
+            PasswordMapping passwordMapping = new PasswordMapping();
+            passwordMapping.setId(UUID.randomUUID().toString());
+            passwordMapping.setEncryptedString(encryptionString);
+            passwordMapping.setMapString(eightPassword);
+            passwordMappingRepository.saveAndFlush(passwordMapping);
+
+            SmsClient.sendSms(name, mobilePhone, eightPassword);
+            return eightPassword;
         }
         return null;
     }
 
     @GetMapping(value = "/accessByKey")
     @ApiOperation(value = "解密加密串并访问")
-    public UserPortrait decrypt(@RequestParam(value = "encryptionString") String encryptionString) throws Exception {
+    public UserPortrait decrypt(@RequestParam(value = "encryptionString") String eightPassword) throws Exception {
+
+        String encryptionString = passwordMappingRepository.findEncryptedStringByEightPassword(eightPassword);
+
         String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
         String list = AESUtils.decrypt(encryptionString, password);
+        log.info(list);
         String[] totalList = list.split(",");
         String mobilePhone = totalList[0];
         String provinceName = totalList[1];
         String classCategory = totalList[2];
+        String tenantId = totalList[4];
         int score = Integer.parseInt(totalList[3]);
         int length = totalList.length;
         log.info(length + "");
         List<String> prCodes = new ArrayList<>();
-        if (length > 4) {
-            for (int i = 0; i < length - 4; i++) {
-                prCodes.add(totalList[4 + i]);
+        if (length > 5) {
+            for (int i = 0; i < length - 5; i++) {
+                prCodes.add(totalList[5 + i]);
             }
         }
-        return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone);
+        return professionDataServiceV1.generateUserPortrait(provinceName, score, classCategory, prCodes, mobilePhone, tenantId);
     }
 
     @GetMapping(value = "/query/answer")

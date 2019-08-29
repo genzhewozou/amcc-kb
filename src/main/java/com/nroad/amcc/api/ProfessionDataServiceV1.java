@@ -255,23 +255,23 @@ public class ProfessionDataServiceV1 {
     }
 
     public UserPortrait generateUserPortrait(String provinceName, int score, String classCategory, List<String> prCodes,
-                                             String mobilePhone) throws Exception {
+                                             String mobilePhone, String tenantId) throws Exception {
         UserPortrait userPortrait = new UserPortrait();
 
-        userPortrait.setViewBestProfessions(accessBestProfession(provinceName, prCodes, score, classCategory));
-        userPortrait.setViewLastYearScores(accessLastYearScore(classCategory));
-        userPortrait.setViewGraduateAreas(BestProfessionArea(provinceName, prCodes, score, classCategory));
-        userPortrait.setRank(accessRank(provinceName, score, classCategory));
-        userPortrait.setAlumni(accessAlumni(mobilePhone));
-        userPortrait.setCandidateInformation(accessCandidateInformation(mobilePhone));
+        userPortrait.setViewBestProfessions(accessBestProfession(provinceName, prCodes, score, classCategory, tenantId));
+        userPortrait.setViewLastYearScores(accessLastYearScore(classCategory, tenantId));
+        userPortrait.setViewGraduateAreas(BestProfessionArea(provinceName, prCodes, score, classCategory, tenantId));
+        userPortrait.setRank(accessRank(provinceName, score, classCategory, tenantId));
+        userPortrait.setAlumni(accessAlumni(mobilePhone, tenantId));
+        userPortrait.setCandidateInformation(accessCandidateInformation(mobilePhone, tenantId));
         return userPortrait;
     }
 
     /*
     查询去年本校招生的各个科类所有分数对应人数
      */
-    public List<ViewLastYearScore> accessLastYearScore(String classCategory) {
-        List<Integer> scoreList = lastYearScoreRepository.getAllScore(AuthenticationUtil.getTenantId());
+    public List<ViewLastYearScore> accessLastYearScore(String classCategory, String tenantId) {
+        List<Integer> scoreList = lastYearScoreRepository.getAllScore(tenantId);
         List<ViewLastYearScore> viewLastYearScores = new ArrayList<>();
         if (scoreList != null && scoreList.size() != 0) {
             scoreList.forEach(score ->
@@ -279,7 +279,7 @@ public class ProfessionDataServiceV1 {
                 ViewLastYearScore viewLastYearScore = new ViewLastYearScore();
                 viewLastYearScore.setScore(score);
                 viewLastYearScore.setNumber(lastYearScoreRepository.getCountScoreByClassCategory(classCategory, score,
-                        AuthenticationUtil.getTenantId()));
+                        tenantId));
                 viewLastYearScores.add(viewLastYearScore);
             });
             return viewLastYearScores;
@@ -291,10 +291,10 @@ public class ProfessionDataServiceV1 {
    组装Top3专业
     */
     private List<ViewAreaTop3Profession> accessBestProfession(String provinceName, List<String> studentsPrCodes
-            , int score, String classCategory) throws Exception {
+            , int score, String classCategory, String tenantId) throws Exception {
 
         List<String> accessPrCodes = historyDataJpaRepository.findAllProfessionByScore((score + 10),
-                AuthenticationUtil.getTenantId(), provinceName, classCategory);
+                tenantId, provinceName, classCategory);
         List<AreaAdmitNumber> areaAdmitNumbers = new ArrayList<>();
 
         List<String> prCodes = new ArrayList<>();
@@ -303,7 +303,7 @@ public class ProfessionDataServiceV1 {
             prCodes = null;
         } else {
             areaAdmitNumbers = areaAdmitNumberRepository.findAllByName(provinceName, accessPrCodes,
-                    AuthenticationUtil.getTenantId());  //查询出省top3
+                    tenantId);  //查询出省top3
 
             for (int i = 0; i < areaAdmitNumbers.size(); i++) {  //在history-data表中有的专业，在area-admit-number中也一定有
                 String temp = new String();
@@ -314,7 +314,7 @@ public class ProfessionDataServiceV1 {
 
         if (null != studentsPrCodes && studentsPrCodes.size() != 0) {  //如果考生选择了专业
 
-            List<String> prCodesTemps = sortStudentsPrCodes(studentsPrCodes, provinceName);  //排序
+            List<String> prCodesTemps = sortStudentsPrCodes(studentsPrCodes, provinceName, tenantId);  //排序
             if (prCodesTemps.size() != 0 && prCodesTemps != null) {
                 if (prCodes != null) {
                     if (prCodesTemps.size() != 3) {
@@ -330,19 +330,20 @@ public class ProfessionDataServiceV1 {
                     }
                 }
             }
-            return accessEmploymentArea(prCodesTemps, score, classCategory, provinceName);
+            return accessEmploymentArea(prCodesTemps, score, classCategory, provinceName, tenantId);
 //            }
         }
-        return accessEmploymentArea(prCodes, score, classCategory, provinceName);
+        return accessEmploymentArea(prCodes, score, classCategory, provinceName, tenantId);
     }
 
     /*
   组装Top1的毕业生去向
    */
-    private List<ViewGraduateArea> BestProfessionArea(String provinceName, List<String> studentsPrCodes, int score, String classCategory) throws Exception {
+    private List<ViewGraduateArea> BestProfessionArea(String provinceName, List<String> studentsPrCodes, int score,
+                                                      String classCategory, String tenantId) throws Exception {
 
         List<String> accessPrCodes = historyDataJpaRepository.findAllProfessionByScore((score + 10),
-                AuthenticationUtil.getTenantId(), provinceName, classCategory);
+                tenantId, provinceName, classCategory);
         List<AreaAdmitNumber> areaAdmitNumbers = new ArrayList<>();
 
         List<String> prCodes = new ArrayList<>();
@@ -351,7 +352,7 @@ public class ProfessionDataServiceV1 {
             prCodes = null;
         } else {
             areaAdmitNumbers = areaAdmitNumberRepository.findAllByName(provinceName, accessPrCodes,
-                    AuthenticationUtil.getTenantId());  //查询出省top3
+                    tenantId);  //查询出省top3
             for (int i = 0; i < areaAdmitNumbers.size(); i++) {  //在history-data表中有的专业，在area-admit-number中也一定有
                 String temp = new String();
                 temp = areaAdmitNumbers.get(i).getPrCode();
@@ -361,7 +362,7 @@ public class ProfessionDataServiceV1 {
 
         if (null != studentsPrCodes && studentsPrCodes.size() != 0) {  //如果考生选择了专业
 
-            List<String> prCodesTemps = sortStudentsPrCodes(studentsPrCodes, provinceName);  //排序
+            List<String> prCodesTemps = sortStudentsPrCodes(studentsPrCodes, provinceName, tenantId);  //排序
 
             if (prCodesTemps.size() != 0 && prCodesTemps != null) {
                 if (prCodes != null) {
@@ -377,27 +378,28 @@ public class ProfessionDataServiceV1 {
                         }
                     }
                 }
-                return accessGraduate(prCodesTemps);
+                return accessGraduate(prCodesTemps, tenantId);
             }
         }
-        return accessGraduate(prCodes);
+        return accessGraduate(prCodes, tenantId);
     }
 
     /*
     组装各个专业热门就业地区top1,录取批次对应人数,男女分布情况,毕业薪资超越情况
      */
-    private List<ViewAreaTop3Profession> accessEmploymentArea(List<String> prCodes, int score, String classCategory, String provinceName) {
+    private List<ViewAreaTop3Profession> accessEmploymentArea(List<String> prCodes, int score, String classCategory
+            , String provinceName, String tenantId) {
         if (null == prCodes) {
             return null;
         }
         List<ProfessionDetails> professionDetailsList = new ArrayList<>();
-        int totalProfession = professionDetailsRepository.getAllPrCode(AuthenticationUtil.getTenantId());//获取本校所有专业数目
+        int totalProfession = professionDetailsRepository.getAllPrCode(tenantId);//获取本校所有专业数目
 
         for (int i = 0; i < prCodes.size(); i++) {
 
             //组装各个专业热门就业地区top1
             ProfessionDetails professionDetails = new ProfessionDetails();
-            professionDetails = professionDetailsRepository.findByPrCode(prCodes.get(i), AuthenticationUtil.getTenantId());
+            professionDetails = professionDetailsRepository.findByPrCode(prCodes.get(i), tenantId);
             List<ContractedArea> contractedAreas = contractedAreaRepository.findAllByProfession(professionDetails.getId());
             if (contractedAreas == null || contractedAreas.size() == 0) {
                 professionDetails.setEmploymentArea(null);
@@ -410,7 +412,7 @@ public class ProfessionDataServiceV1 {
             }
 
             //组装此专业在此地区的招生人数
-            professionDetails.setAreaAdmitNumber(areaAdmitNumberRepository.findNumberByPrCode(prCodes.get(i), AuthenticationUtil.getTenantId()));
+            professionDetails.setAreaAdmitNumber(areaAdmitNumberRepository.findNumberByPrCode(prCodes.get(i), tenantId));
 
             //组装录取批次map
             String prCode = new String();
@@ -418,10 +420,10 @@ public class ProfessionDataServiceV1 {
             Map<String, Integer> admissionMap = new HashMap<>();
             List<String> admissions = new ArrayList<>();
             admissions = historyDataJpaRepository.findAllBatch(prCodes.get(i), provinceName,
-                    classCategory, AuthenticationUtil.getTenantId());
+                    classCategory, tenantId);
             for (int j = 0; j < admissions.size(); j++) {
                 int panNumber = historyDataJpaRepository.findNUmber(prCode, provinceName,
-                        classCategory, AuthenticationUtil.getTenantId(), admissions.get(j));
+                        classCategory, tenantId, admissions.get(j));
                 admissionMap.put(admissions.get(j), panNumber);
             }
             professionDetails.setAdmissionMap(admissionMap);
@@ -437,7 +439,7 @@ public class ProfessionDataServiceV1 {
 
             log.info(totalProfession + "");
             int surpassingProfessionNumber = professionDetailsRepository.getSurpassingProfessionNumber(salary,
-                    AuthenticationUtil.getTenantId());
+                    tenantId);
             log.info(surpassingProfessionNumber + "");
             if (totalProfession == 0 || surpassingProfessionNumber == 0) {
                 professionDetails.setSurpassingProfessionNumber(0.00);
@@ -456,10 +458,10 @@ public class ProfessionDataServiceV1 {
     /*
     排序studentsPrCodes
      */
-    private List<String> sortStudentsPrCodes(List<String> studentsPrCodes, String areaName) throws Exception {
+    private List<String> sortStudentsPrCodes(List<String> studentsPrCodes, String areaName, String tenantId) throws Exception {
 
         List<AreaAdmitNumber> areaAdmitNumberStudents = areaAdmitNumberRepository.findAllByName(areaName, studentsPrCodes,
-                AuthenticationUtil.getTenantId());
+                tenantId);
 
         List<String> prCodes = new ArrayList<>();
         if (areaAdmitNumberStudents == null || areaAdmitNumberStudents.size() == 0) {
@@ -488,7 +490,7 @@ public class ProfessionDataServiceV1 {
     /*
     组装专业top1的毕业生去向
      */
-    public List<ViewGraduateArea> accessGraduate(List<String> prCodes) {
+    public List<ViewGraduateArea> accessGraduate(List<String> prCodes, String tenantId) {
         List<String> allAreas = graduateStudentRepository.getAllArea();
         if (allAreas == null || allAreas.size() == 0) {
             return null;
@@ -497,17 +499,21 @@ public class ProfessionDataServiceV1 {
             return null;
         }
         String prCode = prCodes.get(0);
-        int totalNumber = graduateStudentRepository.getAllCount(prCode, AuthenticationUtil.getTenantId());
+        int totalNumber = graduateStudentRepository.getAllCount(prCode, tenantId);
 
         List<ViewGraduateArea> viewGraduateAreas = new ArrayList<>();
 
         allAreas.forEach(area -> {
             ViewGraduateArea viewGraduateArea = new ViewGraduateArea();
             viewGraduateArea.setArea(area);
-            int areaNumber = graduateStudentRepository.getAllAreaCount(prCode, area, AuthenticationUtil.getTenantId());
-            BigDecimal b = new BigDecimal((double) areaNumber / totalNumber);
-            viewGraduateArea.setProportion(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-            viewGraduateAreas.add(viewGraduateArea);
+            int areaNumber = graduateStudentRepository.getAllAreaCount(prCode, area, tenantId);
+            if (areaNumber == 0) {
+                viewGraduateArea.setProportion(0);
+                viewGraduateAreas.add(viewGraduateArea);
+            } else {
+                BigDecimal b = new BigDecimal((double) areaNumber / totalNumber);
+                viewGraduateArea.setProportion(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            }
         });
         return viewGraduateAreas;
     }
@@ -515,9 +521,9 @@ public class ProfessionDataServiceV1 {
     /*
     组装考生在本校相同科类中的位次
      */
-    private double accessRank(String area, int score, String classCategory) {
-        int countTotal = lastYearScoreRepository.getCountNumber(classCategory, AuthenticationUtil.getTenantId(), area);
-        int surpassingNumber = lastYearScoreRepository.getsurpassingNumber(classCategory, AuthenticationUtil.getTenantId(),
+    private double accessRank(String area, int score, String classCategory, String tenantId) {
+        int countTotal = lastYearScoreRepository.getCountNumber(classCategory, tenantId, area);
+        int surpassingNumber = lastYearScoreRepository.getsurpassingNumber(classCategory, tenantId,
                 area, score);
         if (surpassingNumber == 0 || countTotal == 0) {
             return 0.00;
@@ -530,25 +536,25 @@ public class ProfessionDataServiceV1 {
     /*
     组装历届校友
      */
-    public int accessAlumni(String mobilePhone) {
+    public int accessAlumni(String mobilePhone, String tenantId) {
         String url = MessageFormat.format(crmUrl + "/api/v1/cust/getSchoolByMobilePhone?mobilePhone={0}&tenantId={1}",
-                mobilePhone, AuthenticationUtil.getTenantId());
+                mobilePhone, tenantId);
         log.info("getFreeSeatUrl:{}", url);
         String school = restTemplate.getForObject(url, String.class);
         log.info(school);
         if (school == null) {
             return 0;
         }
-        int number = graduateStudentRepository.getAlumni(school, AuthenticationUtil.getTenantId());
+        int number = graduateStudentRepository.getAlumni(school, tenantId);
         return number;
     }
 
     /*
     组装考生基本信息
      */
-    public CandidateInformation accessCandidateInformation(String mobilePhone) {
+    public CandidateInformation accessCandidateInformation(String mobilePhone, String tenantId) {
         String url = MessageFormat.format(crmUrl + "/api/v1/cust/getInformationByMobilePhone?mobilePhone={0}&tenantId={1}",
-                mobilePhone, AuthenticationUtil.getTenantId());
+                mobilePhone, tenantId);
         log.info("getFreeSeatUrl:{}", url);
         CandidateInformation candidateInformation = restTemplate.getForObject(url, CandidateInformation.class);
         return candidateInformation;
