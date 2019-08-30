@@ -95,6 +95,7 @@ public enum PlatformError {
     KB_UNKNOW_ERROR(4007,"Tenant org dept not exist"),
     KB_OVER_ERROR(4008,"Not Allowed Over 500"),
     NOT_MATCH_PROFESSION(4009,"Not match Profession"),
+    KB_Incomplete_Information(4010,"Information not complete "),
 	
     /**
      * sms error

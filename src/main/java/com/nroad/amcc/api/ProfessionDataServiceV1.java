@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,9 +40,6 @@ public class ProfessionDataServiceV1 {
 
     @Autowired
     private ContractedAreaRepository contractedAreaRepository;
-
-    @Autowired
-    StudentsScoreRepository studentsScoreRepository;
 
     @Autowired
     AreaAdmitNumberRepository areaAdmitNumberRepository;
@@ -188,6 +186,80 @@ public class ProfessionDataServiceV1 {
         return null;
     }
 
+    public Object uploadlastYearScore(MultipartFile file) {
+
+        List<String> list;
+
+        try {
+            list = new ExcelUtil().readLastYearScore(file.getInputStream());
+            LastYearScore lastYearScore = new LastYearScore();
+            int count = 0;
+            for (int i = 0; i < (list.size() / 4); i++) {
+                lastYearScore.setId(UUID.randomUUID().toString());
+                lastYearScore.setArea(list.get(i + count));
+                lastYearScore.setClassCategory(list.get(i + count + 1));
+                lastYearScore.setScore(Integer.parseInt(list.get(i + count + 2)));
+                lastYearScore.setTenantId(list.get(i + count + 3));
+                count += 3;
+                lastYearScoreRepository.save(lastYearScore);
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            throw PlatformException.of(PlatformError.KB_UNKNOW_ERROR, e1.getMessage());
+        }
+        return null;
+    }
+
+    public Object uploadAreaAdmitNumber(MultipartFile file) {
+
+        List<String> list;
+
+        try {
+            list = new ExcelUtil().readAreaAdmitNumber(file.getInputStream());
+            AreaAdmitNumber areaAdmitNumber = new AreaAdmitNumber();
+            int count = 0;
+            for (int i = 0; i < (list.size() / 5); i++) {
+                areaAdmitNumber.setId(UUID.randomUUID().toString());
+                areaAdmitNumber.setAreaName(list.get(i + count));
+                areaAdmitNumber.setPrCode(list.get(i + count + 1));
+                areaAdmitNumber.setPrTitle(list.get(i + count + 2));
+                areaAdmitNumber.setAdmitNumber(Integer.parseInt(list.get(i + count + 3)));
+                areaAdmitNumber.setTenantId(list.get(i + count + 4));
+                count += 4;
+                areaAdmitNumberRepository.save(areaAdmitNumber);
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            throw PlatformException.of(PlatformError.KB_UNKNOW_ERROR, e1.getMessage());
+        }
+        return null;
+    }
+
+    public Object uploadGraduateArea(MultipartFile file) {
+
+        List<String> list;
+
+        try {
+            list = new ExcelUtil().readGraduateArea(file.getInputStream());
+            GraduateStudent graduateStudent = new GraduateStudent();
+            int count = 0;
+            for (int i = 0; i < (list.size() / 5); i++) {
+                graduateStudent.setId(UUID.randomUUID().toString());
+                graduateStudent.setGraduateArea(list.get(i + count));
+                graduateStudent.setPrCode(list.get(i + count + 1));
+                graduateStudent.setPrTitle(list.get(i + count + 2));
+                graduateStudent.setHighSchool(list.get(i + count + 3));
+                graduateStudent.setTenantId(list.get(i + count + 4));
+                count += 4;
+                graduateStudentRepository.save(graduateStudent);
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            throw PlatformException.of(PlatformError.KB_UNKNOW_ERROR, e1.getMessage());
+        }
+        return null;
+    }
+
 
     public Page<HistoryData> findProfession(Pageable pageable, String area, String classCategory, String prTitle, String prCode,
                                             Integer studentScore, String tenantId) {
@@ -263,7 +335,7 @@ public class ProfessionDataServiceV1 {
         userPortrait.setViewGraduateAreas(BestProfessionArea(provinceName, prCodes, score, classCategory, tenantId));
         userPortrait.setRank(accessRank(provinceName, score, classCategory, tenantId));
         userPortrait.setAlumni(accessAlumni(mobilePhone, tenantId));
-        userPortrait.setCandidateInformation(accessCandidateInformation(mobilePhone, tenantId));
+        userPortrait.setCandidateInformation(accessCandidateInformation(mobilePhone, tenantId, provinceName, score, classCategory));
         return userPortrait;
     }
 
@@ -513,6 +585,7 @@ public class ProfessionDataServiceV1 {
             } else {
                 BigDecimal b = new BigDecimal((double) areaNumber / totalNumber);
                 viewGraduateArea.setProportion(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                viewGraduateAreas.add(viewGraduateArea);
             }
         });
         return viewGraduateAreas;
@@ -540,24 +613,40 @@ public class ProfessionDataServiceV1 {
         String url = MessageFormat.format(crmUrl + "/api/v1/cust/getSchoolByMobilePhone?mobilePhone={0}&tenantId={1}",
                 mobilePhone, tenantId);
         log.info("getFreeSeatUrl:{}", url);
-        String school = restTemplate.getForObject(url, String.class);
-        log.info(school);
-        if (school == null) {
+        try {
+            String school = restTemplate.getForObject(url, String.class);
+            log.info(school);
+            if (school == null) {
+                return 0;
+            }
+            int number = graduateStudentRepository.getAlumni(school, tenantId);
+            return number;
+        } catch (HttpClientErrorException ex) {
             return 0;
+//            throw PlatformException.of(PlatformError.NONE_THIS_PHONE);
         }
-        int number = graduateStudentRepository.getAlumni(school, tenantId);
-        return number;
+
     }
 
     /*
     组装考生基本信息
      */
-    public CandidateInformation accessCandidateInformation(String mobilePhone, String tenantId) {
+    public CandidateInformation accessCandidateInformation(String mobilePhone, String tenantId, String provinceName
+            , int score, String classCategory) {
         String url = MessageFormat.format(crmUrl + "/api/v1/cust/getInformationByMobilePhone?mobilePhone={0}&tenantId={1}",
                 mobilePhone, tenantId);
         log.info("getFreeSeatUrl:{}", url);
-        CandidateInformation candidateInformation = restTemplate.getForObject(url, CandidateInformation.class);
-        return candidateInformation;
+        CandidateInformation candidateInformation = new CandidateInformation();
+        try {
+            candidateInformation = restTemplate.getForObject(url, CandidateInformation.class);
+            return candidateInformation;
+        } catch (HttpClientErrorException ex) {
+            candidateInformation.setArea(provinceName);
+            candidateInformation.setTotalScore(String.valueOf(score));
+            candidateInformation.setClassCategory(classCategory);
+            return candidateInformation;
+//            throw PlatformException.of(PlatformError.NONE_THIS_PHONE);
+        }
     }
 
     /*
@@ -566,9 +655,15 @@ public class ProfessionDataServiceV1 {
     public String accessCandidateName(String mobilePhone) {
         String url = MessageFormat.format(crmUrl + "/api/v1/cust/getInformationByMobilePhone?mobilePhone={0}&tenantId={1}",
                 mobilePhone, AuthenticationUtil.getTenantId());
-        CandidateInformation candidateInformation = restTemplate.getForObject(url, CandidateInformation.class);
-        String name = candidateInformation.getName();
-        return name;
+        try {
+            CandidateInformation candidateInformation = restTemplate.getForObject(url, CandidateInformation.class);
+            String name = candidateInformation.getName();
+            return name;
+        } catch (HttpClientErrorException ex) {
+//            throw PlatformException.of(PlatformError.NONE_THIS_PHONE);
+            return "";
+        }
+
     }
 
     /*

@@ -8,7 +8,7 @@ public class PasswordUtil {
         String password = "12345678";
         int[] pwdindex = {0, 1, 2, 3, 4, 5, 6, 7};
 
-        char[] specialCharacters = {'@', '#', '.', '!', '$'};
+        char[] specialCharacters = {'@', '*', '.', '!', '$','^'};
 
         char[] numbers = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
@@ -37,7 +37,7 @@ public class PasswordUtil {
         //System.out.println(specialCharacters[aindex]);
         int aposition = new Random().nextInt(6) + 1;
         //System.out.println(password.charAt(aposition));
-        password = password.replace(password.charAt(aposition), specialCharacters[aindex]);
+        password = password.replace(password.charAt(aposition), allCharacters[aindex]);
         //System.out.println(password);
 
         //2. 随机生成数据，随机放到1-8位置中（除去第1步占用的位置）

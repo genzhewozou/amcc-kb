@@ -1,13 +1,10 @@
 package com.nroad.amcc.api;
 
-import com.aliyuncs.exceptions.ClientException;
 import com.nroad.amcc.PlatformError;
 import com.nroad.amcc.PlatformException;
 import com.nroad.amcc.Sms.SmsClient;
-import com.nroad.amcc.Sms.SmsUtil;
 import com.nroad.amcc.kb.*;
 import com.nroad.amcc.support.View.ViewCommonQuestion;
-import com.nroad.amcc.support.View.ViewLastYearScore;
 import com.nroad.amcc.support.View.ViewProfessionDetails;
 import com.nroad.amcc.support.configuration.AuthenticationUtil;
 import com.nroad.amcc.support.utils.AESUtils;
@@ -23,10 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import sun.misc.BASE64Encoder;
 
-import java.net.URLDecoder;
 import java.util.*;
 
 @RestController
@@ -101,6 +95,39 @@ public class ProfessionDataControllerV1 {
         professionDataServiceV1.uploadProfessionArea(file);
     }
 
+    @PostMapping("/upload/lastYearScore")
+    @ApiOperation(value = "上传去年招生分数", notes = "")
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    public void uploadlastYearScore(@RequestParam("file") MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        if (file.isEmpty() || StringUtils.isEmpty(filename) || !filename.endsWith(".xlsx")) {
+            throw PlatformException.of(PlatformError.KB_UPLOAD_FILE_NOT_BLANK);
+        }
+        professionDataServiceV1.uploadlastYearScore(file);
+    }
+
+    @PostMapping("/upload/areaAdmitNumber")
+    @ApiOperation(value = "上传去年地区招生人数", notes = "")
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    public void uploadAreaAdmitNumber(@RequestParam("file") MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        if (file.isEmpty() || StringUtils.isEmpty(filename) || !filename.endsWith(".xlsx")) {
+            throw PlatformException.of(PlatformError.KB_UPLOAD_FILE_NOT_BLANK);
+        }
+        professionDataServiceV1.uploadAreaAdmitNumber(file);
+    }
+
+    @PostMapping("/upload/graduateArea")
+    @ApiOperation(value = "上传今年各专业毕业生去向统计", notes = "")
+    @PreAuthorize("hasRole('TENANT_ADMIN')")
+    public void uploadgraduateArea(@RequestParam("file") MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        if (file.isEmpty() || StringUtils.isEmpty(filename) || !filename.endsWith(".xlsx")) {
+            throw PlatformException.of(PlatformError.KB_UPLOAD_FILE_NOT_BLANK);
+        }
+        professionDataServiceV1.uploadGraduateArea(file);
+    }
+
     @GetMapping(value = "/query")
     @ApiOperation(value = "所有专业名字")
     public List<String> getAllProfession() {
@@ -165,6 +192,7 @@ public class ProfessionDataControllerV1 {
                              @RequestParam(value = "mobilePhone") String mobilePhone,
                              @RequestParam(value = "tenantId") String tenantId,
                              @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
+
         int length = prCodes.size();
         String prCode = "";
 

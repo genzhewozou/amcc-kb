@@ -9,12 +9,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.nroad.amcc.support.stream.KbSource;
 
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableSwagger2
+@EnableScheduling
 @EnableBinding({KbSource.class})
 public class AmccKbApplication {
 
