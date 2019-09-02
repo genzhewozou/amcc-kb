@@ -96,6 +96,7 @@ public enum PlatformError {
     KB_OVER_ERROR(4008,"Not Allowed Over 500"),
     NOT_MATCH_PROFESSION(4009,"Not match Profession"),
     KB_Incomplete_Information(4010,"Information not complete "),
+    KB_Phone_NotExist(4011,"Phone not exist "),
 	
     /**
      * sms error

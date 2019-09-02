@@ -40,3 +40,4 @@ public.resources: /resource/**,/**
 service.source: amcc-kb
 
 amcc.crm.service: http://192.168.8.144:8002
+amcc.projection.service: http://192.168.8.144:8004

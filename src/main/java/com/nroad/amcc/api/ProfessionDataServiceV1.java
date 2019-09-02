@@ -62,6 +62,9 @@ public class ProfessionDataServiceV1 {
     @Value("${amcc.crm.service}")
     private String crmUrl;
 
+    @Value("${amcc.projection.service}")
+    private String projectionUrl;
+
 
     @Autowired
     @Qualifier("classCategoryList")
@@ -664,6 +667,18 @@ public class ProfessionDataServiceV1 {
             return "";
         }
 
+    }
+
+    public boolean isExist(String mobilePhone) {
+        String url = MessageFormat.format(projectionUrl + "/api/v1/view/allMobile?phone={0}", mobilePhone);
+        log.info("mobilePhone.length()={}", mobilePhone.length());
+        try {
+            Boolean isExist = restTemplate.getForObject(url, Boolean.class);
+            log.info("isExist{}", isExist);
+            return isExist;
+        } catch (HttpClientErrorException ex) {
+            return false;
+        }
     }
 
     /*
