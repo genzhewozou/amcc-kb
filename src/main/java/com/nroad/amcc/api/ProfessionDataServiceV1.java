@@ -674,7 +674,7 @@ public class ProfessionDataServiceV1 {
         log.info("mobilePhone.length()={}", mobilePhone.length());
         try {
             Boolean isExist = restTemplate.getForObject(url, Boolean.class);
-            log.info("isExist{}", isExist);
+            log.info("isExist{}=", isExist);
             return isExist;
         } catch (HttpClientErrorException ex) {
             return false;

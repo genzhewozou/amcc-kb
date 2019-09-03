@@ -216,7 +216,7 @@ public class ProfessionDataControllerV1 {
             passwordMapping.setMapString(eightPassword);
             passwordMappingRepository.saveAndFlush(passwordMapping);
 
-            if (professionDataServiceV1.isExist(mobilePhone)) {
+            if (SmsClient.sendSms(name, mobilePhone, eightPassword)) {
                 SmsClient.sendSms(name, mobilePhone, eightPassword);
             } else {
                 throw PlatformException.of(PlatformError.KB_Phone_NotExist);
@@ -239,7 +239,7 @@ public class ProfessionDataControllerV1 {
             passwordMapping.setMapString(eightPassword);
             passwordMappingRepository.saveAndFlush(passwordMapping);
 
-            if (professionDataServiceV1.isExist(mobilePhone)) {
+            if (SmsClient.sendSms(name, mobilePhone, eightPassword)) {
                 SmsClient.sendSms(name, mobilePhone, eightPassword);
             } else {
                 throw PlatformException.of(PlatformError.KB_Phone_NotExist);
@@ -267,7 +267,7 @@ public class ProfessionDataControllerV1 {
             passwordMapping.setMapString(eightPassword);
             passwordMappingRepository.saveAndFlush(passwordMapping);
 
-            if (professionDataServiceV1.isExist(mobilePhone)) {
+            if (SmsClient.sendSms(name, mobilePhone, eightPassword)) {
                 SmsClient.sendSms(name, mobilePhone, eightPassword);
             } else {
                 throw PlatformException.of(PlatformError.KB_Phone_NotExist);

@@ -27,6 +27,9 @@ public class SmsClient {
             req.setSmsParamString("{name:'" + name + "',code:'" + code + "'}");
 
             AlibabaAliqinFcSmsNumSendResponse rsp = client.execute(req);
+            if(null == rsp.getBody()){
+                return false;
+            }
             System.out.println(rsp.getBody());
             if (rsp.getBody().contains("\"success\":true")) {
                 result = true;
