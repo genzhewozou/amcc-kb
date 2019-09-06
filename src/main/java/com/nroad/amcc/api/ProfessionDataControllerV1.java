@@ -45,6 +45,7 @@ public class ProfessionDataControllerV1 {
         Assert.notNull(professionDataServiceV1, "HistoryDataServiceV1 can not be null");
         Assert.notNull(commonQuestionRepository, "commonQuestionRepository can not be null");
         Assert.notNull(admissionPolicyRepository, "admissionPolicyRepository can not be null");
+        Assert.notNull(passwordMappingRepository, "passwordMappingRepository can not be null");
         this.professionDataServiceV1 = professionDataServiceV1;
         this.commonQuestionRepository = commonQuestionRepository;
         this.admissionPolicyRepository = admissionPolicyRepository;
@@ -203,47 +204,24 @@ public class ProfessionDataControllerV1 {
         if (length == 0) {
             String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
                     classCategory + "," + score + "," + tenantId);
-
-            log.info(toBeEncrypted + "");
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             String eightPassword = new PasswordUtil().generateEightPassword();
-            log.info(encryptionString + "");
-            log.info(eightPassword + "");
 
-            PasswordMapping passwordMapping = new PasswordMapping();
-            passwordMapping.setId(UUID.randomUUID().toString());
-            passwordMapping.setEncryptedString(encryptionString);
-            passwordMapping.setMapString(eightPassword);
-            passwordMappingRepository.saveAndFlush(passwordMapping);
+            saveTransformPassword(encryptionString, eightPassword);
+            FSendSms(name, mobilePhone, eightPassword);
 
-            if (SmsClient.sendSms(name, mobilePhone, eightPassword)) {
-                SmsClient.sendSms(name, mobilePhone, eightPassword);
-            } else {
-                throw PlatformException.of(PlatformError.KB_Phone_NotExist);
-            }
             return eightPassword;
         }
         if (length != 0 && length == 1) {
             prCode = prCodes.get(0);
             String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
                     classCategory + "," + score + "," + tenantId + "," + prCode);
-            log.info(toBeEncrypted + "");
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             String eightPassword = new PasswordUtil().generateEightPassword();
-            log.info(encryptionString + "");
-            log.info(eightPassword + "");
 
-            PasswordMapping passwordMapping = new PasswordMapping();
-            passwordMapping.setId(UUID.randomUUID().toString());
-            passwordMapping.setEncryptedString(encryptionString);
-            passwordMapping.setMapString(eightPassword);
-            passwordMappingRepository.saveAndFlush(passwordMapping);
+            saveTransformPassword(encryptionString, eightPassword);
+            FSendSms(name, mobilePhone, eightPassword);
 
-            if (SmsClient.sendSms(name, mobilePhone, eightPassword)) {
-                SmsClient.sendSms(name, mobilePhone, eightPassword);
-            } else {
-                throw PlatformException.of(PlatformError.KB_Phone_NotExist);
-            }
             return eightPassword;
         }
         if (length != 0 && length > 1) {
@@ -255,23 +233,11 @@ public class ProfessionDataControllerV1 {
 
             String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
                     classCategory + "," + score + "," + tenantId + "," + prCode);
-            log.info(toBeEncrypted + "");
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             String eightPassword = new PasswordUtil().generateEightPassword();
-            log.info(encryptionString + "");
-            log.info(eightPassword + "");
 
-            PasswordMapping passwordMapping = new PasswordMapping();
-            passwordMapping.setId(UUID.randomUUID().toString());
-            passwordMapping.setEncryptedString(encryptionString);
-            passwordMapping.setMapString(eightPassword);
-            passwordMappingRepository.saveAndFlush(passwordMapping);
-
-            if (SmsClient.sendSms(name, mobilePhone, eightPassword)) {
-                SmsClient.sendSms(name, mobilePhone, eightPassword);
-            } else {
-                throw PlatformException.of(PlatformError.KB_Phone_NotExist);
-            }
+            saveTransformPassword(encryptionString, eightPassword);
+            FSendSms(name, mobilePhone, eightPassword);
 
             return eightPassword;
         }
@@ -347,6 +313,22 @@ public class ProfessionDataControllerV1 {
             return admissionPolicies;
         }
         return admissionPolicies;
+    }
+
+    private void saveTransformPassword(String encryptionString, String eightPassword) {
+        PasswordMapping passwordMapping = new PasswordMapping();
+        passwordMapping.setId(UUID.randomUUID().toString());
+        passwordMapping.setEncryptedString(encryptionString);
+        passwordMapping.setMapString(eightPassword);
+        passwordMappingRepository.saveAndFlush(passwordMapping);
+    }
+
+    private void FSendSms(String name, String mobilePhone, String eightPassword) {
+        if (SmsClient.sendSms(name, mobilePhone, eightPassword)) {
+            SmsClient.sendSms(name, mobilePhone, eightPassword);
+        } else {
+            throw PlatformException.of(PlatformError.KB_Phone_NotExist);
+        }
     }
 
 }

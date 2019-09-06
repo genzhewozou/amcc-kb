@@ -345,7 +345,7 @@ public class ProfessionDataServiceV1 {
     /*
     查询去年本校招生的各个科类所有分数对应人数
      */
-    public List<ViewLastYearScore> accessLastYearScore(String classCategory, String tenantId) {
+    private List<ViewLastYearScore> accessLastYearScore(String classCategory, String tenantId) {
         List<Integer> scoreList = lastYearScoreRepository.getAllScore(tenantId);
         List<ViewLastYearScore> viewLastYearScores = new ArrayList<>();
         if (scoreList != null && scoreList.size() != 0) {
@@ -565,7 +565,7 @@ public class ProfessionDataServiceV1 {
     /*
     组装专业top1的毕业生去向
      */
-    public List<ViewGraduateArea> accessGraduate(List<String> prCodes, String tenantId) {
+    private List<ViewGraduateArea> accessGraduate(List<String> prCodes, String tenantId) {
         List<String> allAreas = graduateStudentRepository.getAllArea();
         if (allAreas == null || allAreas.size() == 0) {
             return null;
@@ -612,7 +612,7 @@ public class ProfessionDataServiceV1 {
     /*
     组装历届校友
      */
-    public int accessAlumni(String mobilePhone, String tenantId) {
+    private int accessAlumni(String mobilePhone, String tenantId) {
         String url = MessageFormat.format(crmUrl + "/api/v1/cust/getSchoolByMobilePhone?mobilePhone={0}&tenantId={1}",
                 mobilePhone, tenantId);
         log.info("getFreeSeatUrl:{}", url);
@@ -626,7 +626,6 @@ public class ProfessionDataServiceV1 {
             return number;
         } catch (HttpClientErrorException ex) {
             return 0;
-//            throw PlatformException.of(PlatformError.NONE_THIS_PHONE);
         }
 
     }
@@ -634,7 +633,7 @@ public class ProfessionDataServiceV1 {
     /*
     组装考生基本信息
      */
-    public CandidateInformation accessCandidateInformation(String mobilePhone, String tenantId, String provinceName
+    private CandidateInformation accessCandidateInformation(String mobilePhone, String tenantId, String provinceName
             , int score, String classCategory) {
         String url = MessageFormat.format(crmUrl + "/api/v1/cust/getInformationByMobilePhone?mobilePhone={0}&tenantId={1}",
                 mobilePhone, tenantId);
@@ -648,7 +647,6 @@ public class ProfessionDataServiceV1 {
             candidateInformation.setTotalScore(String.valueOf(score));
             candidateInformation.setClassCategory(classCategory);
             return candidateInformation;
-//            throw PlatformException.of(PlatformError.NONE_THIS_PHONE);
         }
     }
 
@@ -663,13 +661,12 @@ public class ProfessionDataServiceV1 {
             String name = candidateInformation.getName();
             return name;
         } catch (HttpClientErrorException ex) {
-//            throw PlatformException.of(PlatformError.NONE_THIS_PHONE);
             return "";
         }
 
     }
 
-    public boolean isExist(String mobilePhone) {
+    private boolean isExist(String mobilePhone) {
         String url = MessageFormat.format(projectionUrl + "/api/v1/view/allMobile?phone={0}", mobilePhone);
         log.info("mobilePhone.length()={}", mobilePhone.length());
         try {
