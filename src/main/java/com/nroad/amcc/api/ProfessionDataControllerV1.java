@@ -192,7 +192,7 @@ public class ProfessionDataControllerV1 {
                              @RequestParam(value = "classCategory") String classCategory,
                              @RequestParam(value = "mobilePhone") String mobilePhone,
                              @RequestParam(value = "tenantId") String tenantId,
-                             @RequestParam(value = "prCodes", required = false) List<String> prCodes) throws Exception {
+                             @RequestParam(value = "prCodes", required = false) List<String> prCodes) {
 
         int length = prCodes.size();
         String prCode = "";
@@ -201,26 +201,24 @@ public class ProfessionDataControllerV1 {
 
         String password = "sde@5f98H*^hsff%dfs$r344&df8543*er";
 
+        String toBeEncrypted = mobilePhone + "," + provinceName + "," +
+                classCategory + "," + score + "," + tenantId;
+
         if (length == 0) {
-            String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
-                    classCategory + "," + score + "," + tenantId);
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             String eightPassword = new PasswordUtil().generateEightPassword();
 
-            saveTransformPassword(encryptionString, eightPassword);
-            FSendSms(name, mobilePhone, eightPassword);
+            saveAndSend(name, mobilePhone, encryptionString, eightPassword);
 
             return eightPassword;
         }
         if (length != 0 && length == 1) {
             prCode = prCodes.get(0);
-            String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
-                    classCategory + "," + score + "," + tenantId + "," + prCode);
+            toBeEncrypted = toBeEncrypted + "," + prCode;
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             String eightPassword = new PasswordUtil().generateEightPassword();
 
-            saveTransformPassword(encryptionString, eightPassword);
-            FSendSms(name, mobilePhone, eightPassword);
+            saveAndSend(name, mobilePhone, encryptionString, eightPassword);
 
             return eightPassword;
         }
@@ -231,13 +229,11 @@ public class ProfessionDataControllerV1 {
             }
             prCode = prCode.substring(0, prCode.length() - 1);
 
-            String toBeEncrypted = new String(mobilePhone + "," + provinceName + "," +
-                    classCategory + "," + score + "," + tenantId + "," + prCode);
+            toBeEncrypted = toBeEncrypted + "," + prCode;
             String encryptionString = AESUtils.encrypt(toBeEncrypted, password);  //加密后的串
             String eightPassword = new PasswordUtil().generateEightPassword();
 
-            saveTransformPassword(encryptionString, eightPassword);
-            FSendSms(name, mobilePhone, eightPassword);
+            saveAndSend(name, mobilePhone, encryptionString, eightPassword);
 
             return eightPassword;
         }
@@ -315,20 +311,21 @@ public class ProfessionDataControllerV1 {
         return admissionPolicies;
     }
 
-    private void saveTransformPassword(String encryptionString, String eightPassword) {
+    private void saveAndSend(String name, String mobilePhone, String encryptionString, String eightPassword) {
+
         PasswordMapping passwordMapping = new PasswordMapping();
+
         passwordMapping.setId(UUID.randomUUID().toString());
         passwordMapping.setEncryptedString(encryptionString);
         passwordMapping.setMapString(eightPassword);
         passwordMappingRepository.saveAndFlush(passwordMapping);
-    }
 
-    private void FSendSms(String name, String mobilePhone, String eightPassword) {
         if (SmsClient.sendSms(name, mobilePhone, eightPassword)) {
             SmsClient.sendSms(name, mobilePhone, eightPassword);
         } else {
             throw PlatformException.of(PlatformError.KB_Phone_NotExist);
         }
+
     }
 
 }
